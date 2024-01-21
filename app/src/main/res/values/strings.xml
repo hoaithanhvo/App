@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">NidecSnipeIt</string>
+    <string name="app_name">Nidec Assets Manager</string>
+    <string name="action_back">Back</string>
+    <string name="check_in">CHECK-IN</string>
+    <string name="check_out">CHECK-OUT</string>
+    <string name="maintenance">MAINTENANCE</string>
+    <string name="button_text">Button Text</string>
+    <string name="nidec_logo">Nidec logo</string>
+    <string name="button_3">Button 3</string>
+    <string name="qr_scanner">QR Scanner</string>
 </resources>
