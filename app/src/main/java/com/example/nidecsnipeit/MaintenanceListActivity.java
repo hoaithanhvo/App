@@ -18,6 +18,7 @@ import com.example.nidecsnipeit.model.ListItemModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class MaintenanceListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -49,8 +50,7 @@ public class MaintenanceListActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                List<String> allEditTextValues = adapter.getAllEditTextValues();
-//                List<String> allDropdownValues = adapter.getAllDropdownValues();
+                Map<String, String> allValues = adapter.getAllValuesByTitle();
                 Toast.makeText(MaintenanceListActivity.this, "editTextValue", Toast.LENGTH_SHORT).show();
             }
         });

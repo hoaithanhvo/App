@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- rounded_blue_bg.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="?attr/colorOnPrimary"/>
+            <corners android:topLeftRadius="2dp" android:topRightRadius="2dp"/>
+        </shape>
+    </item>
+</layer-list>

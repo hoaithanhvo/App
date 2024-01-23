@@ -1,9 +1,11 @@
 package com.example.nidecsnipeit.model;
 
+import java.util.List;
+
 public class ListItemModel {
     private final String title;
-    private final String value;
-    private final String[] dropdownItems;
+    private String value;
+    private String[] dropdownItems;
     private final Mode mode;
 
     public ListItemModel(String title, String value, Mode mode) {
@@ -24,12 +26,21 @@ public class ListItemModel {
         return title;
     }
 
+
     public String getValue() {
         return value;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public String[] getDropdownItems() {
         return dropdownItems;
+    }
+
+    public void setDropdownItems(String[] dropdownItems) {
+        this.dropdownItems = dropdownItems;
     }
 
     public Mode getMode() {
