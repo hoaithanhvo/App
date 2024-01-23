@@ -16,10 +16,60 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <Button
-        android:id="@+id/qr_scanner_btn"
-        android:layout_width="120dp"
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:text="@string/read_a_barcode"
+        android:textAlignment="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/qr_scanner"
-        android:layout_gravity="center"/>
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/input_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_weight="1"
+            android:hint="@string/asset_tag"
+            android:inputType="text"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textSize="@dimen/text_size"
+            android:layout_marginStart="@dimen/margin_screen"
+            android:layout_gravity="bottom"
+            android:autofillHints="false"
+            android:imeOptions="actionSearch"/>
+
+        <ImageButton
+            android:id="@+id/qr_scanner_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/margin_screen"
+            android:backgroundTint="?attr/colorSecondary"
+            android:contentDescription="@string/qr_scanner"
+            android:minHeight="48dp"
+            android:paddingHorizontal="28dp"
+            android:paddingVertical="12dp"
+            android:src="@drawable/ic_qr_scan" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/search_btn"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="@dimen/margin_screen"
+        android:text="@string/search"
+        android:backgroundTint="@color/disabled_bg_color"
+        android:textColor="@color/disabled_text_color"
+        android:enabled="false"/>
+
 </LinearLayout>

@@ -8,4 +8,7 @@
     <string name="nidec_logo">Nidec logo</string>
     <string name="button_3">Button 3</string>
     <string name="qr_scanner">QR Scanner</string>
+    <string name="read_a_barcode">Read a barcode</string>
+    <string name="asset_tag">Asset tag</string>
+    <string name="search">SEARCH</string>
 </resources>
