@@ -30,9 +30,6 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
-
         ActionBar actionBar = getSupportActionBar();
         Intent intent = getIntent();
         int searchMode = intent.getIntExtra("mode", Config.CHECK_IN_MODE);
@@ -149,7 +146,7 @@ public class SearchActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 initQRCodeScanner();
             } else {
-                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -160,7 +157,7 @@ public class SearchActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
-                Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Scan cancelled", Toast.LENGTH_SHORT).show();
             } else {
                 // Get content from QR code
                 String qrContent = result.getContents();
@@ -180,7 +177,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void redirectToDetailScreen(String qrResult) {
-        Toast.makeText(this, "Scanned: " + qrResult, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Scanned: " + qrResult, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MaintenanceListActivity.class);
         startActivity(intent);
     }
