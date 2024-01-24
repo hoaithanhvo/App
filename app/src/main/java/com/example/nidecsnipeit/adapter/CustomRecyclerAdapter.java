@@ -1,10 +1,16 @@
 package com.example.nidecsnipeit.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.ImageSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,9 +27,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nidecsnipeit.CaptureActivityPortrait;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.model.ListItemModel;
 import com.example.nidecsnipeit.utils.Common;
+import com.example.nidecsnipeit.utils.QRScannerHelper;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,27 +66,27 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         ListItemModel currentItem = mData.get(position);
 
         holder.titleTextView.setText(currentItem.getTitle());
-        holder.titleTextView.setPadding(4, 8, 4, 8);
+        holder.titleTextView.setPadding(8, 8, 8, 8);
         holder.titleTextView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.rounded_title_bg));
 
-        int heightInDp = 48;
+        int heightInDp = 42;
         int heightPx = Common.convertDpToPixel(heightInDp, holder.itemView.getContext());
         switch (currentItem.getMode()) {
             case TEXT:
                 holder.valueTextView.setTextSize(16);
-                holder.valueTextView.setHeight(heightPx);
+                holder.valueTextView.setMinHeight(heightPx);
                 holder.valueTextView.setGravity(Gravity.CENTER_VERTICAL);
-                holder.valueTextView.setText(currentItem.getValue());
+                holder.valueTextView.setText(addIconToText(holder.itemView.getContext(), currentItem.getValue(), currentItem.getIcon()));
                 holder.valueTextView.setVisibility(View.VISIBLE);
                 break;
             case EDIT_TEXT:
-                holder.editText.setTextSize(16);
-                holder.editText.setHeight(heightPx);
-                holder.editText.setInputType(InputType.TYPE_CLASS_TEXT);
-                holder.editText.setGravity(Gravity.CENTER_VERTICAL);
-                holder.editText.setText(currentItem.getValue());
-                holder.editText.setVisibility(View.VISIBLE);
-                holder.editText.addTextChangedListener(new TextWatcher() {
+                holder.editTextView.setTextSize(16);
+                holder.editTextView.setMinHeight(heightPx);
+                holder.editTextView.setInputType(InputType.TYPE_CLASS_TEXT);
+                holder.editTextView.setGravity(Gravity.CENTER_VERTICAL);
+                holder.editTextView.setText(currentItem.getValue());
+                holder.editTextView.setVisibility(View.VISIBLE);
+                holder.editTextView.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     }
@@ -92,15 +103,15 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 // Add logic to set up data for the dropdown
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(),
                     android.R.layout.simple_dropdown_item_1line, currentItem.getDropdownItems());
-                holder.dropdown.setGravity(Gravity.CENTER_VERTICAL);
-                holder.dropdown.setAdapter(adapter);
-                holder.dropdown.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-                holder.dropdown.setVisibility(View.VISIBLE);
-                ViewGroup.LayoutParams params = holder.dropdown.getLayoutParams();
+                holder.dropdownView.setGravity(Gravity.CENTER_VERTICAL);
+                holder.dropdownView.setAdapter(adapter);
+                holder.dropdownView.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+                holder.dropdownView.setVisibility(View.VISIBLE);
+                ViewGroup.LayoutParams params = holder.dropdownView.getLayoutParams();
                 params.height = heightPx;
-                holder.dropdown.setLayoutParams(params);
+                holder.dropdownView.setLayoutParams(params);
 
-                holder.dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                holder.dropdownView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                         String selectedValue = parentView.getItemAtPosition(position).toString();
@@ -109,6 +120,15 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parentView) {
+                    }
+                });
+
+                holder.valueTextView.setVisibility(View.GONE);
+                holder.qrScannerView.setVisibility(View.VISIBLE);
+                holder.qrScannerView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QRScannerHelper.initiateScan((Activity) v.getContext());
                     }
                 });
                 break;
@@ -125,15 +145,17 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView valueTextView;
-        EditText editText;
-        Spinner dropdown;
+        EditText editTextView;
+        Spinner dropdownView;
+        ImageButton qrScannerView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.titleTextView);
-            valueTextView = itemView.findViewById(R.id.valueTextView);
-            editText = itemView.findViewById(R.id.editText);
-            dropdown = itemView.findViewById(R.id.dropdown);
+            titleTextView = itemView.findViewById(R.id.title_item);
+            valueTextView = itemView.findViewById(R.id.text_item);
+            editTextView = itemView.findViewById(R.id.edit_text_item);
+            dropdownView = itemView.findViewById(R.id.dropdown_item);
+            qrScannerView = itemView.findViewById(R.id.qr_scanner_btn);
         }
     }
 
@@ -146,4 +168,15 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
         return valuesMap;
     }
+
+    private SpannableString addIconToText(Context context, String text, Drawable icon) {
+        SpannableString spannableString = new SpannableString(" " + text);
+        if (icon != null) {
+            icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+            ImageSpan imageSpan = new ImageSpan(icon, ImageSpan.ALIGN_BOTTOM);
+            spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        return spannableString;
+    }
+
 }

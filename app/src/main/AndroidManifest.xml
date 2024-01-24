@@ -18,6 +18,12 @@
         android:theme="@style/Theme.NidecSnipeIt"
         tools:targetApi="31">
         <activity
+            android:name=".BaseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeviceDetails"
+            android:exported="false" />
+        <activity
             android:name=".MaintenanceListActivity"
             android:exported="false" />
         <activity

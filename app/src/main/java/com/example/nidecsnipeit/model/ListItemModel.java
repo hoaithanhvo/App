@@ -1,34 +1,47 @@
 package com.example.nidecsnipeit.model;
 
-import java.util.List;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageButton;
 
 public class ListItemModel {
     private final String title;
     private String value;
     private String[] dropdownItems;
     private final Mode mode;
+    private final Drawable icon;
 
     public ListItemModel(String title, String value, Mode mode) {
         this.title = title;
         this.value = value;
         this.mode = mode;
         this.dropdownItems = new String[0];
+        this.icon = null;
     }
 
-    public ListItemModel(String title, String value, Mode mode, String[] dropdownItems) {
+    public ListItemModel(String title, String value, Mode mode, Drawable icon) {
         this.title = title;
         this.value = value;
         this.mode = mode;
+        this.dropdownItems = new String[0];
+        this.icon = icon;
+    }
+    public ListItemModel(String title, Mode mode, String[] dropdownItems) {
+        this.title = title;
+        this.value = null;
+        this.mode = mode;
         this.dropdownItems = dropdownItems;
+        this.icon = null;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
+    }
+    public Drawable getIcon() {
+        return this.icon;
     }
 
-
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(String value) {
@@ -36,11 +49,7 @@ public class ListItemModel {
     }
 
     public String[] getDropdownItems() {
-        return dropdownItems;
-    }
-
-    public void setDropdownItems(String[] dropdownItems) {
-        this.dropdownItems = dropdownItems;
+        return this.dropdownItems;
     }
 
     public Mode getMode() {

@@ -28,24 +28,6 @@ public class MaintenanceListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_list);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("Maintenance list");
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        List<ListItemModel> dataList = new ArrayList<>();
-        String[] dropdownItems = {"Option 1", "Option 2", "Option 3"};
-        dataList.add(new ListItemModel("Title 1", "Value 1", ListItemModel.Mode.TEXT));
-        dataList.add(new ListItemModel("Title 2", "Value 2", ListItemModel.Mode.EDIT_TEXT));
-        dataList.add(new ListItemModel("Title 2.1", "Value 3", ListItemModel.Mode.EDIT_TEXT));
-        dataList.add(new ListItemModel("Title 3", "", ListItemModel.Mode.DROPDOWN, dropdownItems));
-
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CustomRecyclerAdapter(this, dataList);
-        recyclerView.setAdapter(adapter);
-
         Button submitBtn = findViewById(R.id.submit);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,15 +36,5 @@ public class MaintenanceListActivity extends AppCompatActivity {
                 Toast.makeText(MaintenanceListActivity.this, "editTextValue", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    // this event will enable the back
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

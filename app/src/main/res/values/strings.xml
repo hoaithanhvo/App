@@ -11,4 +11,6 @@
     <string name="read_a_barcode">Read a barcode</string>
     <string name="asset_tag">Asset tag</string>
     <string name="search">SEARCH</string>
+    <string name="device_informations">Device informations</string>
+    <string name="submit">Submit</string>
 </resources>
