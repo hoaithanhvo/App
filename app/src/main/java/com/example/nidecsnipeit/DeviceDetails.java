@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.example.nidecsnipeit.utils.QRScannerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DeviceDetails extends BaseActivity {
     CustomRecyclerAdapter adapter;
@@ -31,7 +33,7 @@ public class DeviceDetails extends BaseActivity {
 
         List<ListItemModel> dataList = new ArrayList<>();
         String[] dropdownItems = {"Option 1", "Option 2", "Option 3"};
-        dataList.add(new ListItemModel("Title 3", ListItemModel.Mode.DROPDOWN, dropdownItems));
+        dataList.add(new ListItemModel("Title 2223", ListItemModel.Mode.DROPDOWN, dropdownItems));
         dataList.add(new ListItemModel("Model", "Macbook Pro 16''", ListItemModel.Mode.TEXT));
         dataList.add(new ListItemModel("Serial Number", "d0bf8673-19dc-33cd-8658-e88006f38156d0bf8673-19dc-33cd-8658", ListItemModel.Mode.TEXT));
         dataList.add(new ListItemModel("Asset Name", "Not defined", ListItemModel.Mode.TEXT));
@@ -43,9 +45,33 @@ public class DeviceDetails extends BaseActivity {
         dataList.add(new ListItemModel("Title 2.1", "Value 3", ListItemModel.Mode.EDIT_TEXT));
         dataList.add(new ListItemModel("Title 3", ListItemModel.Mode.DROPDOWN, dropdownItems));
 
+
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CustomRecyclerAdapter(this, dataList);
+        adapter = new CustomRecyclerAdapter(this, dataList, recyclerView);
         recyclerView.setAdapter(adapter);
+
+        Button requestBtn = findViewById(R.id.check_in_detail);
+        requestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, String> valuesMap = adapter.getAllValuesByTitle();
+                Toast.makeText(DeviceDetails.this, "Test", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Get QR scanned value
+        String scannedValue = QRScannerHelper.processScanResult(requestCode, resultCode, data);
+
+        if (scannedValue != null) {
+            // Update dropdown selection following position
+            adapter.updateDropdownSelection(adapter.getCurrentPosition(), scannedValue);
+        }
     }
 }

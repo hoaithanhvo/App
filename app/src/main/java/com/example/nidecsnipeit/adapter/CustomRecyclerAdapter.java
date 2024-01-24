@@ -44,11 +44,14 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
     private final List<ListItemModel> mData;
     private final LayoutInflater mInflater;
+    private RecyclerView recyclerView;
+    private int currentPosition;
 
     // Data is passed into the constructor
-    public CustomRecyclerAdapter(Context context, List<ListItemModel> data) {
+    public CustomRecyclerAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+        this.recyclerView = recyclerView;
     }
 
     // Inflates the row layout from xml when needed
@@ -71,6 +74,10 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
         int heightInDp = 42;
         int heightPx = Common.convertDpToPixel(heightInDp, holder.itemView.getContext());
+        holder.valueTextView.setVisibility(View.GONE);
+        holder.editTextView.setVisibility(View.GONE);
+        holder.dropdownView.setVisibility(View.GONE);
+        holder.qrScannerView.setVisibility(View.GONE);
         switch (currentItem.getMode()) {
             case TEXT:
                 holder.valueTextView.setTextSize(16);
@@ -123,11 +130,11 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                     }
                 });
 
-                holder.valueTextView.setVisibility(View.GONE);
                 holder.qrScannerView.setVisibility(View.VISIBLE);
                 holder.qrScannerView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        setCurrentPosition(holder.getAdapterPosition());
                         QRScannerHelper.initiateScan((Activity) v.getContext());
                     }
                 });
@@ -179,4 +186,53 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         return spannableString;
     }
 
+    public void updateDropdownSelection(int position, String selectedValue) {
+        ListItemModel listItem = mData.get(position);
+
+        if (listItem.getMode() == ListItemModel.Mode.DROPDOWN) {
+            String[] dropdownItems = listItem.getDropdownItems();
+
+            // Find index selectedValue in dropdownItems list
+            int selectedIndex = findSelectedIndex(dropdownItems, selectedValue);
+
+            if (selectedIndex != -1) {
+                listItem.setValue(selectedValue);
+
+                // Find the spinner corresponding with position
+                Spinner dropdownView = findDropdownViewForItem(position);
+
+                // Set selection by selectedIndex in Spinner
+                if (dropdownView != null) {
+                    dropdownView.setSelection(selectedIndex);
+                }
+            }
+        }
+    }
+
+    private int findSelectedIndex(String[] array, String targetValue) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(targetValue)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private Spinner findDropdownViewForItem(int position) {
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+
+        if (viewHolder instanceof CustomRecyclerAdapter.ViewHolder) {
+            return ((CustomRecyclerAdapter.ViewHolder) viewHolder).dropdownView;
+        }
+
+        return null;
+    }
+
+    public void setCurrentPosition (int position) {
+        this.currentPosition = position;
+    }
+
+    public int getCurrentPosition () {
+        return this.currentPosition;
+    }
 }
