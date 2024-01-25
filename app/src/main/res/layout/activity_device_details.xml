@@ -7,10 +7,12 @@
     tools:context=".DeviceDetails">
 
     <ImageView
+        android:id="@+id/detail_img"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_marginTop="@dimen/margin_screen"
         android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
         android:src="@drawable/device_img"
         android:contentDescription="@string/device_informations"/>
 

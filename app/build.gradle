@@ -37,6 +37,8 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.android.volley:volley:1.2.1'
+    implementation 'org.apache.commons:commons-text:1.9'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

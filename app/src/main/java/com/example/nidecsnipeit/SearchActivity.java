@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,24 +17,35 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.nidecsnipeit.network.NetworkManager;
+import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
+import com.example.nidecsnipeit.network.NetworkResponseListener;
+import com.example.nidecsnipeit.utils.AlertDialogUtil;
+import com.example.nidecsnipeit.utils.ProgressDialogUtil;
 import com.example.nidecsnipeit.utils.QRScannerHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class SearchActivity extends BaseActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
+    private int searchMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
         Intent intent = getIntent();
-        int searchMode = intent.getIntExtra("mode", Config.CHECK_IN_MODE);
+        searchMode = intent.getIntExtra("mode", Config.CHECK_IN_MODE);
         switch (searchMode) {
             case Config.CHECK_IN_MODE:
                 setupActionBar("Check-in search");
@@ -123,19 +136,6 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
-    // Init QR code scanner
-    private void initQRCodeScanner() {
-        // Initialize QR code scanner here
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-        integrator.setCameraId(0);
-        integrator.setOrientationLocked(true);
-        integrator.setBeepEnabled(true);
-        integrator.setCaptureActivity(CaptureActivityPortrait.class);
-        integrator.setPrompt("Scan a QR code");
-        integrator.initiateScan();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String qrContent = QRScannerHelper.processScanResult(requestCode, resultCode, data);
@@ -155,7 +155,40 @@ public class SearchActivity extends BaseActivity {
     }
 
     public void redirectToDetailScreen(String qrResult) {
-        Intent intent = new Intent(this, DeviceDetails.class);
-        startActivity(intent);
+        NetworkManager apiServices = NetworkManager.getInstance(SearchActivity.this);
+
+        ProgressDialogUtil.showProgressDialog(this, "Searching...");
+        apiServices.getItemRequestByAssetTag(qrResult, new NetworkResponseListener<JSONObject>() {
+            @Override
+            public void onResult(JSONObject object) {
+                try {
+                    if (object.has("status") && object.get("status").equals("error")) {
+                        ProgressDialogUtil.hideProgressDialog();
+                        Toast.makeText(SearchActivity.this, object.get("messages").toString(), Toast.LENGTH_LONG).show();
+                    } else {
+                        if (((JSONObject)object.get("status_label")).get("id").equals(1) && searchMode == Config.CHECK_IN_MODE) {
+                            ProgressDialogUtil.hideProgressDialog();
+                            AlertDialogUtil.showAlertDialog(SearchActivity.this, null, "This asset is already checked in");
+                        } else {
+                            Intent intent = new Intent(SearchActivity.this, DeviceDetails.class);
+                            intent.putExtra("DEVICE_INFO", object.toString());
+                            intent.putExtra("MODE", searchMode);
+                            startActivity(intent);
+                        }
+                    }
+                } catch (JSONException e) {
+                    ProgressDialogUtil.hideProgressDialog();
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }, new NetworkResponseErrorListener() {
+            @Override
+            public void onErrorResult(Exception error) {
+                ProgressDialogUtil.hideProgressDialog();
+                Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 }

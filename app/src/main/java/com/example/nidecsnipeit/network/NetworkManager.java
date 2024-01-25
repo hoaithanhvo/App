@@ -9,6 +9,7 @@ import com.example.nidecsnipeit.model.CheckinItemModel;
 import com.example.nidecsnipeit.model.CheckoutItemModel;
 import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -58,7 +59,11 @@ public class NetworkManager {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                listener.onResult(response);
+                try {
+                    listener.onResult(response);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -89,7 +94,11 @@ public class NetworkManager {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                listener.onResult(response);
+                try {
+                    listener.onResult(response);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -129,11 +138,15 @@ public class NetworkManager {
      * @param errorListener
      */
     public void checkoutItem(int assetID, CheckoutItemModel checkoutItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/hardware/" + assetID + "/checkin";
+        String url = URL +  "/hardware/" + assetID + "/checkout";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                listener.onResult(response);
+                try {
+                    listener.onResult(response);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -175,7 +188,11 @@ public class NetworkManager {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                listener.onResult(response);
+                try {
+                    listener.onResult(response);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
