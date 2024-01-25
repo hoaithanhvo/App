@@ -110,6 +110,7 @@ public class SearchActivity extends BaseActivity {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String assetTag = v.getText().toString();
                 if (!assetTag.trim().isEmpty()) {
+                    Common.hideKeyboard(this, v);
                     redirectToDetailScreen(assetTag);
                     return true;
                 }
@@ -122,6 +123,7 @@ public class SearchActivity extends BaseActivity {
             public void onClick(View v) {
                 String assetTag = inputSearch.getText().toString();
                 if (!assetTag.trim().isEmpty()) {
+                    Common.hideKeyboard(SearchActivity.this, v);
                     redirectToDetailScreen(assetTag);
                 }
             }
@@ -174,14 +176,14 @@ public class SearchActivity extends BaseActivity {
                     }
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
-                    throw new RuntimeException(e);
+                    Common.showCustomSnackBar(rootView, e.toString(), Common.SnackBarType.ERROR);
                 }
             }
         }, new NetworkResponseErrorListener() {
             @Override
             public void onErrorResult(Exception error) {
                 Common.hideProgressDialog();
-                Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR);
             }
         });
     }

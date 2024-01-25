@@ -44,7 +44,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
     private final List<ListItemModel> mData;
     private final LayoutInflater mInflater;
-    private RecyclerView recyclerView;
+    private final RecyclerView recyclerView;
     private int currentPosition;
 
     // Data is passed into the constructor

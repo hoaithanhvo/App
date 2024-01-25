@@ -10,6 +10,13 @@ public class ListItemModel {
     private final Mode mode;
     private final Drawable icon;
 
+    public ListItemModel(String title, String value) {
+        this.title = title;
+        this.value = value;
+        this.mode = Mode.TEXT;
+        this.dropdownItems = new String[0];
+        this.icon = null;
+    }
     public ListItemModel(String title, String value, Mode mode) {
         this.title = title;
         this.value = value;
