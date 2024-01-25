@@ -6,7 +6,7 @@ public class GetMaintenanceParamItemModel {
     public String search;
     public String sort;
     public int order;
-    public String assetID;
+    public String asset_id;
 
     public GetMaintenanceParamItemModel(int limit, int offset, String search, String sort, int order, String assetID) {
         this.limit = limit;
@@ -14,7 +14,7 @@ public class GetMaintenanceParamItemModel {
         this.search = search;
         this.sort = sort;
         this.order = order;
-        this.assetID = assetID;
+        this.asset_id = assetID;
     }
 
     public int getLimit() {
@@ -58,10 +58,10 @@ public class GetMaintenanceParamItemModel {
     }
 
     public String getAssetID() {
-        return assetID;
+        return asset_id;
     }
 
-    public void setAssetID(String assetID) {
-        this.assetID = assetID;
+    public void setAssetID(String asset_id) {
+        this.asset_id = asset_id;
     }
 }

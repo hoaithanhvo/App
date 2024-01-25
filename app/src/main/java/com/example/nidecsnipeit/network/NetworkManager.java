@@ -8,7 +8,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.nidecsnipeit.model.CheckinItemModel;
 import com.example.nidecsnipeit.model.CheckoutItemModel;
 import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
+import com.example.nidecsnipeit.model.MaintenanceItemModel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -52,31 +54,6 @@ public class NetworkManager {
         return instance;
     }
 
-    //This method can be adapted to be used however needed for example swapping GET for POST, supplying a json object as the body instead of an empty new JsonObject();
-    public void getItemRequestByAssetTag(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/hardware/bytag/" + assetTag;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                listener.onResult(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.onErrorResult(error);
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headerMap = new HashMap<String, String>();
-                headerMap.put("Content-Type", "application/json");
-                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
-                return headerMap;
-            }
-        };
-        requestQueue.add(jsonObjectRequest);
-    }
-
     /**
      * Check in asset item
      * @param assetID
@@ -86,39 +63,7 @@ public class NetworkManager {
      */
     public void checkinItem(int assetID, CheckinItemModel checkinItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/" + assetID + "/checkin";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                listener.onResult(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.onErrorResult(error);
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headerMap = new HashMap<String, String>();
-                headerMap.put("Content-Type", "application/json");
-                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
-                return headerMap;
-            }
-
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("status", String.valueOf(checkinItem.status));
-                params.put("name", checkinItem.name);
-                params.put("note", checkinItem.note);
-                params.put("location", checkinItem.location);
-
-                return params;
-            }
-        };
-
-        requestQueue.add(jsonObjectRequest);
+        this.callAPI(url, Request.Method.POST, checkinItem, listener, errorListener);
     }
 
     /**
@@ -130,138 +75,42 @@ public class NetworkManager {
      */
     public void checkoutItem(int assetID, CheckoutItemModel checkoutItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/" + assetID + "/checkin";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                listener.onResult(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.onErrorResult(error);
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headerMap = new HashMap<String, String>();
-                headerMap.put("Content-Type", "application/json");
-                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
-                return headerMap;
-            }
-
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String> params = new HashMap<String, String>();
-
-                Field[] fields = checkoutItem.getClass().getDeclaredFields();
-
-                for (Field field: fields) {
-                    try {
-                        params.put(field.getName(), String.valueOf(field.get(checkoutItem)));
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                return params;
-            }
-        };
-
-        requestQueue.add(jsonObjectRequest);
+        this.callAPI(url, Request.Method.POST, checkoutItem, listener, errorListener);
     }
 
+    // =============================================
+    // ======= MAINTENANCES ========================
+    // =============================================
     public void getMaintenanceList(GetMaintenanceParamItemModel paramItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/maintenances/";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                listener.onResult(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.onErrorResult(error);
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headerMap = new HashMap<String, String>();
-                headerMap.put("Content-Type", "application/json");
-                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
-                return headerMap;
-            }
+        this.callAPI(url, Request.Method.GET, paramItem, listener, errorListener);
+    }
 
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String> params = new HashMap<String, String>();
+    public void updateMaintenanceItem(int maintenanceID, MaintenanceItemModel maintenanceItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/maintenances/" + maintenanceID;
+        this.callAPI(url, Request.Method.PUT, maintenanceItem, listener, errorListener);
+    }
 
-                Field[] fields = paramItem.getClass().getDeclaredFields();
+    public void createMaintenanceItem(MaintenanceItemModel maintenanceItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/maintenances/";
+        this.callAPI(url, Request.Method.POST, maintenanceItem, listener, errorListener);
+    }
 
-                for (Field field: fields) {
-                    try {
-                        params.put(field.getName(), String.valueOf(field.get(paramItem)));
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                return params;
-            }
-        };
-
-        requestQueue.add(jsonObjectRequest);
+    public void deleteMaintenanceItem(int maintenanceID, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/maintenances/" + maintenanceID;
+        this.callAPI(url, Request.Method.DELETE, null, listener, errorListener);
     }
 
 
-    public <T> void push(String Url, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                listener.onResult(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.onErrorResult(error);
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headerMap = new HashMap<String, String>();
-                headerMap.put("Content-Type", "application/json");
-                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
-                return headerMap;
-            }
-
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String> params = new HashMap<String, String>();
-
-                Field[] fields = myObject.getClass().getDeclaredFields();
-
-                for (Field field: fields) {
-                    try {
-                        params.put(field.getName(), String.valueOf(field.get(myObject)));
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                return params;
-            }
-        };
-
-        requestQueue.add(jsonObjectRequest);
-    }
 
     //This method can be adapted to be used however needed for example swapping GET for POST, supplying a json object as the body instead of an empty new JsonObject();
-    public void getItemRequestByAssetTagV2(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+    public void getItemRequestByAssetTag(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/bytag/" + assetTag;
-        this.get(url, null, listener, errorListener);
+        this.callAPI(url, Request.Method.GET, null, listener, errorListener);
     }
 
-    public <T> void get(String Url, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Url, null, new Response.Listener<JSONObject>() {
+    public <T> void callAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 listener.onResult(response);
