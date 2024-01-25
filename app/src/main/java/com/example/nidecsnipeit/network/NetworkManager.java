@@ -211,4 +211,93 @@ public class NetworkManager {
 
         requestQueue.add(jsonObjectRequest);
     }
+
+
+    public <T> void push(String Url, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                listener.onResult(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorListener.onErrorResult(error);
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headerMap = new HashMap<String, String>();
+                headerMap.put("Content-Type", "application/json");
+                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
+                return headerMap;
+            }
+
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+
+                Field[] fields = myObject.getClass().getDeclaredFields();
+
+                for (Field field: fields) {
+                    try {
+                        params.put(field.getName(), String.valueOf(field.get(myObject)));
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return params;
+            }
+        };
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    //This method can be adapted to be used however needed for example swapping GET for POST, supplying a json object as the body instead of an empty new JsonObject();
+    public void getItemRequestByAssetTagV2(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/hardware/bytag/" + assetTag;
+        this.get(url, null, listener, errorListener);
+    }
+
+    public <T> void get(String Url, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                listener.onResult(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorListener.onErrorResult(error);
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headerMap = new HashMap<String, String>();
+                headerMap.put("Content-Type", "application/json");
+                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
+                return headerMap;
+            }
+
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+
+                Field[] fields = myObject.getClass().getDeclaredFields();
+
+                for (Field field: fields) {
+                    try {
+                        params.put(field.getName(), String.valueOf(field.get(myObject)));
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return params;
+            }
+        };
+
+        requestQueue.add(jsonObjectRequest);
+    }
 }
