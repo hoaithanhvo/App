@@ -4,8 +4,8 @@
     <color name="status_bar">#51c08e</color>
     <color name="secondary">#23C16B</color>
     <color name="button_red">#811944</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
+    <color name="success">#198155</color>
+    <color name="error">#D3180C</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="disabled_bg_color">#FCFCFC</color>

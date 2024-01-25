@@ -3,6 +3,7 @@ package com.example.nidecsnipeit;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -17,9 +18,8 @@ import com.example.nidecsnipeit.model.ListItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
+import com.example.nidecsnipeit.utils.Common;
 import com.example.nidecsnipeit.utils.FullNameConvert;
-import com.example.nidecsnipeit.utils.ProgressDialogUtil;
-import com.example.nidecsnipeit.utils.QRScannerHelper;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -27,19 +27,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class DeviceDetails extends BaseActivity {
     CustomRecyclerAdapter adapter;
     private int mode;
+    private View rootView;
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_details);
+        rootView = findViewById(android.R.id.content);
+
         // Set up action bar
         setupActionBar("Device details");
 
@@ -124,9 +125,8 @@ public class DeviceDetails extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         // Hide ProgressDialog after view rendered
-        ProgressDialogUtil.hideProgressDialog();
+        Common.hideProgressDialog();
     }
 
     private void handleRequestBtn(JSONObject details ) throws JSONException {
@@ -138,14 +138,14 @@ public class DeviceDetails extends BaseActivity {
         String location_id = ((JSONObject)details.get("location")).get("id").toString();
 
         if (mode == Config.CHECK_IN_MODE) {
-            apiServices.checkinItem(id, new CheckinItemModel(status_id, name, notes, location_id), new NetworkResponseListener<JSONObject>() {
+            apiServices.checkinItem(id, new CheckinItemModel(5, name, notes, location_id), new NetworkResponseListener<JSONObject>() {
                 @Override
                 public void onResult(JSONObject object) {
                     try {
                         if (object.has("status") && object.get("status").equals("error")) {
-                            Toast.makeText(DeviceDetails.this, object.get("messages").toString(), Toast.LENGTH_SHORT).show();
+                            Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR);
                         } else {
-                            Toast.makeText(DeviceDetails.this, "Check-in successful", Toast.LENGTH_SHORT).show();
+                            Common.showCustomSnackBar(rootView, "Check-in successful", Common.SnackBarType.SUCCESS);
                         }
                     } catch (JSONException e) {
                         throw new RuntimeException(e);

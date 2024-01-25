@@ -1,23 +1,15 @@
 package com.example.nidecsnipeit;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,11 +18,8 @@ import android.widget.Toast;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
-import com.example.nidecsnipeit.utils.AlertDialogUtil;
-import com.example.nidecsnipeit.utils.ProgressDialogUtil;
+import com.example.nidecsnipeit.utils.Common;
 import com.example.nidecsnipeit.utils.QRScannerHelper;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,11 +27,14 @@ import org.json.JSONObject;
 public class SearchActivity extends BaseActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 1;
     private int searchMode;
+    private View rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        rootView = findViewById(android.R.id.content);
 
         Intent intent = getIntent();
         searchMode = intent.getIntExtra("mode", Config.CHECK_IN_MODE);
@@ -157,22 +149,22 @@ public class SearchActivity extends BaseActivity {
     public void redirectToDetailScreen(String qrResult) {
         NetworkManager apiServices = NetworkManager.getInstance(SearchActivity.this);
 
-        ProgressDialogUtil.showProgressDialog(this, "Searching...");
+        Common.showProgressDialog(this, "Searching...");
         apiServices.getItemRequestByAssetTag(qrResult, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 try {
                     if (object.has("status") && object.get("status").equals("error")) {
-                        ProgressDialogUtil.hideProgressDialog();
-                        Toast.makeText(SearchActivity.this, object.get("messages").toString(), Toast.LENGTH_LONG).show();
+                        Common.hideProgressDialog();
+                        Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR);
                     } else {
                         String statusDeploy = ((JSONObject)object.get("status_label")).get("status_meta").toString();
                         if (statusDeploy.equals("deployed") && searchMode == Config.CHECK_IN_MODE) {
-                            ProgressDialogUtil.hideProgressDialog();
-                            AlertDialogUtil.showAlertDialog(SearchActivity.this, null, "This asset is already checked in");
+                            Common.hideProgressDialog();
+                            Common.showAlertDialog(SearchActivity.this, null, "This asset is already checked in");
                         } else if (statusDeploy.equals("deployable") && searchMode == Config.CHECK_OUT_MODE) {
-                            ProgressDialogUtil.hideProgressDialog();
-                            AlertDialogUtil.showAlertDialog(SearchActivity.this, null, "This asset is already checked out");
+                            Common.hideProgressDialog();
+                            Common.showAlertDialog(SearchActivity.this, null, "This asset is already checked out");
                         } else {
                             Intent intent = new Intent(SearchActivity.this, DeviceDetails.class);
                             intent.putExtra("DEVICE_INFO", object.toString());
@@ -181,14 +173,14 @@ public class SearchActivity extends BaseActivity {
                         }
                     }
                 } catch (JSONException e) {
-                    ProgressDialogUtil.hideProgressDialog();
+                    Common.hideProgressDialog();
                     throw new RuntimeException(e);
                 }
             }
         }, new NetworkResponseErrorListener() {
             @Override
             public void onErrorResult(Exception error) {
-                ProgressDialogUtil.hideProgressDialog();
+                Common.hideProgressDialog();
                 Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
