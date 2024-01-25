@@ -141,10 +141,11 @@ public class DeviceDetails extends BaseActivity {
             apiServices.checkinItem(id, new CheckinItemModel(status_id, name, notes, location_id), new NetworkResponseListener<JSONObject>() {
                 @Override
                 public void onResult(JSONObject object) {
-                    Toast.makeText(DeviceDetails.this, "Check-in successful", Toast.LENGTH_SHORT).show();
                     try {
                         if (object.has("status") && object.get("status").equals("error")) {
                             Toast.makeText(DeviceDetails.this, object.get("messages").toString(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(DeviceDetails.this, "Check-in successful", Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         throw new RuntimeException(e);

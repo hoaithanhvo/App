@@ -166,9 +166,13 @@ public class SearchActivity extends BaseActivity {
                         ProgressDialogUtil.hideProgressDialog();
                         Toast.makeText(SearchActivity.this, object.get("messages").toString(), Toast.LENGTH_LONG).show();
                     } else {
-                        if (((JSONObject)object.get("status_label")).get("id").equals(1) && searchMode == Config.CHECK_IN_MODE) {
+                        String statusDeploy = ((JSONObject)object.get("status_label")).get("status_meta").toString();
+                        if (statusDeploy.equals("deployed") && searchMode == Config.CHECK_IN_MODE) {
                             ProgressDialogUtil.hideProgressDialog();
                             AlertDialogUtil.showAlertDialog(SearchActivity.this, null, "This asset is already checked in");
+                        } else if (statusDeploy.equals("deployable") && searchMode == Config.CHECK_OUT_MODE) {
+                            ProgressDialogUtil.hideProgressDialog();
+                            AlertDialogUtil.showAlertDialog(SearchActivity.this, null, "This asset is already checked out");
                         } else {
                             Intent intent = new Intent(SearchActivity.this, DeviceDetails.class);
                             intent.putExtra("DEVICE_INFO", object.toString());
@@ -180,7 +184,6 @@ public class SearchActivity extends BaseActivity {
                     ProgressDialogUtil.hideProgressDialog();
                     throw new RuntimeException(e);
                 }
-
             }
         }, new NetworkResponseErrorListener() {
             @Override
