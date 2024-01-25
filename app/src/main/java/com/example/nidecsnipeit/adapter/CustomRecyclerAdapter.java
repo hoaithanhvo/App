@@ -110,9 +110,11 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 // Add logic to set up data for the dropdown
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(),
                     android.R.layout.simple_dropdown_item_1line, currentItem.getDropdownItems());
+                int selectedIndex = findSelectedIndex(currentItem.getDropdownItems(), currentItem.getValue());
                 holder.dropdownView.setGravity(Gravity.CENTER_VERTICAL);
                 holder.dropdownView.setAdapter(adapter);
                 holder.dropdownView.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+                holder.dropdownView.setSelection(selectedIndex);
                 holder.dropdownView.setVisibility(View.VISIBLE);
                 ViewGroup.LayoutParams params = holder.dropdownView.getLayoutParams();
                 params.height = heightPx;
@@ -177,8 +179,9 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     }
 
     private SpannableString addIconToText(Context context, String text, Drawable icon) {
-        SpannableString spannableString = new SpannableString(" " + text);
+        SpannableString spannableString = new SpannableString(text);
         if (icon != null) {
+            spannableString = new SpannableString(" " + text);
             icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
             ImageSpan imageSpan = new ImageSpan(icon, ImageSpan.ALIGN_BOTTOM);
             spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
