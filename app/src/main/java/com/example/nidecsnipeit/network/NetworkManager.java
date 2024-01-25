@@ -7,7 +7,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nidecsnipeit.model.CheckinItemModel;
 import com.example.nidecsnipeit.model.CheckoutItemModel;
+import com.example.nidecsnipeit.model.GetCategoryParamItemModel;
+import com.example.nidecsnipeit.model.GetLocationParamItemModel;
 import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
+import com.example.nidecsnipeit.model.GetManufacturerParamItemModel;
+import com.example.nidecsnipeit.model.GetModelParamItemModel;
+import com.example.nidecsnipeit.model.GetSupplierParamItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
 
 import org.json.JSONException;
@@ -53,6 +58,10 @@ public class NetworkManager {
         }
         return instance;
     }
+
+    // =============================================
+    // ======= Checkin/Checkout ====================
+    // =============================================
 
     /**
      * Check in asset item
@@ -101,14 +110,42 @@ public class NetworkManager {
         this.callAPI(url, Request.Method.DELETE, null, listener, errorListener);
     }
 
-
-
-    //This method can be adapted to be used however needed for example swapping GET for POST, supplying a json object as the body instead of an empty new JsonObject();
+    // =============================================
+    // ======= Supplements ========================
+    // =============================================
     public void getItemRequestByAssetTag(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/bytag/" + assetTag;
         this.callAPI(url, Request.Method.GET, null, listener, errorListener);
     }
 
+    public void getLocationsList(GetLocationParamItemModel locationParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/locations";
+        this.callAPI(url, Request.Method.GET, locationParamItem, listener, errorListener);
+    }
+
+    public void getManufacturerList(GetManufacturerParamItemModel manufacturerParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/manufacturers";
+        this.callAPI(url, Request.Method.GET, manufacturerParamItem, listener, errorListener);
+    }
+
+    public void getSupplierList(GetSupplierParamItemModel supplierParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/suppliers";
+        this.callAPI(url, Request.Method.GET, supplierParamItem, listener, errorListener);
+    }
+
+    public void getCategoryList(GetCategoryParamItemModel categoryParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/categories";
+        this.callAPI(url, Request.Method.GET, categoryParamItem, listener, errorListener);
+    }
+
+    public void getModelList(GetModelParamItemModel modelParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/models";
+        this.callAPI(url, Request.Method.GET, modelParamItem, listener, errorListener);
+    }
+
+    // =============================================
+    // ======= Generic method ======================
+    // =============================================
     public <T> void callAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, null, new Response.Listener<JSONObject>() {
             @Override
