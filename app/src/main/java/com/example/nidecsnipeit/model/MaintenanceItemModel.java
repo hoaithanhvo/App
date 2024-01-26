@@ -4,9 +4,9 @@ public class MaintenanceItemModel {
     private String title;
     private String dateTitle;
 
-    public MaintenanceItemModel(String title, String contentTitle) {
+    public MaintenanceItemModel(String title, String dateTitle) {
         this.title = title;
-        this.dateTitle = contentTitle;
+        this.dateTitle = dateTitle;
     }
 
     public String getTitle() {

@@ -162,6 +162,9 @@ public class DeviceDetails extends BaseActivity {
 
                 }
             });
+        } else if (mode == Config.MAINTENANCE_MODE) {
+            Intent intent = new Intent(DeviceDetails.this, MaintenanceListActivity.class);
+            startActivity(intent);
         }
     }
 }

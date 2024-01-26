@@ -24,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:padding="8dp"
         android:textIsSelectable="true"/>
 
     <!-- Edit Text (for Mode.EDIT_TEXT) -->
@@ -35,7 +34,6 @@
         android:inputType="text"
         android:visibility="gone"
         android:autofillHints="false"
-        android:padding="8dp"
         tools:ignore="LabelFor" />
 
     <LinearLayout

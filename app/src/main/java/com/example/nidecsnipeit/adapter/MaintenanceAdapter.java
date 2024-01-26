@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.R;
@@ -47,7 +48,8 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
         dataList.add(new ListItemModel("Title", "valueField"));
         dataList.add(new ListItemModel("Supplier", "Apple"));
         CustomRecyclerAdapter customAdapter = new CustomRecyclerAdapter(mInflater.getContext(), dataList, holder.contentView);
-        holder.setCustomAdapter(customAdapter);
+        holder.contentView.setLayoutManager(new LinearLayoutManager(mInflater.getContext()));
+        holder.contentView.setAdapter(customAdapter);
 
         holder.buttonEditView.setOnClickListener(v -> {
 

@@ -13,4 +13,5 @@
     <string name="search">SEARCH</string>
     <string name="device_informations">Device informations</string>
     <string name="submit">Submit</string>
+    <string name="add_new_maintenance">Add new maintenance</string>
 </resources>

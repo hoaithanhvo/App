@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -24,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,7 +74,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         holder.titleTextView.setPadding(8, 8, 8, 8);
         holder.titleTextView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.rounded_title_bg));
 
-        int heightInDp = 42;
+        int heightInDp = 32;
         int heightPx = Common.convertDpToPixel(heightInDp, holder.itemView.getContext());
         holder.valueTextView.setVisibility(View.GONE);
         holder.editTextView.setVisibility(View.GONE);
@@ -80,7 +82,8 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         holder.qrScannerView.setVisibility(View.GONE);
         switch (currentItem.getMode()) {
             case TEXT:
-                holder.valueTextView.setTextSize(16);
+                holder.valueTextView.setTextSize(14);
+                holder.valueTextView.setPadding(10, 8, 10, 8);
                 holder.valueTextView.setMinHeight(heightPx);
                 holder.valueTextView.setGravity(Gravity.CENTER_VERTICAL);
                 holder.valueTextView.setText(addIconToText(holder.itemView.getContext(), currentItem.getValue(), currentItem.getIcon()));
@@ -89,6 +92,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
             case EDIT_TEXT:
                 holder.editTextView.setTextSize(16);
                 holder.editTextView.setMinHeight(heightPx);
+                holder.valueTextView.setPadding(10, 8, 10, 8);
                 holder.editTextView.setInputType(InputType.TYPE_CLASS_TEXT);
                 holder.editTextView.setGravity(Gravity.CENTER_VERTICAL);
                 holder.editTextView.setText(currentItem.getValue());
@@ -183,7 +187,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         if (icon != null) {
             spannableString = new SpannableString(" " + text);
             icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-            ImageSpan imageSpan = new ImageSpan(icon, ImageSpan.ALIGN_BOTTOM);
+            ImageSpan imageSpan = new ImageSpan(icon, ImageSpan.ALIGN_BASELINE);
             spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return spannableString;
