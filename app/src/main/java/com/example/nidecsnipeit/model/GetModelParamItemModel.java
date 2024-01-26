@@ -1,20 +1,18 @@
 package com.example.nidecsnipeit.model;
 
-public class GetMaintenanceParamItemModel {
+public class GetModelParamItemModel {
     public int limit;
     public int offset;
     public String search;
     public String sort;
     public String order;
-    public String asset_id;
 
-    public GetMaintenanceParamItemModel(int limit, int offset, String search, String sort, String order, String assetID) {
+    public GetModelParamItemModel(int limit, int offset, String search, String sort, String order) {
         this.limit = limit;
         this.offset = offset;
         this.search = search;
         this.sort = sort;
         this.order = order;
-        this.asset_id = assetID;
     }
 
     public int getLimit() {
@@ -55,13 +53,5 @@ public class GetMaintenanceParamItemModel {
 
     public void setOrder(String order) {
         this.order = order;
-    }
-
-    public String getAssetID() {
-        return asset_id;
-    }
-
-    public void setAssetID(String asset_id) {
-        this.asset_id = asset_id;
     }
 }
