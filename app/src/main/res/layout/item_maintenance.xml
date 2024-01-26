@@ -1,73 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/shadow_bg"
-    android:layout_marginTop="@dimen/margin_screen"
-    android:layout_marginHorizontal="@dimen/margin_screen">
-
-    <!-- Title -->
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/half_margin_screen"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary"
-        android:orientation="horizontal"
-        android:paddingVertical="4dp">
-        <TextView
-            android:id="@+id/text_title_item"
-            android:layout_width="0dp"
+        android:orientation="vertical"
+        android:background="@color/gray_lightest">
+        <!-- Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="Maintenance"
-            android:textColor="@color/white"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"/>
+            android:background="@color/primary"
+            android:orientation="horizontal"
+            android:paddingVertical="4dp">
+            <TextView
+                android:id="@+id/text_title_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/half_margin_screen"/>
 
-        <TextView
-            android:id="@+id/date_title_item"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/date_title_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="@dimen/half_margin_screen"/>
+        </LinearLayout>
+
+        <!-- Content -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/content_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/white"
-            android:text="2024/01/28"
-            android:layout_marginHorizontal="6dp"/>
+            android:backgroundTint="@color/black"
+            />
+
+        <!-- Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_edit_item"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="6dp"
+                android:backgroundTint="@color/button_red"
+                android:text="@string/edit"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:id="@+id/button_delete_item"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="6dp"
+                android:backgroundTint="#72777A"
+                android:text="@string/delete"
+                tools:ignore="ButtonStyle" />
+        </LinearLayout>
     </LinearLayout>
 
-
-    <!-- Content -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/content_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="6dp"
-        android:backgroundTint="@color/black"/>
-
-
-    <!-- Button -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_edit_item"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="6dp"
-            android:backgroundTint="@color/primary"
-            android:text="Edit"/>
-
-        <Button
-            android:id="@+id/button_delete_item"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="6dp"
-            android:backgroundTint="@color/button_red"
-            android:text="Delete" />
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -3,30 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/margin_screen"
     tools:context=".MaintenanceListActivity">
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_maintenance"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"/>
-    </ScrollView>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/half_margin_screen"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"/>
 
-
-    <ImageButton
-        android:id="@+id/submit"
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_screen"
-        android:src="@drawable/ic_add_maintenance"
+        android:layout_marginBottom="@dimen/margin_screen"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:contentDescription="@string/add_new_maintenance" />
+        app:cardCornerRadius="30dp"
+        android:background="@color/button_red"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <ImageButton
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:src="@drawable/ic_add_maintenance"
+            android:background="@color/button_red"
+            android:contentDescription="@string/add_new_maintenance"
+            android:foreground="?android:attr/selectableItemBackground"
+            />
+    </androidx.cardview.widget.CardView>
+
+
 
 
 </RelativeLayout>

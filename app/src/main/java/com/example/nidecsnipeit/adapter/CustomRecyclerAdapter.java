@@ -72,7 +72,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
         holder.titleTextView.setText(currentItem.getTitle());
         holder.titleTextView.setPadding(8, 8, 8, 8);
-        holder.titleTextView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.rounded_title_bg));
+        holder.titleTextView.setBackgroundColor(mInflater.getContext().getColor(currentItem.getTitleColor()));
 
         int heightInDp = 32;
         int heightPx = Common.convertDpToPixel(heightInDp, holder.itemView.getContext());

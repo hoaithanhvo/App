@@ -13,6 +13,10 @@ public class FullNameConvert {
         keyFullNameMap.put("location", "Location");
         keyFullNameMap.put("assigned_to", "Assigned To");
         keyFullNameMap.put("notes", "Notes");
+
+        // Maintenance screen
+        keyFullNameMap.put("title", "Title");
+        keyFullNameMap.put("supplier", "Supplier");
     }
 
     public static String getFullName(String key) {
@@ -21,5 +25,14 @@ public class FullNameConvert {
             return fullName;
         }
         return key.replace("_", " ").toUpperCase();
+    }
+
+    public static String getKeyByFullName(String fullName) {
+        for (Map.Entry<String, String> entry : keyFullNameMap.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase(fullName)) {
+                return entry.getKey();
+            }
+        }
+        return fullName.toLowerCase().replace(" ", "_");
     }
 }

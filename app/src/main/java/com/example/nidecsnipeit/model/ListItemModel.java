@@ -1,10 +1,14 @@
 package com.example.nidecsnipeit.model;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageButton;
 
+import com.example.nidecsnipeit.R;
+
 public class ListItemModel {
     private final String title;
+    private int titleColor = R.color.secondary;
     private String value;
     private String[] dropdownItems;
     private final Mode mode;
@@ -16,6 +20,15 @@ public class ListItemModel {
         this.mode = Mode.TEXT;
         this.dropdownItems = new String[0];
         this.icon = null;
+    }
+
+    public ListItemModel(String title, int titleColor, String value) {
+        this.title = title;
+        this.value = value;
+        this.mode = Mode.TEXT;
+        this.dropdownItems = new String[0];
+        this.icon = null;
+        this.titleColor = titleColor;
     }
     public ListItemModel(String title, String value, Mode mode) {
         this.title = title;
@@ -42,6 +55,9 @@ public class ListItemModel {
 
     public String getTitle() {
         return this.title;
+    }
+    public int getTitleColor() {
+        return this.titleColor;
     }
     public Drawable getIcon() {
         return this.icon;

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nidecsnipeit.adapter.CustomRecyclerAdapter;
 import com.example.nidecsnipeit.model.CheckinItemModel;
 import com.example.nidecsnipeit.model.DetailFieldModel;
+import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
 import com.example.nidecsnipeit.model.ListItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
@@ -136,9 +137,11 @@ public class DeviceDetails extends BaseActivity {
         String name = details.get("name").toString();
         String notes = details.get("notes").toString();
         String location_id = ((JSONObject)details.get("location")).get("id").toString();
+        String rtd_location_id = ((JSONObject)details.get("rtd_location")).get("id").toString();
 
         if (mode == Config.CHECK_IN_MODE) {
-            apiServices.checkinItem(id, new CheckinItemModel(5, name, notes, location_id), new NetworkResponseListener<JSONObject>() {
+            Common.showProgressDialog(DeviceDetails.this, "Checking...");
+            apiServices.checkinItem(id, new CheckinItemModel(status_id, name, notes, rtd_location_id), new NetworkResponseListener<JSONObject>() {
                 @Override
                 public void onResult(JSONObject object) {
                     try {
@@ -147,6 +150,7 @@ public class DeviceDetails extends BaseActivity {
                         } else {
                             Common.showCustomSnackBar(rootView, "Check-in successful", Common.SnackBarType.SUCCESS);
                         }
+                        Common.hideProgressDialog();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -164,6 +168,7 @@ public class DeviceDetails extends BaseActivity {
             });
         } else if (mode == Config.MAINTENANCE_MODE) {
             Intent intent = new Intent(DeviceDetails.this, MaintenanceListActivity.class);
+            intent.putExtra("ASSET_ID", id);
             startActivity(intent);
         }
     }

@@ -3,29 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".DeviceDetails">
-
-    <ImageView
-        android:id="@+id/detail_img"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_marginTop="@dimen/margin_screen"
-        android:layout_marginBottom="8dp"
-        android:layout_gravity="center"
-        android:contentDescription="@string/device_informations"/>
+    tools:context=".MaintenanceAddActivity"
+    android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recycler_maintenance_add"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginHorizontal="@dimen/half_margin_screen"
+        android:layout_margin="@dimen/half_margin_screen"
         android:clipToPadding="false"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"/>
+
+    <CalendarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/check_in_detail"
+        android:id="@+id/maintenance_add_btn"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="bottom"
@@ -33,4 +28,5 @@
         android:textColor="@color/white"
         android:layout_marginHorizontal="@dimen/margin_screen"
         />
+
 </LinearLayout>

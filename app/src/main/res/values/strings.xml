@@ -14,4 +14,6 @@
     <string name="device_informations">Device informations</string>
     <string name="submit">Submit</string>
     <string name="add_new_maintenance">Add new maintenance</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

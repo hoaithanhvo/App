@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#23C16B</color>
+    <color name="primary">#23a56f</color>
     <color name="status_bar">#51c08e</color>
     <color name="secondary">#23C16B</color>
     <color name="button_red">#811944</color>
     <color name="success">#198155</color>
     <color name="error">#D3180C</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="green_lightest">#ECFCE5</color>
+    <color name="blue_lightest">#dff5f8</color>
+    <color name="gray_lightest">#F7F9FA</color>
+    <color name="title_secondary">#23a56f</color>
     <color name="disabled_bg_color">#FCFCFC</color>
     <color name="disabled_text_color">#CACACA</color>
     <color name="black">#FF000000</color>
