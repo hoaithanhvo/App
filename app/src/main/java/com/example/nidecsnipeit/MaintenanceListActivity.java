@@ -47,20 +47,20 @@ public class MaintenanceListActivity extends BaseActivity {
 
                         for (int i = 0; i < objectArray.length(); i++) {
                             JSONObject item = objectArray.getJSONObject(i);
-                            String asset_maintenance_type = item.get("asset_maintenance_type").toString();
+                            String asset_maintenance_type = item.getString("asset_maintenance_type");
                             String start_date;
                             if (((JSONObject) item.get("start_date")).has("date")) {
-                                start_date = ((JSONObject) item.get("start_date")).get("date").toString();
+                                start_date = ((JSONObject) item.get("start_date")).getString("date");
                             } else {
-                                start_date = ((JSONObject) item.get("start_date")).get("datetime").toString();
+                                start_date = ((JSONObject) item.get("start_date")).getString("datetime");
                             }
 
                             String title = item.get("title").toString();
-                            int supplier_id = (int) ((JSONObject) item.get("supplier")).get("id");
-                            String supplier_name = ((JSONObject) item.get("supplier")).get("name").toString();
-                            float cost = (float) item.get("cost");
-                            String notes = item.get("notes").toString();
-                            String completion_date = item.get("completion_date").toString();
+                            int supplier_id = ((JSONObject) item.get("supplier")).getInt("id");
+                            String supplier_name = ((JSONObject) item.get("supplier")).getString("name");
+                            Float cost = item.getString("cost").equals("null") ? null : Float.parseFloat(item.getString("cost"));
+                            String notes = item.getString("notes").equals("null") ? null : item.getString("notes");
+                            String completion_date = item.getString("completion_date").equals("null") ? null : item.getString("completion_date");
 
                             dataList.add(new MaintenanceItemModel(title, asset_id, supplier_id, supplier_name, null, cost, notes, asset_maintenance_type, start_date, completion_date));
                         }

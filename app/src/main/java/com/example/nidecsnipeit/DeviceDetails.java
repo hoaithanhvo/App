@@ -110,9 +110,6 @@ public class DeviceDetails extends BaseActivity {
             case Config.MAINTENANCE_MODE:
                 requestBtn.setText("MAINTENANCES");
                 break;
-            default:
-                setupActionBar("CHECK-IN");
-                break;
         }
         requestBtn.setOnClickListener(v -> {
             try {

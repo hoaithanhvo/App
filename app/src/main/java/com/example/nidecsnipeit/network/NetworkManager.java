@@ -128,9 +128,9 @@ public class NetworkManager {
         this.getAPI(url, Request.Method.GET, manufacturerParamItem, listener, errorListener);
     }
 
-    public void getSupplierList(GetSupplierParamItemModel supplierParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+    public void getSupplierList(final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/suppliers";
-        this.getAPI(url, Request.Method.GET, supplierParamItem, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, null, listener, errorListener);
     }
 
     public void getCategoryList(GetCategoryParamItemModel categoryParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
@@ -191,7 +191,9 @@ public class NetworkManager {
         requestQueue.add(jsonObjectRequest);
     }
     public <T> void getAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        Url += this.getQueryParams(myObject);
+        if (myObject != null) {
+            Url += this.getQueryParams(myObject);
+        }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

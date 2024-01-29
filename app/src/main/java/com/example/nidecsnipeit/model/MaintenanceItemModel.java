@@ -1,18 +1,20 @@
 package com.example.nidecsnipeit.model;
 
-public class MaintenanceItemModel {
+import java.io.Serializable;
+
+public class MaintenanceItemModel implements Serializable {
     public String title;
     public int asset_id;
     public int supplier_id;
     public String supplier_name;
     public Boolean is_warranty;
-    public float cost;
+    public Float cost;
     public String notes;
     public String asset_maintenance_type;
     public String start_date;
     public String completion_date;
 
-    public MaintenanceItemModel(String title, int asset_id, int supplier_id, String supplier_name, Boolean is_warranty, float cost, String notes, String asset_maintenance_type, String start_date, String completion_date) {
+    public MaintenanceItemModel(String title, int asset_id, int supplier_id, String supplier_name, Boolean is_warranty, Float cost, String notes, String asset_maintenance_type, String start_date, String completion_date) {
         this.title = title;
         this.asset_id = asset_id;
         this.supplier_id = supplier_id;
@@ -61,11 +63,11 @@ public class MaintenanceItemModel {
         this.is_warranty = is_warranty;
     }
 
-    public float getCost() {
+    public Float getCost() {
         return cost;
     }
 
-    public void setCost(float cost) {
+    public void setCost(Float cost) {
         this.cost = cost;
     }
 

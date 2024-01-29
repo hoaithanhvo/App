@@ -15,6 +15,7 @@ public class FullNameConvert {
         keyFullNameMap.put("notes", "Notes");
 
         // Maintenance screen
+        keyFullNameMap.put("asset_maintenance_type", "Maintenance type");
         keyFullNameMap.put("title", "Title");
         keyFullNameMap.put("supplier", "Supplier");
     }

@@ -6,11 +6,13 @@ import android.widget.ImageButton;
 
 import com.example.nidecsnipeit.R;
 
+import java.util.List;
+
 public class ListItemModel {
     private final String title;
     private int titleColor = R.color.secondary;
     private String value;
-    private String[] dropdownItems;
+    private List<SpinnerItemModel> dropdownItems;
     private final Mode mode;
     private final Drawable icon;
 
@@ -18,7 +20,6 @@ public class ListItemModel {
         this.title = title;
         this.value = value;
         this.mode = Mode.TEXT;
-        this.dropdownItems = new String[0];
         this.icon = null;
     }
 
@@ -26,7 +27,6 @@ public class ListItemModel {
         this.title = title;
         this.value = value;
         this.mode = Mode.TEXT;
-        this.dropdownItems = new String[0];
         this.icon = null;
         this.titleColor = titleColor;
     }
@@ -34,7 +34,6 @@ public class ListItemModel {
         this.title = title;
         this.value = value;
         this.mode = mode;
-        this.dropdownItems = new String[0];
         this.icon = null;
     }
 
@@ -42,12 +41,11 @@ public class ListItemModel {
         this.title = title;
         this.value = value;
         this.mode = mode;
-        this.dropdownItems = new String[0];
         this.icon = icon;
     }
-    public ListItemModel(String title, Mode mode, String[] dropdownItems) {
+    public ListItemModel(String title, String value, Mode mode, List<SpinnerItemModel> dropdownItems) {
         this.title = title;
-        this.value = null;
+        this.value = value;
         this.mode = mode;
         this.dropdownItems = dropdownItems;
         this.icon = null;
@@ -71,7 +69,7 @@ public class ListItemModel {
         this.value = value;
     }
 
-    public String[] getDropdownItems() {
+    public List<SpinnerItemModel> getDropdownItems() {
         return this.dropdownItems;
     }
 

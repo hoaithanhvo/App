@@ -182,8 +182,14 @@ public class SearchActivity extends BaseActivity {
         }, new NetworkResponseErrorListener() {
             @Override
             public void onErrorResult(Exception error) {
+
                 Common.hideProgressDialog();
-                Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR);
+
+                if (error.getMessage() == null) {
+                    Common.showCustomSnackBar(rootView, "Failed to connect to server", Common.SnackBarType.ERROR);
+                } else {
+                    Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR);
+                }
             }
         });
     }

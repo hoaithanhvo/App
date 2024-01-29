@@ -3,6 +3,7 @@ package com.example.nidecsnipeit;
 import android.app.Application;
 
 import com.example.nidecsnipeit.model.DetailFieldModel;
+import com.example.nidecsnipeit.model.ListItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,8 @@ public class MyApplication extends Application {
         detailScreenFields.add(new DetailFieldModel("notes"));
 
         // Maintenance screen
-        maintenanceScreenFields.add(new DetailFieldModel("title"));
-        maintenanceScreenFields.add(new DetailFieldModel("supplier"));
+        maintenanceScreenFields.add(new DetailFieldModel("title", ListItemModel.Mode.EDIT_TEXT));
+        maintenanceScreenFields.add(new DetailFieldModel("supplier", ListItemModel.Mode.DROPDOWN, true));
 
     }
 
@@ -34,6 +35,14 @@ public class MyApplication extends Application {
     }
     public List<DetailFieldModel> getMaintenanceScreenFields() {
         return maintenanceScreenFields;
+    }
+    public boolean isRequiredIdDropdown(String fieldName) {
+        for (DetailFieldModel field : maintenanceScreenFields) {
+            if (field.getName().equals(fieldName) && field.getRequiredId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

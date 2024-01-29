@@ -12,12 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nidecsnipeit.DeviceDetails;
-import com.example.nidecsnipeit.MainActivity;
 import com.example.nidecsnipeit.MaintenanceAddActivity;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.model.ListItemModel;
-import com.example.nidecsnipeit.model.MaintenanceAdapterListener;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
 
 import java.util.ArrayList;
@@ -56,6 +53,7 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
 
         holder.buttonEditView.setOnClickListener(v -> {
             Intent intent = new Intent(mInflater.getContext(), MaintenanceAddActivity.class);
+            intent.putExtra("MAINTENANCE_INFO", currentItem);
             mInflater.getContext().startActivity(intent);
         });
 

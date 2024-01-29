@@ -2,6 +2,7 @@ package com.example.nidecsnipeit.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -30,9 +31,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.CaptureActivityPortrait;
+import com.example.nidecsnipeit.MyApplication;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.model.ListItemModel;
+import com.example.nidecsnipeit.model.SpinnerItemModel;
 import com.example.nidecsnipeit.utils.Common;
+import com.example.nidecsnipeit.utils.FullNameConvert;
 import com.example.nidecsnipeit.utils.QRScannerHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -48,13 +52,21 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     private final LayoutInflater mInflater;
     private final RecyclerView recyclerView;
     private int currentPosition;
-
+    private MyApplication MyApp;
     // Data is passed into the constructor
     public CustomRecyclerAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.recyclerView = recyclerView;
+        this.MyApp = (MyApplication) context.getApplicationContext();
     }
+
+//    public CustomRecyclerAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView, MyApplication MyApp) {
+//        this.mInflater = LayoutInflater.from(context);
+//        this.mData = data;
+//        this.recyclerView = recyclerView;
+//        this.MyApp = MyApp;
+//    }
 
     // Inflates the row layout from xml when needed
     @NonNull
@@ -112,7 +124,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 break;
             case DROPDOWN:
                 // Add logic to set up data for the dropdown
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(),
+                ArrayAdapter<SpinnerItemModel> adapter = new ArrayAdapter<>(holder.itemView.getContext(),
                     android.R.layout.simple_dropdown_item_1line, currentItem.getDropdownItems());
                 int selectedIndex = findSelectedIndex(currentItem.getDropdownItems(), currentItem.getValue());
                 holder.dropdownView.setGravity(Gravity.CENTER_VERTICAL);
@@ -176,7 +188,12 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         Map<String, String> valuesMap = new HashMap<>();
 
         for (ListItemModel item : mData) {
-            valuesMap.put(item.getTitle(), item.getValue());
+            String keyTitle = FullNameConvert.getKeyByFullName(item.getTitle());
+            if (item.getMode() == ListItemModel.Mode.DROPDOWN && MyApp.isRequiredIdDropdown(keyTitle)) {
+                valuesMap.put(keyTitle, this.getIdSpinnerItemByName(item.getDropdownItems(), item.getValue()));
+            } else {
+                valuesMap.put(keyTitle, item.getValue());
+            }
         }
 
         return valuesMap;
@@ -197,7 +214,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         ListItemModel listItem = mData.get(position);
 
         if (listItem.getMode() == ListItemModel.Mode.DROPDOWN) {
-            String[] dropdownItems = listItem.getDropdownItems();
+            List<SpinnerItemModel> dropdownItems = listItem.getDropdownItems();
 
             // Find index selectedValue in dropdownItems list
             int selectedIndex = findSelectedIndex(dropdownItems, selectedValue);
@@ -216,11 +233,13 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         }
     }
 
-    private int findSelectedIndex(String[] array, String targetValue) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equals(targetValue)) {
-                return i;
+    private int findSelectedIndex(List<SpinnerItemModel> itemList, String targetValue) {
+        int index = 0;
+        for (SpinnerItemModel item : itemList) {
+            if (item.getName().equals(targetValue)) {
+                return index;
             }
+            index ++;
         }
         return -1;
     }
@@ -241,5 +260,14 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
     public int getCurrentPosition () {
         return this.currentPosition;
+    }
+
+    public String getIdSpinnerItemByName(List<SpinnerItemModel> spinnerItems, String name) {
+        for (SpinnerItemModel item : spinnerItems) {
+            if (item.getName().equals(name)) {
+                return item.getId();
+            }
+        }
+        return "-1";
     }
 }
