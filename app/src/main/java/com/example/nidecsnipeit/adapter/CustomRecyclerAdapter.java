@@ -52,7 +52,8 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     private final LayoutInflater mInflater;
     private final RecyclerView recyclerView;
     private int currentPosition;
-    private MyApplication MyApp;
+    private final MyApplication MyApp;
+
     // Data is passed into the constructor
     public CustomRecyclerAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
@@ -60,13 +61,6 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         this.recyclerView = recyclerView;
         this.MyApp = (MyApplication) context.getApplicationContext();
     }
-
-//    public CustomRecyclerAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView, MyApplication MyApp) {
-//        this.mInflater = LayoutInflater.from(context);
-//        this.mData = data;
-//        this.recyclerView = recyclerView;
-//        this.MyApp = MyApp;
-//    }
 
     // Inflates the row layout from xml when needed
     @NonNull
@@ -125,21 +119,19 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
             case DROPDOWN:
                 // Add logic to set up data for the dropdown
                 ArrayAdapter<SpinnerItemModel> adapter = new ArrayAdapter<>(holder.itemView.getContext(),
-                    android.R.layout.simple_dropdown_item_1line, currentItem.getDropdownItems());
+                        R.layout.custom_spinner_item, currentItem.getDropdownItems());
+
                 int selectedIndex = findSelectedIndex(currentItem.getDropdownItems(), currentItem.getValue());
                 holder.dropdownView.setGravity(Gravity.CENTER_VERTICAL);
                 holder.dropdownView.setAdapter(adapter);
                 holder.dropdownView.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
                 holder.dropdownView.setSelection(selectedIndex);
                 holder.dropdownView.setVisibility(View.VISIBLE);
-                ViewGroup.LayoutParams params = holder.dropdownView.getLayoutParams();
-                params.height = heightPx;
-                holder.dropdownView.setLayoutParams(params);
-
                 holder.dropdownView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        String selectedValue = parentView.getItemAtPosition(position).toString();
+                        SpinnerItemModel selectedModel = (SpinnerItemModel) parentView.getItemAtPosition(position);
+                        String selectedValue = selectedModel.getName();
                         currentItem.setValue(selectedValue);
                     }
 

@@ -42,7 +42,7 @@ public class MaintenanceAddActivity extends BaseActivity {
         setContentView(R.layout.activity_maintenance_add);
 
         MyApplication MyApp = (MyApplication) getApplication();
-        NetworkManager apiServices = NetworkManager.getInstance();
+        NetworkManager apiServices = NetworkManager.getInstance(this);
 
         List<SpinnerItemModel> maintenanceTypes = new ArrayList<>(); // {"Maintenance", "Repair", "PAT Test", "Upgrade", "Hardware Support", "Software Support"};
         maintenanceTypes.add(new SpinnerItemModel("0", "Maintenance"));
@@ -92,6 +92,8 @@ public class MaintenanceAddActivity extends BaseActivity {
             }
         } else {
             // Set up action bar
+            dataList.add(new ListItemModel("Maintenance type", "Upgrade", ListItemModel.Mode.DROPDOWN, maintenanceTypes));
+            dataList.add(new ListItemModel("Title", "", ListItemModel.Mode.EDIT_TEXT));
             setupActionBar("Add maintenance");
             maintenanceButton.setText("SAVE MAINTENANCE");
         }
