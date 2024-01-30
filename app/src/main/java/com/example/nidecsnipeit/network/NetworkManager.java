@@ -27,9 +27,8 @@ public class NetworkManager {
     private static final String TAG = "NetworkManager";
     private static NetworkManager instance = null;
 
-    private String URL = "http://192.168.0.98:4402/api/v1";
-    private final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZTY3NzIwNzQ0ZTkxOTU3MjYzZWEzMmJkZGI4M2MxZTQwN2NlMDYwOWUzNzYzMTQ1NTUxMjZhOTNiNWJkZjY1YTViMWJiNjM1YzRmMGUzYjIiLCJpYXQiOjE3MDYwNzYzMTAuMjEzMDY2LCJuYmYiOjE3MDYwNzYzMTAuMjEzMDcyLCJleHAiOjIxNzk0NjE5MTAuMjAxNzAyLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.ObzNIS-Ah31t80YtYLueYVmRgT1uycJu7J1L_e6QEXu85s59bSjhrrp7964Ln6AZOz-H5-Xq581CL39PDeaYtb5MeScUsRvTBAYRYJalBF33nCwwSBk6gFUFk-OwnqeyPolzPVdOirU_ZlzSl8rsWCB0B_B9UC2nfTJblG28H9rmkYvH1AIhL_yjBP-5ksqtBYmXbU5Yeg7vIIa4gHREqV56uX69zXxeFXfp3DfYGjWkPtwWuoqOQjlkSCBFEhdK53ZiZQvalYCRG5k9uNfbomz3g9xzrh70L3GEUVI9hjJTOg_zw8bIn5Sn6h5_d9guXR1Ocn0vVx5pDUgiAKoKzxEkrHLytYr9pQ-mKHvbbm_FZdXNZKZDSdUBebmUP0WW2_5Yqh91YA0HqixoxQhrdV5JA42aMxW5HCVjW0o2sHul0yuREtONslvrvESCompMB_q5fqxxtwjfVvlT_6DlSZdE4qjdDVqHzr-NCu0V6eDVkGzCLPKEwdEJqqiFIT5FupX07j576InuWME4fh9mtK6zUQvBwKbEIvsKDSjKmRZgy1tfRwvV1LkzSYVqwrD2zYHdZWPpRNgwOSEA43qv5FnRhG4UaHRIFizbqwxoC7jlJ21kSsM_sCQtcB20zUShxzzNVjs-FLdjzbeC9ArO3n0Bldy7DwiUeb_7YUjspCQ";
-
+    private String URL = "http://192.168.0.190:4402/api/v1";
+    private final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmE2MmIyNDc1MDk5OWVhYzQxMTZkY2U4Yzc2MjQxODIzZmIxODRiZjgzZDkxM2VhOWViYTNkYzBhYWU4ZTkxYTczOGE0NDU2NThhYjVhMjQiLCJpYXQiOjE3MDY1ODM1MjEuOTk3MzMsIm5iZiI6MTcwNjU4MzUyMS45OTczNDIsImV4cCI6MjE3OTk2OTEyMS45ODQyMDcsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.xGT8UH10xzovBcNZg__mbLLlrSSq2nWDYHW_RDYqxZwjAJgfjavgfcpuGUAe7ihSVwLgKf9ircRqjy21QyXe1A2saDfRDSAj9NU17JBn3bRODRjr-NTQcZCLaKv3zKpTKnEp8gQlWV_iRtrBQ22PAr5516ur5sFXty-lLcnePYp7e3JdSD2rfA5LDOIG_P3rQG6SRvz-gB7xmiLEsAn5T1XYDuQ8wpwEqv_ZmSfTUauyxiLlB68IqLB5BtUmxX5GlxSASi4Zlpcvlt9LHyEhtLcAJ7b72m8D8bmlVEHFKkf6P5vi73OqjVOgBZtSylepTbMGyy8UJPXNlGAIa5ikX4Go27L1_-1NNXN7y9aUat19FGtbbgKwDoIzPcMbcRe9b43ZzKOkMO49X-ydLBh7X2ojEoN_SXWO91Ndc8aNMrgRi7X1HEuZx7v6NCp4_Ru0Cgrye4B5qCU2DwG3BsSt7pCZQT2C7uY1ARg_uNXeydtljBevgH2OuJshXBN_uWBltZ9KJjS-Y7ZELsVhZCFuW92PCgcFgiAibvxhljFlCz2PfWMncNsuAyjyn4w9BRDW5wVOxeITR1uVNKWmNT5tdXwe-sk_Y6gpdzTC5ME0CET3ylvH4QUUvLztsa5wSvJy4nBv_C5COgBv55A_IMddNn2HEKduWtz10DYCvLKy3A0";
     public RequestQueue requestQueue;
 
     private NetworkManager(Context context) {
@@ -115,7 +114,7 @@ public class NetworkManager {
     // =============================================
     public void getItemRequestByAssetTag(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/bytag/" + assetTag;
-        this.postAPI(url, Request.Method.GET, null, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, null, listener, errorListener);
     }
 
     public void getLocationsList(GetLocationParamItemModel locationParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
@@ -147,7 +146,22 @@ public class NetworkManager {
     // ======= Generic method ======================
     // =============================================
     public <T> void postAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, null, new Response.Listener<JSONObject>() {
+        Map<String, String> params = new HashMap<String, String>();
+        JSONObject jsonObject = null;
+        if (myObject != null) {
+            Field[] fields = myObject.getClass().getDeclaredFields();
+
+            for (Field field: fields) {
+                try {
+                    params.put(field.getName(), String.valueOf(field.get(myObject)));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            jsonObject = new JSONObject(params);
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -168,23 +182,6 @@ public class NetworkManager {
                 headerMap.put("Content-Type", "application/json");
                 headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
                 return headerMap;
-            }
-
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String> params = new HashMap<String, String>();
-
-                Field[] fields = myObject.getClass().getDeclaredFields();
-
-                for (Field field: fields) {
-                    try {
-                        params.put(field.getName(), String.valueOf(field.get(myObject)));
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                return params;
             }
         };
 

@@ -19,15 +19,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/half_margin_screen"
-                android:clipToPadding="false"
                 android:scrollbars="vertical" />
 
-
-            <DatePicker
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:datePickerMode="calendar" />
+                android:layout_marginHorizontal="@dimen/margin_screen"
+                android:gravity="center">
+                <DatePicker
+                    android:id="@+id/date_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:datePickerMode="calendar"/>
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

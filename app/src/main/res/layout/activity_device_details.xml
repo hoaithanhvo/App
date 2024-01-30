@@ -9,10 +9,12 @@
     <ImageView
         android:id="@+id/detail_img"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="60dp"
         android:layout_marginTop="@dimen/margin_screen"
         android:layout_marginBottom="8dp"
         android:layout_gravity="center"
+        android:src="@drawable/broken_image"
         android:contentDescription="@string/device_informations"/>
 
     <androidx.recyclerview.widget.RecyclerView

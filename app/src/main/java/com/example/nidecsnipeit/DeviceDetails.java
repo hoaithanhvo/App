@@ -70,8 +70,10 @@ public class DeviceDetails extends BaseActivity {
                             valueField = StringEscapeUtils.unescapeHtml4(((JSONObject) fieldValue).getString("name"));
                         }
                     } else {
-                        if (!fieldValue.toString().equals("")) {
+                        if (!fieldValue.toString().equals("") && !fieldValue.toString().equals("null")) {
                             valueField = StringEscapeUtils.unescapeHtml4(fieldValue.toString());
+                        } else if (fieldValue.toString().equals("null")) {
+                            valueField = "";
                         }
                     }
                 }
@@ -85,8 +87,11 @@ public class DeviceDetails extends BaseActivity {
                     dataList.add(new ListItemModel(titleField, valueField, typeField));
                 }
             }
-            ImageView detailImage = findViewById(R.id.detail_img);
-            Picasso.get().load(imageUrl).into(detailImage);
+
+            if (!imageUrl.equals("null")) {
+                ImageView detailImage = findViewById(R.id.detail_img);
+                Picasso.get().load(imageUrl).into(detailImage);
+            }
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -143,9 +148,9 @@ public class DeviceDetails extends BaseActivity {
                 public void onResult(JSONObject object) {
                     try {
                         if (object.has("status") && object.get("status").equals("error")) {
-                            Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR);
+                            Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
                         } else {
-                            Common.showCustomSnackBar(rootView, "Check-in successful", Common.SnackBarType.SUCCESS);
+                            Common.showCustomSnackBar(rootView, "Check-in successful", Common.SnackBarType.SUCCESS, null);
                         }
                         Common.hideProgressDialog();
                     } catch (JSONException e) {
@@ -165,8 +170,10 @@ public class DeviceDetails extends BaseActivity {
             });
         } else if (mode == Config.MAINTENANCE_MODE) {
             Intent intent = new Intent(DeviceDetails.this, MaintenanceListActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("ASSET_ID", id);
             startActivity(intent);
+            finish();
         }
     }
 }

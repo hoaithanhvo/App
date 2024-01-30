@@ -15,6 +15,7 @@ public class ListItemModel {
     private List<SpinnerItemModel> dropdownItems;
     private final Mode mode;
     private final Drawable icon;
+    private boolean dropdownScanner = false;
 
     public ListItemModel(String title, String value) {
         this.title = title;
@@ -51,6 +52,15 @@ public class ListItemModel {
         this.icon = null;
     }
 
+    public ListItemModel(String title, String value, Mode mode, List<SpinnerItemModel> dropdownItems, boolean dropdownScanner) {
+        this.title = title;
+        this.value = value;
+        this.mode = mode;
+        this.dropdownItems = dropdownItems;
+        this.icon = null;
+        this.dropdownScanner = dropdownScanner;
+    }
+
     public String getTitle() {
         return this.title;
     }
@@ -71,6 +81,9 @@ public class ListItemModel {
 
     public List<SpinnerItemModel> getDropdownItems() {
         return this.dropdownItems;
+    }
+    public boolean isDropdownScanner() {
+        return this.dropdownScanner;
     }
 
     public Mode getMode() {

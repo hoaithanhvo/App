@@ -23,11 +23,12 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         app:cardCornerRadius="30dp"
+        app:cardElevation="2dp"
         android:background="@color/button_red"
         android:foreground="?android:attr/selectableItemBackground">
 
         <ImageButton
-            android:id="@+id/submit"
+            android:id="@+id/add_new_mtn_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="12dp"
@@ -38,7 +39,15 @@
             />
     </androidx.cardview.widget.CardView>
 
-
+    <TextView
+        android:id="@+id/no_maintenance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_maintenances_for_this_asset"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_secondary"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

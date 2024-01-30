@@ -158,15 +158,15 @@ public class SearchActivity extends BaseActivity {
                 try {
                     if (object.has("status") && object.get("status").equals("error")) {
                         Common.hideProgressDialog();
-                        Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR);
+                        Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
                     } else {
                         String statusDeploy = ((JSONObject)object.get("status_label")).get("status_meta").toString();
                         if (statusDeploy.equals("deployed") && searchMode == Config.CHECK_IN_MODE) {
                             Common.hideProgressDialog();
-                            Common.showAlertDialog(SearchActivity.this, null, "This asset is already checked in");
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked in", false, null);
                         } else if (statusDeploy.equals("deployable") && searchMode == Config.CHECK_OUT_MODE) {
                             Common.hideProgressDialog();
-                            Common.showAlertDialog(SearchActivity.this, null, "This asset is already checked out");
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked out", false, null);
                         } else {
                             Intent intent = new Intent(SearchActivity.this, DeviceDetails.class);
                             intent.putExtra("DEVICE_INFO", object.toString());
@@ -176,7 +176,7 @@ public class SearchActivity extends BaseActivity {
                     }
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
-                    Common.showCustomSnackBar(rootView, e.toString(), Common.SnackBarType.ERROR);
+                    Common.showCustomSnackBar(rootView, e.toString(), Common.SnackBarType.ERROR, null);
                 }
             }
         }, new NetworkResponseErrorListener() {
@@ -186,9 +186,9 @@ public class SearchActivity extends BaseActivity {
                 Common.hideProgressDialog();
 
                 if (error.getMessage() == null) {
-                    Common.showCustomSnackBar(rootView, "Failed to connect to server", Common.SnackBarType.ERROR);
+                    Common.showCustomSnackBar(rootView, "Failed to connect to server", Common.SnackBarType.ERROR, null);
                 } else {
-                    Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR);
+                    Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR, null);
                 }
             }
         });

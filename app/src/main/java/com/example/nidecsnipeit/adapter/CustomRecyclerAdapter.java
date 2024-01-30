@@ -77,28 +77,21 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         ListItemModel currentItem = mData.get(position);
 
         holder.titleTextView.setText(currentItem.getTitle());
-        holder.titleTextView.setPadding(8, 8, 8, 8);
         holder.titleTextView.setBackgroundColor(mInflater.getContext().getColor(currentItem.getTitleColor()));
 
-        int heightInDp = 32;
-        int heightPx = Common.convertDpToPixel(heightInDp, holder.itemView.getContext());
+        int paddingHorizontal = Common.convertDpToPixel(2, holder.itemView.getContext());
+        int paddingVertical = Common.convertDpToPixel(8, holder.itemView.getContext());
         holder.valueTextView.setVisibility(View.GONE);
         holder.editTextView.setVisibility(View.GONE);
         holder.dropdownView.setVisibility(View.GONE);
         holder.qrScannerView.setVisibility(View.GONE);
         switch (currentItem.getMode()) {
             case TEXT:
-                holder.valueTextView.setTextSize(14);
-                holder.valueTextView.setPadding(10, 8, 10, 8);
-                holder.valueTextView.setMinHeight(heightPx);
                 holder.valueTextView.setGravity(Gravity.CENTER_VERTICAL);
                 holder.valueTextView.setText(addIconToText(holder.itemView.getContext(), currentItem.getValue(), currentItem.getIcon()));
                 holder.valueTextView.setVisibility(View.VISIBLE);
                 break;
             case EDIT_TEXT:
-                holder.editTextView.setTextSize(16);
-                holder.editTextView.setMinHeight(heightPx);
-                holder.valueTextView.setPadding(10, 8, 10, 8);
                 holder.editTextView.setInputType(InputType.TYPE_CLASS_TEXT);
                 holder.editTextView.setGravity(Gravity.CENTER_VERTICAL);
                 holder.editTextView.setText(currentItem.getValue());
@@ -118,14 +111,18 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 break;
             case DROPDOWN:
                 // Add logic to set up data for the dropdown
-                ArrayAdapter<SpinnerItemModel> adapter = new ArrayAdapter<>(holder.itemView.getContext(),
-                        R.layout.custom_spinner_item, currentItem.getDropdownItems());
+                CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(mInflater.getContext(), android.R.layout.simple_spinner_item, currentItem.getDropdownItems());
+                adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 
-                int selectedIndex = findSelectedIndex(currentItem.getDropdownItems(), currentItem.getValue());
                 holder.dropdownView.setGravity(Gravity.CENTER_VERTICAL);
+                holder.dropdownView.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
                 holder.dropdownView.setAdapter(adapter);
                 holder.dropdownView.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-                holder.dropdownView.setSelection(selectedIndex);
+
+                if (!currentItem.getValue().equals("")) {
+                    int selectedIndex = findSelectedIndex(currentItem.getDropdownItems(), currentItem.getValue());
+                    holder.dropdownView.setSelection(selectedIndex);
+                }
                 holder.dropdownView.setVisibility(View.VISIBLE);
                 holder.dropdownView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -140,14 +137,17 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                     }
                 });
 
-                holder.qrScannerView.setVisibility(View.VISIBLE);
-                holder.qrScannerView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setCurrentPosition(holder.getAdapterPosition());
-                        QRScannerHelper.initiateScan((Activity) v.getContext());
-                    }
-                });
+                if (currentItem.isDropdownScanner()) {
+                    holder.qrScannerView.setVisibility(View.VISIBLE);
+                    holder.qrScannerView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setCurrentPosition(holder.getAdapterPosition());
+                            QRScannerHelper.initiateScan((Activity) v.getContext());
+                        }
+                    });
+                }
+
                 break;
         }
     }

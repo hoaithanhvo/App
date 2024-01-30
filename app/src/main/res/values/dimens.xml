@@ -4,4 +4,6 @@
     <dimen name="margin_screen">12dp</dimen>
     <dimen name="half_margin_screen">6dp</dimen>
     <dimen name="item_spacing">0dp</dimen>
+    <dimen name="padding_vertical_item">8dp</dimen>
+    <dimen name="padding_horizontal_item">10dp</dimen>
 </resources>

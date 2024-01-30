@@ -1,5 +1,6 @@
 package com.example.nidecsnipeit;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -34,5 +35,14 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBackButtonPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

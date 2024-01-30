@@ -13,9 +13,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.MaintenanceAddActivity;
+import com.example.nidecsnipeit.MaintenanceListActivity;
 import com.example.nidecsnipeit.R;
+import com.example.nidecsnipeit.SearchActivity;
+import com.example.nidecsnipeit.model.AlertDialogCallback;
 import com.example.nidecsnipeit.model.ListItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
+import com.example.nidecsnipeit.model.SnackbarCallback;
+import com.example.nidecsnipeit.model.SpinnerItemModel;
+import com.example.nidecsnipeit.network.NetworkManager;
+import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
+import com.example.nidecsnipeit.network.NetworkResponseListener;
+import com.example.nidecsnipeit.utils.Common;
+import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +71,41 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
         });
 
         holder.buttonDeleteView.setOnClickListener(v -> {
-
+            NetworkManager apiServices = NetworkManager.getInstance();
+            Common.showCustomAlertDialog(mInflater.getContext(), "Delete maintenance", "Are you sure you want to delete this maintenance? This operation cannot be undone", true, new AlertDialogCallback() {
+                @Override
+                public void onPositiveButtonClick() {
+                    Common.showProgressDialog(mInflater.getContext(), "Deleting...");
+                    apiServices.deleteMaintenanceItem(currentItem.getId(), new NetworkResponseListener<JSONObject>() {
+                        @Override
+                        public void onResult(JSONObject object) {
+                            try {
+                                if (object.has("status") && object.get("status").equals("error")) {
+                                    Common.showCustomSnackBar(v, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
+                                } else {
+                                    Intent intent = new Intent(mInflater.getContext(), MaintenanceListActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent.putExtra("ASSET_ID", currentItem.getAssetID());
+                                    intent.putExtra("DELETED", true);
+                                    mInflater.getContext().startActivity(intent);
+                                }
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                            Common.hideProgressDialog();
+                        }
+                    }, new NetworkResponseErrorListener() {
+                        @Override
+                        public void onErrorResult(Exception error) {
+                            Common.hideProgressDialog();
+                        }
+                    });
+                }
+                @Override
+                public void onNegativeButtonClick() {
+                    Common.hideProgressDialog();
+                }
+            });
         });
     }
 
@@ -81,5 +128,10 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
             buttonEditView = itemView.findViewById(R.id.button_edit_item);
             buttonDeleteView = itemView.findViewById(R.id.button_delete_item);
         }
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
     }
 }

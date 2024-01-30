@@ -16,4 +16,5 @@
     <string name="add_new_maintenance">Add new maintenance</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="no_maintenances_for_this_asset">No maintenances for this asset</string>
 </resources>

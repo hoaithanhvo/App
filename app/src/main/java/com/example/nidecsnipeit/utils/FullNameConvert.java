@@ -10,7 +10,7 @@ public class FullNameConvert {
         keyFullNameMap.put("serial", "Serial Number");
         keyFullNameMap.put("model", "Model");
         keyFullNameMap.put("name", "Asset Name");
-        keyFullNameMap.put("location", "Location");
+        keyFullNameMap.put("location", "Asset Assigned to");
         keyFullNameMap.put("assigned_to", "Assigned To");
         keyFullNameMap.put("notes", "Notes");
 

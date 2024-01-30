@@ -25,8 +25,8 @@ public class MyApplication extends Application {
         detailScreenFields.add(new DetailFieldModel("notes"));
 
         // Maintenance screen
-        maintenanceScreenFields.add(new DetailFieldModel("title", ListItemModel.Mode.EDIT_TEXT));
         maintenanceScreenFields.add(new DetailFieldModel("supplier", ListItemModel.Mode.DROPDOWN, true));
+        maintenanceScreenFields.add(new DetailFieldModel("title", ListItemModel.Mode.EDIT_TEXT));
 
     }
 

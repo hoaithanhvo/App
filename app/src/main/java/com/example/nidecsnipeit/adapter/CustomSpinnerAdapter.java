@@ -8,40 +8,39 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 
+import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.model.SpinnerItemModel;
 
 import java.util.List;
 
 public class CustomSpinnerAdapter extends ArrayAdapter<SpinnerItemModel> {
 
-    public CustomSpinnerAdapter(Context context, int resource, List<SpinnerItemModel> items) {
+    private final LayoutInflater inflater;
+    private final List<SpinnerItemModel> items;
+
+    public CustomSpinnerAdapter(@NonNull Context context, int resource, @NonNull List<SpinnerItemModel> items) {
         super(context, resource, items);
+        this.inflater = LayoutInflater.from(context);
+        this.items = items;
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        return initView(position, convertView, parent);
+        return createViewFromResource(position, convertView, parent, android.R.layout.simple_spinner_item);
     }
 
     @Override
     public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
-        return initView(position, convertView, parent);
+        return createViewFromResource(position, convertView, parent, android.R.layout.simple_spinner_dropdown_item);
     }
 
-    private View initView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_item, parent, false);
-        }
+    private View createViewFromResource(int position, View convertView, ViewGroup parent, int resource) {
+        View view = convertView != null ? convertView : inflater.inflate(resource, parent, false);
 
-        TextView textView = convertView.findViewById(android.R.id.text1);
-        SpinnerItemModel currentItem = getItem(position);
+        TextView textView = view.findViewById(android.R.id.text1);
+        textView.setText(items.get(position).getName());
 
-        if (currentItem != null) {
-//            textView.setText(String.valueOf(currentItem.getId()));
-             textView.setText(currentItem.getName());
-        }
-
-        return convertView;
+        return view;
     }
 }
