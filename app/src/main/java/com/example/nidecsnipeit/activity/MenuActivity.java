@@ -22,11 +22,13 @@ public class MenuActivity extends AppCompatActivity {
         Button checkInBtn = findViewById(R.id.checkin_btn);
         Button checkOutBtn = findViewById(R.id.checkout_btn);
         Button maintenanceBtn = findViewById(R.id.maintenance_btn);
+        Button settingBtn = findViewById(R.id.setting_btn);
 
         // OnClickListener for button
         checkInBtn.setOnClickListener(createButtonClickListener(Config.CHECK_IN_MODE));
         checkOutBtn.setOnClickListener(createButtonClickListener(Config.CHECK_OUT_MODE));
         maintenanceBtn.setOnClickListener(createButtonClickListener(Config.MAINTENANCE_MODE));
+        settingBtn.setOnClickListener(createButtonClickListener(Config.SETTING_MODE));
     }
 
     private View.OnClickListener createButtonClickListener(final Integer mode) {
@@ -39,8 +41,13 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void handleButtonClick(Integer mode) {
-        Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra("mode", mode);
+        Intent intent;
+        if (mode == Config.SETTING_MODE) {
+            intent = new Intent(this, SettingsActivity.class);
+        } else {
+            intent = new Intent(this, SearchActivity.class);
+            intent.putExtra("mode", mode);
+        }
         startActivity(intent);
     }
 

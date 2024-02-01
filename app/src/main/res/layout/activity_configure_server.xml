@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ConfigureServerActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="@dimen/margin_screen"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="4dp"
+            android:textSize="12sp"
+            android:text="@string/snipe_it_server_address"
+            android:textColor="@color/text_color_secondary"/>
+
+        <EditText
+            android:id="@+id/url_server_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/server_address"
+            android:autofillHints="false"
+            android:inputType="textUri"
+            android:textSize="@dimen/text_size"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="4dp"
+            android:textSize="14sp"
+            android:text="@string/set_server_eg"
+            android:textColor="@color/text_color_secondary"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingHorizontal="4dp"
+            android:textSize="12sp"
+            android:text="@string/write_your_api_key_here"
+            android:textColor="@color/text_color_secondary"/>
+
+        <EditText
+            android:id="@+id/api_token_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/api_key"
+            android:autofillHints="false"
+            android:inputType="textUri"
+            android:textSize="@dimen/text_size"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/configure_default_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_screen"
+        android:backgroundTint="@color/secondary"
+        android:textColor="@color/white"
+        android:text="@string/default_configuration_demo"
+        android:layout_gravity="bottom"/>
+
+    <Button
+        android:id="@+id/configure_server_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_screen"
+        android:backgroundTint="@color/secondary"
+        android:textColor="@color/white"
+        android:text="@string/configure_app"
+        android:layout_gravity="bottom"/>
+</LinearLayout>
