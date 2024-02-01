@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/margin_screen"
+    tools:context=".activity.MaintenanceListActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_maintenance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/half_margin_screen"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_screen"
+        android:layout_marginBottom="@dimen/margin_screen"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="2dp"
+        android:background="@color/button_red"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <ImageButton
+            android:id="@+id/add_new_mtn_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:src="@drawable/ic_add_maintenance"
+            android:background="@color/button_red"
+            android:contentDescription="@string/add_new_maintenance"
+            android:foreground="?android:attr/selectableItemBackground"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/no_maintenance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_maintenances_for_this_asset"
+        android:textSize="14sp"
+        android:textColor="@color/text_color_secondary"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

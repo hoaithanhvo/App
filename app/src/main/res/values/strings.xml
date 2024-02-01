@@ -11,4 +11,13 @@
     <string name="read_a_barcode">Read a barcode</string>
     <string name="asset_tag">Asset tag</string>
     <string name="search">SEARCH</string>
+    <string name="device_informations">Device informations</string>
+    <string name="submit">Submit</string>
+    <string name="add_new_maintenance">Add new maintenance</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="no_maintenances_for_this_asset">No maintenances for this asset</string>
+    <string name="text_icon_for_common_field">Text icon for common field</string>
+    <string name="checkout_location">CHECKOUT (LOCATION)</string>
+    <string name="assets_management">ASSETS MANAGEMENT</string>
 </resources>

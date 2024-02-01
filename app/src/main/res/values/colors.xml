@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#198155</color>
+    <color name="primary">#23a56f</color>
     <color name="status_bar">#51c08e</color>
     <color name="secondary">#23C16B</color>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="button_red">#811944</color>
+    <color name="success">#23C16B</color>
+    <color name="error">#D3180C</color>
+    <color name="green_lightest">#ECFCE5</color>
+    <color name="blue_lightest">#dff5f8</color>
+    <color name="gray_lightest">#F7F9FA</color>
+    <color name="title_secondary">#23a56f</color>
     <color name="disabled_bg_color">#FCFCFC</color>
     <color name="disabled_text_color">#CACACA</color>
     <color name="black">#FF000000</color>
+    <color name="text_color">#FF000000</color>
+    <color name="text_color_secondary">#70000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

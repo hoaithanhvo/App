@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".activity.MenuActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,10 +18,20 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
                 android:contentDescription="@string/nidec_logo"
                 android:src="@drawable/logo_nidec" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="center"
+                android:textColor="@color/button_red"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="@string/assets_management"/>
 
             <GridLayout
                 android:id="@+id/gridLayout"
@@ -41,7 +51,8 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="6dp"
                     android:drawableTop="@drawable/main_check_in"
-                    android:text="@string/check_in" />
+                    android:text="@string/check_in"
+                    android:textColor="@color/black"/>
 
                 <!-- Button 2 -->
                 <Button
@@ -55,7 +66,8 @@
                     android:layout_marginStart="6dp"
                     android:layout_marginEnd="12dp"
                     android:drawableTop="@drawable/main_check_out"
-                    android:text="@string/check_out" />
+                    android:text="@string/check_out"
+                    android:textColor="@color/black"/>
 
                 <!-- Button 3 -->
                 <Button
@@ -71,7 +83,8 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
                     android:drawableTop="@drawable/main_maintenance"
-                    android:text="@string/maintenance" />
+                    android:text="@string/maintenance"
+                    android:textColor="@color/black"/>
 
             </GridLayout>
         </LinearLayout>
