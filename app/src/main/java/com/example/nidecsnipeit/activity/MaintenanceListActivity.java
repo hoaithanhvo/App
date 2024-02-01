@@ -1,4 +1,4 @@
-package com.example.nidecsnipeit;
+package com.example.nidecsnipeit.activity;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,20 +9,17 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.MaintenanceAdapter;
 import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
-import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.SpinnerItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
-import com.example.nidecsnipeit.utils.Common;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.nidecsnipeit.utility.Common;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +48,7 @@ public class MaintenanceListActivity extends BaseActivity {
         List<MaintenanceItemModel> dataList = new ArrayList<>();
         Common.showProgressDialog(this, "Loading...");
 
+        // get and show maintenance list
         apiServices.getMaintenanceList(paramItem, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
@@ -87,6 +85,11 @@ public class MaintenanceListActivity extends BaseActivity {
                         textAlert.setVisibility(View.VISIBLE);
                         Common.hideProgressDialog();
                     }
+
+                    // display message if deleted item
+                    if (isDeleted) {
+                        Common.showCustomSnackBar(view, "The asset maintenance was deleted successfully", Common.SnackBarType.SUCCESS, null);
+                    }
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
                     throw new RuntimeException(e);
@@ -98,11 +101,6 @@ public class MaintenanceListActivity extends BaseActivity {
                 Common.hideProgressDialog();
             }
         });
-
-        // display message if delete item
-        if (isDeleted) {
-            Common.showCustomSnackBar(view, "The asset maintenance was deleted successfully", Common.SnackBarType.SUCCESS, null);
-        }
 
         ImageButton addButton = findViewById(R.id.add_new_mtn_btn);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +116,7 @@ public class MaintenanceListActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(MaintenanceListActivity.this, MainActivity.class);
+            Intent intent = new Intent(MaintenanceListActivity.this, MenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
@@ -130,7 +128,7 @@ public class MaintenanceListActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(MaintenanceListActivity.this, MainActivity.class);
+            Intent intent = new Intent(MaintenanceListActivity.this, MenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

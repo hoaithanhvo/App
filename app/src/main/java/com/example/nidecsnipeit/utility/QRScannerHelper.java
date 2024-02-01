@@ -1,10 +1,10 @@
-package com.example.nidecsnipeit.utils;
+package com.example.nidecsnipeit.utility;
 
 import android.app.Activity;
 import android.content.Intent;
 
 
-import com.example.nidecsnipeit.CaptureActivityPortrait;
+import com.example.nidecsnipeit.activity.CapturePortraitActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -18,7 +18,7 @@ public class QRScannerHelper {
         integrator.setCameraId(0);
         integrator.setOrientationLocked(true);
         integrator.setBeepEnabled(true);
-        integrator.setCaptureActivity(CaptureActivityPortrait.class);
+        integrator.setCaptureActivity(CapturePortraitActivity.class);
         integrator.setPrompt("Scan a QR code");
         integrator.setRequestCode(QR_SCAN_REQUEST_CODE);
         integrator.initiateScan();

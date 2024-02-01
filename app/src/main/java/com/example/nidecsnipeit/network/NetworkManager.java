@@ -65,13 +65,12 @@ public class NetworkManager {
     /**
      * Check in asset item
      * @param assetID
-     * @param checkinItem
      * @param listener
      * @param errorListener
      */
-    public void checkinItem(int assetID, CheckinItemModel checkinItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+    public void checkinItem(int assetID, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/" + assetID + "/checkin";
-        this.postAPI(url, Request.Method.POST, checkinItem, listener, errorListener);
+        this.postAPI(url, Request.Method.POST, null, listener, errorListener);
     }
 
     /**
@@ -82,7 +81,7 @@ public class NetworkManager {
      * @param errorListener
      */
     public void checkoutItem(int assetID, CheckoutItemModel checkoutItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/hardware/" + assetID + "/checkin";
+        String url = URL +  "/hardware/" + assetID + "/checkout";
         this.postAPI(url, Request.Method.POST, checkoutItem, listener, errorListener);
     }
 
@@ -114,6 +113,10 @@ public class NetworkManager {
     // =============================================
     public void getItemRequestByAssetTag(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/bytag/" + assetTag;
+        if (assetTag.contains("/hardware/")) {
+            String[] parts = assetTag.split("/hardware/");
+            url = URL +  "/hardware/" + parts[1];
+        }
         this.getAPI(url, Request.Method.GET, null, listener, errorListener);
     }
 
@@ -184,6 +187,9 @@ public class NetworkManager {
                 return headerMap;
             }
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         requestQueue.add(jsonObjectRequest);
     }
@@ -214,6 +220,9 @@ public class NetworkManager {
                 return headerMap;
             }
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         requestQueue.add(jsonObjectRequest);
     }
@@ -224,11 +233,11 @@ public class NetworkManager {
 
         for (Field field: fields) {
             try {
-                queryParams.append(field.getName()).append("=").append(String.valueOf(field.get(myObject)));
+                queryParams.append(field.getName()).append("=").append(String.valueOf(field.get(myObject))).append("&");
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
-        return queryParams.toString();
+        return queryParams.substring(0, queryParams.length() - 1);
     }
 }

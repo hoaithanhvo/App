@@ -12,20 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nidecsnipeit.MaintenanceAddActivity;
-import com.example.nidecsnipeit.MaintenanceListActivity;
+import com.example.nidecsnipeit.activity.MaintenanceAddActivity;
+import com.example.nidecsnipeit.activity.MaintenanceListActivity;
 import com.example.nidecsnipeit.R;
-import com.example.nidecsnipeit.SearchActivity;
 import com.example.nidecsnipeit.model.AlertDialogCallback;
 import com.example.nidecsnipeit.model.ListItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
-import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.SpinnerItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
-import com.example.nidecsnipeit.utils.Common;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.nidecsnipeit.utility.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,22 +50,25 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MaintenanceItemModel currentItem = mData.get(position);
 
+        // bind data to fields
         holder.textView.setText(currentItem.getAssetMaintenanceType());
         holder.dateView.setText(currentItem.getStartDate());
 
         List<ListItemModel> dataList = new ArrayList<>();
         dataList.add(new ListItemModel("Title", currentItem.getTitle()));
         dataList.add(new ListItemModel("Supplier", currentItem.getSupplierName()));
-        CustomRecyclerAdapter customAdapter = new CustomRecyclerAdapter(mInflater.getContext(), dataList, holder.contentView);
+        CustomItemAdapter customAdapter = new CustomItemAdapter(mInflater.getContext(), dataList, holder.contentView);
         holder.contentView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         holder.contentView.setAdapter(customAdapter);
 
+        // handle edit event
         holder.buttonEditView.setOnClickListener(v -> {
             Intent intent = new Intent(mInflater.getContext(), MaintenanceAddActivity.class);
             intent.putExtra("MAINTENANCE_INFO", currentItem);
             mInflater.getContext().startActivity(intent);
         });
 
+        // handle delete event
         holder.buttonDeleteView.setOnClickListener(v -> {
             NetworkManager apiServices = NetworkManager.getInstance();
             Common.showCustomAlertDialog(mInflater.getContext(), "Delete maintenance", "Are you sure you want to delete this maintenance? This operation cannot be undone", true, new AlertDialogCallback() {

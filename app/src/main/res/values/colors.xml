@@ -14,6 +14,6 @@
     <color name="disabled_text_color">#CACACA</color>
     <color name="black">#FF000000</color>
     <color name="text_color">#FF000000</color>
-    <color name="text_color_secondary">#42000000</color>
+    <color name="text_color_secondary">#70000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

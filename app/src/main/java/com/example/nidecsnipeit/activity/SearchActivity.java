@@ -1,4 +1,4 @@
-package com.example.nidecsnipeit;
+package com.example.nidecsnipeit.activity;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,11 +15,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.nidecsnipeit.Config;
+import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
-import com.example.nidecsnipeit.utils.Common;
-import com.example.nidecsnipeit.utils.QRScannerHelper;
+import com.example.nidecsnipeit.utility.Common;
+import com.example.nidecsnipeit.utility.QRScannerHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,15 +162,12 @@ public class SearchActivity extends BaseActivity {
                         Common.hideProgressDialog();
                         Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
                     } else {
-                        String statusDeploy = ((JSONObject)object.get("status_label")).get("status_meta").toString();
-                        if (statusDeploy.equals("deployed") && searchMode == Config.CHECK_IN_MODE) {
+                        boolean userCanCheckIn = !object.getBoolean("user_can_checkout");
+                        if (!userCanCheckIn && searchMode == Config.CHECK_IN_MODE) {
                             Common.hideProgressDialog();
                             Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked in", false, null);
-                        } else if (statusDeploy.equals("deployable") && searchMode == Config.CHECK_OUT_MODE) {
-                            Common.hideProgressDialog();
-                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked out", false, null);
                         } else {
-                            Intent intent = new Intent(SearchActivity.this, DeviceDetails.class);
+                            Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
                             intent.putExtra("DEVICE_INFO", object.toString());
                             intent.putExtra("MODE", searchMode);
                             startActivity(intent);

@@ -1,21 +1,17 @@
-package com.example.nidecsnipeit;
+package com.example.nidecsnipeit.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 
-import com.example.nidecsnipeit.adapter.CustomRecyclerAdapter;
-import com.example.nidecsnipeit.adapter.MaintenanceAdapter;
+import com.example.nidecsnipeit.R;
+import com.example.nidecsnipeit.adapter.CustomItemAdapter;
 import com.example.nidecsnipeit.model.AlertDialogCallback;
 import com.example.nidecsnipeit.model.DetailFieldModel;
 import com.example.nidecsnipeit.model.ListItemModel;
@@ -25,26 +21,20 @@ import com.example.nidecsnipeit.model.SpinnerItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
-import com.example.nidecsnipeit.utils.Common;
-import com.example.nidecsnipeit.utils.FullNameConvert;
-import com.example.nidecsnipeit.utils.QRScannerHelper;
-import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso.Picasso;
+import com.example.nidecsnipeit.utility.Common;
+import com.example.nidecsnipeit.utility.QRScannerHelper;
 
-import org.apache.commons.text.StringEscapeUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class MaintenanceAddActivity extends BaseActivity {
-    private CustomRecyclerAdapter adapter;
+    private CustomItemAdapter adapter;
     private boolean isNewMaintenance;
     private View rootView;
     @SuppressLint("SetTextI18n")
@@ -100,25 +90,14 @@ public class MaintenanceAddActivity extends BaseActivity {
             @Override
             public void onResult(JSONObject object) {
                 try {
-                    List<SpinnerItemModel> supplierList = convertArrayJsonToList(object.getJSONArray("rows"));
+                    List<SpinnerItemModel> supplierList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
                     if (maintenanceInfo != null) {
-                        // UPDATE
-                        dataList.add(new ListItemModel("Maintenance type", maintenanceInfo.asset_maintenance_type, ListItemModel.Mode.DROPDOWN, maintenanceTypes));
-
-                        for (DetailFieldModel field : fields) {
-                            String valueField = "";
-                            String titleField = FullNameConvert.getFullName(field.getName());
-                            ListItemModel.Mode typeField = field.getType();
-
-                            valueField = getValueFieldFromObjectData(maintenanceInfo, field.getName());
-                            if (typeField == ListItemModel.Mode.DROPDOWN) {
-                                dataList.add(new ListItemModel(titleField, valueField, ListItemModel.Mode.DROPDOWN, supplierList));
-                            } else {
-                                dataList.add(new ListItemModel(titleField, valueField, typeField));
-                            }
-                        }
+                        // UPDATE event
+                        dataList.add(new ListItemModel("Maintenance type", maintenanceInfo.getAssetMaintenanceType(), ListItemModel.Mode.DROPDOWN, maintenanceTypes));
+                        dataList.add(new ListItemModel("Supplier", maintenanceInfo.getSupplierName(), ListItemModel.Mode.DROPDOWN, supplierList));
+                        dataList.add(new ListItemModel("Title", maintenanceInfo.getTitle(), ListItemModel.Mode.EDIT_TEXT));
                     } else {
-                        // NEW
+                        // NEW event
                         dataList.add(new ListItemModel("Maintenance type", "", ListItemModel.Mode.DROPDOWN, maintenanceTypes));
                         dataList.add(new ListItemModel("Supplier", "", ListItemModel.Mode.DROPDOWN, supplierList));
                         dataList.add(new ListItemModel("Title", "", ListItemModel.Mode.EDIT_TEXT));
@@ -127,7 +106,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                     // map item list to view
                     RecyclerView recyclerView = findViewById(R.id.recycler_maintenance_add);
                     recyclerView.setLayoutManager(new LinearLayoutManager(MaintenanceAddActivity.this));
-                    adapter = new CustomRecyclerAdapter(MaintenanceAddActivity.this, dataList, recyclerView);
+                    adapter = new CustomItemAdapter(MaintenanceAddActivity.this, dataList, recyclerView);
                     recyclerView.setAdapter(adapter);
                     Common.hideProgressDialog();
                 } catch (JSONException e) {
@@ -142,7 +121,7 @@ public class MaintenanceAddActivity extends BaseActivity {
             }
         });
 
-
+        // handle logic for update or add button
         maintenanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,6 +141,8 @@ public class MaintenanceAddActivity extends BaseActivity {
                     maintenanceInfo.setAssetMaintenanceType(valuesMap.get("asset_maintenance_type"));
                     maintenanceInfo.setSupplierID(Integer.parseInt(Objects.requireNonNull(valuesMap.get("supplier"))));
                     maintenanceInfo.setTitle(valuesMap.get("title"));
+
+                    // show alert dialog to confirm update process
                     Common.showCustomAlertDialog(MaintenanceAddActivity.this, "Update maintenance",
                         "Are you sure you want to update this maintenance?", true, new AlertDialogCallback() {
                             @Override
@@ -178,7 +159,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                                                 Common.hideProgressDialog();
                                                 Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                                                     @Override
-                                                    public void onSnackbarDismissed(Snackbar snackbar) {
+                                                    public void onSnackbar() {
                                                         Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
                                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                         intent.putExtra("ASSET_ID", asset_id);
@@ -214,6 +195,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                     params.setSupplierID(Integer.parseInt(Objects.requireNonNull(valuesMap.get("supplier"))));
                     params.setTitle(valuesMap.get("title"));
 
+                    // show alert dialog to confirm add process
                     Common.showCustomAlertDialog(MaintenanceAddActivity.this, "Add maintenance",
                             "Are you sure you want to add this maintenance?", true, new AlertDialogCallback() {
                         @Override
@@ -230,7 +212,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                                             Common.hideProgressDialog();
                                             Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                                                 @Override
-                                                public void onSnackbarDismissed(Snackbar snackbar) {
+                                                public void onSnackbar() {
                                                     Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
                                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     intent.putExtra("ASSET_ID", asset_id);
@@ -244,6 +226,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                                     @Override
                                     public void onErrorResult(Exception error) {
                                         Common.hideProgressDialog();
+                                        Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
                                     }
                                 }
                             );
@@ -270,23 +253,6 @@ public class MaintenanceAddActivity extends BaseActivity {
             // Update dropdown selection following position
             adapter.updateDropdownSelection(adapter.getCurrentPosition(), scannedValue);
         }
-    }
-
-    public static List<SpinnerItemModel> convertArrayJsonToList(JSONArray jsonArray) {
-        List<SpinnerItemModel> myList = new ArrayList<>();
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = null;
-            try {
-                jsonObject = jsonArray.getJSONObject(i);
-                SpinnerItemModel myObject = new SpinnerItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
-                myList.add(myObject);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return myList;
     }
 
     public String getValueFieldFromObjectData(MaintenanceItemModel maintenanceInfo, String keyTitle) {

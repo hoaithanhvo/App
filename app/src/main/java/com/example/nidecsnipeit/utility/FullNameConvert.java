@@ -1,4 +1,4 @@
-package com.example.nidecsnipeit.utils;
+package com.example.nidecsnipeit.utility;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +10,8 @@ public class FullNameConvert {
         keyFullNameMap.put("serial", "Serial Number");
         keyFullNameMap.put("model", "Model");
         keyFullNameMap.put("name", "Asset Name");
-        keyFullNameMap.put("location", "Asset Assigned to");
-        keyFullNameMap.put("assigned_to", "Assigned To");
+        keyFullNameMap.put("assigned_to", "Asset Assigned to");
+        keyFullNameMap.put("location", "Location");
         keyFullNameMap.put("notes", "Notes");
 
         // Maintenance screen

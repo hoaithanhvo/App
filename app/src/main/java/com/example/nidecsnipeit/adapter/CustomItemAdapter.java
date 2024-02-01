@@ -2,51 +2,37 @@ package com.example.nidecsnipeit.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextWatcher;
-import android.text.style.ImageSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nidecsnipeit.CaptureActivityPortrait;
-import com.example.nidecsnipeit.MyApplication;
+import com.example.nidecsnipeit.activity.MyApplication;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.model.ListItemModel;
 import com.example.nidecsnipeit.model.SpinnerItemModel;
-import com.example.nidecsnipeit.utils.Common;
-import com.example.nidecsnipeit.utils.FullNameConvert;
-import com.example.nidecsnipeit.utils.QRScannerHelper;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.example.nidecsnipeit.utility.Common;
+import com.example.nidecsnipeit.utility.FullNameConvert;
+import com.example.nidecsnipeit.utility.QRScannerHelper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.ViewHolder> {
+public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.ViewHolder> {
 
     private final List<ListItemModel> mData;
     private final LayoutInflater mInflater;
@@ -55,7 +41,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     private final MyApplication MyApp;
 
     // Data is passed into the constructor
-    public CustomRecyclerAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView) {
+    public CustomItemAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.recyclerView = recyclerView;
@@ -88,7 +74,11 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         switch (currentItem.getMode()) {
             case TEXT:
                 holder.valueTextView.setGravity(Gravity.CENTER_VERTICAL);
-                holder.valueTextView.setText(addIconToText(holder.itemView.getContext(), currentItem.getValue(), currentItem.getIcon()));
+                if (currentItem.getIcon() != null) {
+                    holder.textIconView.setImageDrawable(currentItem.getIcon());
+                    holder.textIconView.setVisibility(View.VISIBLE);
+                }
+                holder.valueTextView.setText(currentItem.getValue());
                 holder.valueTextView.setVisibility(View.VISIBLE);
                 break;
             case EDIT_TEXT:
@@ -119,7 +109,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 holder.dropdownView.setAdapter(adapter);
                 holder.dropdownView.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
 
-                if (!currentItem.getValue().equals("")) {
+                if (!currentItem.getValue().equals("") && currentItem.getValue() != null) {
                     int selectedIndex = findSelectedIndex(currentItem.getDropdownItems(), currentItem.getValue());
                     holder.dropdownView.setSelection(selectedIndex);
                 }
@@ -161,6 +151,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     // Stores and recycles views as they are scrolled off screen
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
+        ImageView textIconView;
         TextView valueTextView;
         EditText editTextView;
         Spinner dropdownView;
@@ -169,6 +160,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         ViewHolder(View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.title_item);
+            textIconView = itemView.findViewById(R.id.text_icon);
             valueTextView = itemView.findViewById(R.id.text_item);
             editTextView = itemView.findViewById(R.id.edit_text_item);
             dropdownView = itemView.findViewById(R.id.dropdown_item);
@@ -181,7 +173,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
         for (ListItemModel item : mData) {
             String keyTitle = FullNameConvert.getKeyByFullName(item.getTitle());
-            if (item.getMode() == ListItemModel.Mode.DROPDOWN && MyApp.isRequiredIdDropdown(keyTitle)) {
+            if (item.getMode() == ListItemModel.Mode.DROPDOWN && !keyTitle.equals("asset_maintenance_type")) {
                 valuesMap.put(keyTitle, this.getIdSpinnerItemByName(item.getDropdownItems(), item.getValue()));
             } else {
                 valuesMap.put(keyTitle, item.getValue());
@@ -189,17 +181,6 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         }
 
         return valuesMap;
-    }
-
-    private SpannableString addIconToText(Context context, String text, Drawable icon) {
-        SpannableString spannableString = new SpannableString(text);
-        if (icon != null) {
-            spannableString = new SpannableString(" " + text);
-            icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-            ImageSpan imageSpan = new ImageSpan(icon, ImageSpan.ALIGN_BASELINE);
-            spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        }
-        return spannableString;
     }
 
     public void updateDropdownSelection(int position, String selectedValue) {
@@ -239,8 +220,8 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     private Spinner findDropdownViewForItem(int position) {
         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
 
-        if (viewHolder instanceof CustomRecyclerAdapter.ViewHolder) {
-            return ((CustomRecyclerAdapter.ViewHolder) viewHolder).dropdownView;
+        if (viewHolder instanceof CustomItemAdapter.ViewHolder) {
+            return ((CustomItemAdapter.ViewHolder) viewHolder).dropdownView;
         }
 
         return null;

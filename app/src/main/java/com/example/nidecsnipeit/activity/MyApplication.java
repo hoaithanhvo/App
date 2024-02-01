@@ -1,4 +1,4 @@
-package com.example.nidecsnipeit;
+package com.example.nidecsnipeit.activity;
 
 import android.app.Application;
 
@@ -21,7 +21,7 @@ public class MyApplication extends Application {
         detailScreenFields.add(new DetailFieldModel("model"));
         detailScreenFields.add(new DetailFieldModel("serial"));
         detailScreenFields.add(new DetailFieldModel("name"));
-        detailScreenFields.add(new DetailFieldModel("location"));
+        detailScreenFields.add(new DetailFieldModel("assigned_to"));
         detailScreenFields.add(new DetailFieldModel("notes"));
 
         // Maintenance screen

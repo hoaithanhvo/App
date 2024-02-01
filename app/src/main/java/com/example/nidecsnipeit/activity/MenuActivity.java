@@ -1,4 +1,4 @@
-package com.example.nidecsnipeit;
+package com.example.nidecsnipeit.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,13 +7,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.nidecsnipeit.Config;
+import com.example.nidecsnipeit.R;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_menu);
 
         // Get button
         Button checkInBtn = findViewById(R.id.checkin_btn);

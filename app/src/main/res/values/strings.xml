@@ -17,4 +17,7 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="no_maintenances_for_this_asset">No maintenances for this asset</string>
+    <string name="text_icon_for_common_field">Text icon for common field</string>
+    <string name="checkout_location">CHECKOUT (LOCATION)</string>
+    <string name="assets_management">ASSETS MANAGEMENT</string>
 </resources>

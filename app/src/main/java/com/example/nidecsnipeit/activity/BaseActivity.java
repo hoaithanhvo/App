@@ -1,4 +1,4 @@
-package com.example.nidecsnipeit;
+package com.example.nidecsnipeit.activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.nidecsnipeit.R;
 
 public class BaseActivity extends AppCompatActivity {
 

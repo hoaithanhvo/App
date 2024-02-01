@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".SearchActivity"
+    tools:context=".activity.SearchActivity"
     android:orientation="vertical">
 
     <TextView
@@ -12,7 +12,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
-        android:textColor="@color/black"
+        android:textColor="@color/text_color_secondary"
         android:text="@string/read_a_barcode"
         android:textAlignment="center"/>
 
