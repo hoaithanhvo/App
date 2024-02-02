@@ -4,12 +4,12 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/status_bar</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <!-- Color hover button -->
+        <item name="colorOnPrimary">@color/primary</item>
 
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondary</item>
 
-        <!-- Color hover -->
         <item name="colorOnSecondary">@color/white</item>
 
         <!-- Status bar color. -->

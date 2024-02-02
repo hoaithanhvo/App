@@ -2,7 +2,7 @@
     <string name="app_name">Nidec Assets Manager</string>
     <string name="action_back">Back</string>
     <string name="check_in">CHECK-IN</string>
-    <string name="check_out">CHECK-OUT</string>
+    <string name="check_out">CHECKOUT</string>
     <string name="maintenance">MAINTENANCE</string>
     <string name="button_text">Button Text</string>
     <string name="nidec_logo">Nidec logo</string>
@@ -11,7 +11,7 @@
     <string name="read_a_barcode">Read a barcode</string>
     <string name="asset_tag">Asset tag</string>
     <string name="search">SEARCH</string>
-    <string name="device_informations">Device informations</string>
+    <string name="device_information">Device information</string>
     <string name="submit">Submit</string>
     <string name="add_new_maintenance">Add new maintenance</string>
     <string name="edit">Edit</string>
@@ -20,4 +20,20 @@
     <string name="text_icon_for_common_field">Text icon for common field</string>
     <string name="checkout_location">CHECKOUT (LOCATION)</string>
     <string name="assets_management">ASSETS MANAGEMENT</string>
+    <string name="setting">SETTINGS</string>
+    <string name="snipe_it_server_address">Snipe-IT server address</string>
+    <string name="configure_server">Configure server</string>
+    <string name="server_sample">http://192.168.0.190:4402</string>
+    <string name="information">Information</string>
+    <string name="application_version">Application version</string>
+    <string name="version">0.1.0 - Nidec Assets Management</string>
+    <string name="snipeit_server_address">SnipeIT server address</string>
+    <string name="server_address">Server address</string>
+    <string name="set_server_eg">Set your server address e.g., https://develop.snipeitapp.com</string>
+    <string name="write_your_api_key_here">Write your api key here</string>
+    <string name="api_key">Api key</string>
+    <string name="configure_app">CONFIGURE APP</string>
+    <string name="default_configuration_demo">DEFAULT CONFIGURATION (DEMO)</string>
+    <string name="use_an_alternative_method">Use an alternative method</string>
+    <string name="or">OR</string>
 </resources>

@@ -28,7 +28,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -84,8 +87,6 @@ public class MaintenanceAddActivity extends BaseActivity {
             isNewMaintenance = true;
         }
 
-        List<DetailFieldModel> fields = MyApp.getMaintenanceScreenFields();
-
         apiServices.getSupplierList(new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
@@ -129,114 +130,123 @@ public class MaintenanceAddActivity extends BaseActivity {
                 int year = datePicker.getYear();
                 int month = datePicker.getMonth();
                 int day = datePicker.getDayOfMonth();
-                String selectedDate = year + "-" + (month + 1) + "-" + day;
+                String selectedDateString = year + "-" + (month + 1) + "-" + day;
+                String selectedDate = convertStringToDate(selectedDateString);
 
-                // set data for param
-                if (!isNewMaintenance) {
-                    // call API to update an existing maintenance
-                    assert maintenanceInfo != null;
-                    int finalMaintenanceId = maintenanceInfo.getId();
-                    int asset_id = maintenanceInfo.getAssetID();
-                    maintenanceInfo.setStartDate(selectedDate);
-                    maintenanceInfo.setAssetMaintenanceType(valuesMap.get("asset_maintenance_type"));
-                    maintenanceInfo.setSupplierID(Integer.parseInt(Objects.requireNonNull(valuesMap.get("supplier"))));
-                    maintenanceInfo.setTitle(valuesMap.get("title"));
+                String maintenanceType = valuesMap.get("asset_maintenance_type");
+                int supplierId = Integer.parseInt(Objects.requireNonNull(valuesMap.get("supplier")));
+                String title = valuesMap.get("title");
 
-                    // show alert dialog to confirm update process
-                    Common.showCustomAlertDialog(MaintenanceAddActivity.this, "Update maintenance",
-                        "Are you sure you want to update this maintenance?", true, new AlertDialogCallback() {
-                            @Override
-                            public void onPositiveButtonClick() {
-                                Common.showProgressDialog(MaintenanceAddActivity.this, "Updating...");
-                                apiServices.updateMaintenanceItem(finalMaintenanceId, maintenanceInfo,
-                                    new NetworkResponseListener<JSONObject>() {
-                                        @Override
-                                        public void onResult(JSONObject object) throws JSONException {
-                                            if (object.has("status") && object.get("status").equals("error")) {
-                                                Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                if (title == null || title.equals("")) {
+                    Common.showCustomSnackBar(rootView, "The title is mandatory", Common.SnackBarType.ERROR, null);
+                } else {
+                    // set data for param
+                    if (!isNewMaintenance) {
+                        // call API to update an existing maintenance
+                        assert maintenanceInfo != null;
+                        int finalMaintenanceId = maintenanceInfo.getId();
+                        int asset_id = maintenanceInfo.getAssetID();
+                        maintenanceInfo.setStartDate(selectedDate);
+                        maintenanceInfo.setAssetMaintenanceType(maintenanceType);
+                        maintenanceInfo.setSupplierID(supplierId);
+                        maintenanceInfo.setTitle(title);
+
+                        // show alert dialog to confirm update process
+                        Common.showCustomAlertDialog(MaintenanceAddActivity.this, "Update maintenance",
+                            "Are you sure you want to update this maintenance?", true, new AlertDialogCallback() {
+                                @Override
+                                public void onPositiveButtonClick() {
+                                    Common.showProgressDialog(MaintenanceAddActivity.this, "Updating...");
+                                    apiServices.updateMaintenanceItem(finalMaintenanceId, maintenanceInfo,
+                                        new NetworkResponseListener<JSONObject>() {
+                                            @Override
+                                            public void onResult(JSONObject object) throws JSONException {
+                                                if (object.has("status") && object.get("status").equals("error")) {
+                                                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                                                    Common.hideProgressDialog();
+                                                } else {
+                                                    Common.hideProgressDialog();
+                                                    Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                                                        @Override
+                                                        public void onSnackbar() {
+                                                            Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
+                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                            intent.putExtra("ASSET_ID", asset_id);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }, new NetworkResponseErrorListener() {
+                                            @Override
+                                            public void onErrorResult(Exception error) {
                                                 Common.hideProgressDialog();
-                                            } else {
-                                                Common.hideProgressDialog();
-                                                Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                                                    @Override
-                                                    public void onSnackbar() {
-                                                        Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
-                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                        intent.putExtra("ASSET_ID", asset_id);
-                                                        startActivity(intent);
-                                                        finish();
-                                                    }
-                                                });
+                                                Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
                                             }
                                         }
-                                    }, new NetworkResponseErrorListener() {
-                                        @Override
-                                        public void onErrorResult(Exception error) {
-                                            Common.hideProgressDialog();
-                                            Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
-                                        }
-                                    }
-                                );
-                            }
-
-                            @Override
-                            public void onNegativeButtonClick() {
-
-                            }
-                        });
-
-                }
-                else {
-                    // call API to add new a maintenance
-                    MaintenanceItemModel params = new MaintenanceItemModel();
-                    params.setAssetID(asset_id);
-                    params.setStartDate(selectedDate);
-                    params.setAssetMaintenanceType(valuesMap.get("asset_maintenance_type"));
-                    params.setSupplierID(Integer.parseInt(Objects.requireNonNull(valuesMap.get("supplier"))));
-                    params.setTitle(valuesMap.get("title"));
-
-                    // show alert dialog to confirm add process
-                    Common.showCustomAlertDialog(MaintenanceAddActivity.this, "Add maintenance",
-                            "Are you sure you want to add this maintenance?", true, new AlertDialogCallback() {
-                        @Override
-                        public void onPositiveButtonClick() {
-                            Common.showProgressDialog(MaintenanceAddActivity.this, "Saving...");
-                            apiServices.createMaintenanceItem(params,
-                                new NetworkResponseListener<JSONObject>() {
-                                    @Override
-                                    public void onResult(JSONObject object) throws JSONException {
-                                        if (object.has("status") && object.get("status").equals("error")) {
-                                            Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
-                                            Common.hideProgressDialog();
-                                        } else {
-                                            Common.hideProgressDialog();
-                                            Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                                                @Override
-                                                public void onSnackbar() {
-                                                    Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
-                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                    intent.putExtra("ASSET_ID", asset_id);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            });
-                                        }
-                                    }
-                                }, new NetworkResponseErrorListener() {
-                                    @Override
-                                    public void onErrorResult(Exception error) {
-                                        Common.hideProgressDialog();
-                                        Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
-                                    }
+                                    );
                                 }
-                            );
-                        }
 
-                        @Override
-                        public void onNegativeButtonClick() {
+                                @Override
+                                public void onNegativeButtonClick() {
 
-                        }
-                    });
+                                }
+                            });
+
+                    }
+                    else {
+                        // call API to add new a maintenance
+                        MaintenanceItemModel params = new MaintenanceItemModel();
+                        params.setAssetID(asset_id);
+                        params.setStartDate(selectedDate);
+                        params.setAssetMaintenanceType(maintenanceType);
+                        params.setSupplierID(supplierId);
+                        params.setTitle(title);
+
+                        // show alert dialog to confirm add process
+                        Common.showCustomAlertDialog(MaintenanceAddActivity.this, "Add maintenance",
+                            "Are you sure you want to add this maintenance?", true, new AlertDialogCallback() {
+                                @Override
+                                public void onPositiveButtonClick() {
+                                    Common.showProgressDialog(MaintenanceAddActivity.this, "Saving...");
+                                    apiServices.createMaintenanceItem(params,
+                                        new NetworkResponseListener<JSONObject>() {
+                                            @Override
+                                            public void onResult(JSONObject object) throws JSONException {
+                                                if (object.has("status") && object.get("status").equals("error")) {
+                                                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                                                    Common.hideProgressDialog();
+                                                } else {
+                                                    Common.hideProgressDialog();
+                                                    Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                                                        @Override
+                                                        public void onSnackbar() {
+                                                            Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
+                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                            intent.putExtra("ASSET_ID", asset_id);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }, new NetworkResponseErrorListener() {
+                                            @Override
+                                            public void onErrorResult(Exception error) {
+                                                Common.hideProgressDialog();
+                                                Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
+                                            }
+                                        }
+                                    );
+                                }
+
+                                @Override
+                                public void onNegativeButtonClick() {
+
+                                }
+                            });
+                    }
                 }
             }
         });
@@ -255,29 +265,22 @@ public class MaintenanceAddActivity extends BaseActivity {
         }
     }
 
-    public String getValueFieldFromObjectData(MaintenanceItemModel maintenanceInfo, String keyTitle) {
+    private String convertStringToDate(String inputDate) {
+        String formattedDate = "";
         try {
-            Field maintenanceInfoField = maintenanceInfo.getClass().getDeclaredField(keyTitle);
-            maintenanceInfoField.setAccessible(true);
-            Object fieldValue = maintenanceInfoField.get(maintenanceInfo);
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            if (fieldValue != null) {
-                return fieldValue.toString();
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            try {
-                String alternateTitleField = keyTitle + "_name";
-                Field maintenanceInfoField = maintenanceInfo.getClass().getDeclaredField(alternateTitleField);
-                maintenanceInfoField.setAccessible(true);
-                Object fieldValue = maintenanceInfoField.get(maintenanceInfo);
+            Date date = inputDateFormat.parse(inputDate);
 
-                if (fieldValue != null) {
-                    return fieldValue.toString();
-                }
-            } catch (NoSuchFieldException | IllegalAccessException e2) {
-                return "";
-            }
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            assert date != null;
+            formattedDate = outputDateFormat.format(date);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        return "";
+
+        return formattedDate;
     }
 }

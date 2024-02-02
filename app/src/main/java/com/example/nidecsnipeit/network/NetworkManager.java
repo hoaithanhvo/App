@@ -5,6 +5,7 @@ import android.content.Context;
 import com.android.volley.*;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.nidecsnipeit.activity.MyApplication;
 import com.example.nidecsnipeit.model.CheckinItemModel;
 import com.example.nidecsnipeit.model.CheckoutItemModel;
 import com.example.nidecsnipeit.model.GetCategoryParamItemModel;
@@ -27,12 +28,15 @@ public class NetworkManager {
     private static final String TAG = "NetworkManager";
     private static NetworkManager instance = null;
 
-    private String URL = "http://192.168.0.190:4402/api/v1";
-    private final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYmE2MmIyNDc1MDk5OWVhYzQxMTZkY2U4Yzc2MjQxODIzZmIxODRiZjgzZDkxM2VhOWViYTNkYzBhYWU4ZTkxYTczOGE0NDU2NThhYjVhMjQiLCJpYXQiOjE3MDY1ODM1MjEuOTk3MzMsIm5iZiI6MTcwNjU4MzUyMS45OTczNDIsImV4cCI6MjE3OTk2OTEyMS45ODQyMDcsInN1YiI6IjIiLCJzY29wZXMiOltdfQ.xGT8UH10xzovBcNZg__mbLLlrSSq2nWDYHW_RDYqxZwjAJgfjavgfcpuGUAe7ihSVwLgKf9ircRqjy21QyXe1A2saDfRDSAj9NU17JBn3bRODRjr-NTQcZCLaKv3zKpTKnEp8gQlWV_iRtrBQ22PAr5516ur5sFXty-lLcnePYp7e3JdSD2rfA5LDOIG_P3rQG6SRvz-gB7xmiLEsAn5T1XYDuQ8wpwEqv_ZmSfTUauyxiLlB68IqLB5BtUmxX5GlxSASi4Zlpcvlt9LHyEhtLcAJ7b72m8D8bmlVEHFKkf6P5vi73OqjVOgBZtSylepTbMGyy8UJPXNlGAIa5ikX4Go27L1_-1NNXN7y9aUat19FGtbbgKwDoIzPcMbcRe9b43ZzKOkMO49X-ydLBh7X2ojEoN_SXWO91Ndc8aNMrgRi7X1HEuZx7v6NCp4_Ru0Cgrye4B5qCU2DwG3BsSt7pCZQT2C7uY1ARg_uNXeydtljBevgH2OuJshXBN_uWBltZ9KJjS-Y7ZELsVhZCFuW92PCgcFgiAibvxhljFlCz2PfWMncNsuAyjyn4w9BRDW5wVOxeITR1uVNKWmNT5tdXwe-sk_Y6gpdzTC5ME0CET3ylvH4QUUvLztsa5wSvJy4nBv_C5COgBv55A_IMddNn2HEKduWtz10DYCvLKy3A0";
+    private String URL;
+    private final String ACCESS_TOKEN;
     public RequestQueue requestQueue;
 
     private NetworkManager(Context context) {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
+        MyApplication MyApp = (MyApplication) context.getApplicationContext();
+        URL = MyApp.getUrlServer() + "/api/v1";
+        ACCESS_TOKEN = MyApp.getApiKeyServer();
     }
 
     public void setServerURL(String serverURL) {
@@ -56,6 +60,22 @@ public class NetworkManager {
                     " is not initialized, call getInstance(...) first");
         }
         return instance;
+    }
+
+    // =============================================
+    // === Check connection with API Bearer token ==
+    // =============================================
+
+    /**
+     * Check connection
+     * @param url
+     * @param token
+     * @param listener
+     * @param errorListener
+     */
+    public void checkConnection(String url, String token, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        url = url +  "/api/v1/users/me";
+        this.getAPI(url, Request.Method.GET, null, token, listener, errorListener);
     }
 
     // =============================================
@@ -90,7 +110,7 @@ public class NetworkManager {
     // =============================================
     public void getMaintenanceList(GetMaintenanceParamItemModel paramItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/maintenances/";
-        this.getAPI(url, Request.Method.GET, paramItem, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, paramItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void updateMaintenanceItem(int maintenanceID, MaintenanceItemModel maintenanceItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
@@ -117,32 +137,32 @@ public class NetworkManager {
             String[] parts = assetTag.split("/hardware/");
             url = URL +  "/hardware/" + parts[1];
         }
-        this.getAPI(url, Request.Method.GET, null, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getLocationsList(GetLocationParamItemModel locationParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/locations";
-        this.getAPI(url, Request.Method.GET, locationParamItem, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, locationParamItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getManufacturerList(GetManufacturerParamItemModel manufacturerParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/manufacturers";
-        this.getAPI(url, Request.Method.GET, manufacturerParamItem, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, manufacturerParamItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getSupplierList(final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/suppliers";
-        this.getAPI(url, Request.Method.GET, null, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getCategoryList(GetCategoryParamItemModel categoryParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/categories";
-        this.getAPI(url, Request.Method.GET, categoryParamItem, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, categoryParamItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getModelList(GetModelParamItemModel modelParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/models";
-        this.getAPI(url, Request.Method.GET, modelParamItem, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, modelParamItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     // =============================================
@@ -193,7 +213,7 @@ public class NetworkManager {
 
         requestQueue.add(jsonObjectRequest);
     }
-    public <T> void getAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+    public <T> void getAPI(String Url, int httpMethod, T myObject, String apiToken, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         if (myObject != null) {
             Url += this.getQueryParams(myObject);
         }
@@ -216,7 +236,7 @@ public class NetworkManager {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headerMap = new HashMap<String, String>();
                 headerMap.put("Content-Type", "application/json");
-                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
+                headerMap.put("Authorization", "Bearer " + apiToken);
                 return headerMap;
             }
         };

@@ -57,8 +57,9 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="6dp"
-                android:backgroundTint="@color/button_red"
+                android:backgroundTint="@color/button_dark"
                 android:text="@string/edit"
+                android:textColor="@color/white"
                 tools:ignore="ButtonStyle" />
 
             <Button
@@ -69,6 +70,7 @@
                 android:layout_marginHorizontal="6dp"
                 android:backgroundTint="#72777A"
                 android:text="@string/delete"
+                android:textColor="@color/white"
                 tools:ignore="ButtonStyle" />
         </LinearLayout>
     </LinearLayout>

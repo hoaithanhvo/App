@@ -26,9 +26,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-40dp"
                 android:layout_marginBottom="30dp"
                 android:layout_gravity="center"
-                android:textColor="@color/button_red"
+                android:textColor="@color/button_dark"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:text="@string/assets_management"/>
@@ -50,7 +51,7 @@
                     android:layout_columnWeight="1"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="6dp"
-                    android:drawableTop="@drawable/main_check_in"
+                    android:drawableTop="@drawable/ic_checkin"
                     android:text="@string/check_in"
                     android:textColor="@color/black"/>
 
@@ -65,7 +66,7 @@
                     android:layout_columnWeight="1"
                     android:layout_marginStart="6dp"
                     android:layout_marginEnd="12dp"
-                    android:drawableTop="@drawable/main_check_out"
+                    android:drawableTop="@drawable/ic_checkout_location"
                     android:text="@string/check_out"
                     android:textColor="@color/black"/>
 
@@ -78,12 +79,27 @@
                     android:layout_row="1"
                     android:layout_rowWeight="1"
                     android:layout_column="0"
-                    android:layout_columnSpan="2"
-                    android:layout_columnWeight="2"
+                    android:layout_columnWeight="1"
                     android:layout_marginStart="12dp"
-                    android:layout_marginEnd="12dp"
-                    android:drawableTop="@drawable/main_maintenance"
+                    android:layout_marginEnd="6dp"
+                    android:drawableTop="@drawable/ic_maintenance"
                     android:text="@string/maintenance"
+                    android:textColor="@color/black"/>
+
+                <!-- Button 3 -->
+                <Button
+                    android:id="@+id/setting_btn"
+                    style="@style/ButtonCustomStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_rowWeight="1"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="12dp"
+                    android:drawableTop="@drawable/ic_setting"
+                    android:text="@string/setting"
                     android:textColor="@color/black"/>
 
             </GridLayout>

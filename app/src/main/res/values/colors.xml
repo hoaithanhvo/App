@@ -3,9 +3,9 @@
     <color name="primary">#23a56f</color>
     <color name="status_bar">#51c08e</color>
     <color name="secondary">#23C16B</color>
-    <color name="button_red">#811944</color>
-    <color name="success">#23C16B</color>
-    <color name="error">#D3180C</color>
+    <color name="button_dark">#192434</color>
+    <color name="success">#15C15D</color>
+    <color name="error">#FF4238</color>
     <color name="green_lightest">#ECFCE5</color>
     <color name="blue_lightest">#dff5f8</color>
     <color name="gray_lightest">#F7F9FA</color>

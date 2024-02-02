@@ -9,13 +9,12 @@
     <ImageView
         android:id="@+id/detail_img"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxHeight="60dp"
+        android:layout_height="100dp"
         android:layout_marginTop="@dimen/margin_screen"
         android:layout_marginBottom="8dp"
         android:layout_gravity="center"
         android:src="@drawable/broken_image"
-        android:contentDescription="@string/device_informations"/>
+        android:contentDescription="@string/device_information"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -31,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/button_red"
+        android:backgroundTint="@color/button_dark"
         android:textColor="@color/white"
         android:layout_marginHorizontal="@dimen/margin_screen"
         />

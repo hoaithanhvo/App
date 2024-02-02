@@ -24,7 +24,7 @@
         android:layout_alignParentEnd="true"
         app:cardCornerRadius="30dp"
         app:cardElevation="2dp"
-        android:background="@color/button_red"
+        android:background="@color/button_dark"
         android:foreground="?android:attr/selectableItemBackground">
 
         <ImageButton
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:src="@drawable/ic_add_maintenance"
-            android:background="@color/button_red"
+            android:background="@color/button_dark"
             android:contentDescription="@string/add_new_maintenance"
             android:foreground="?android:attr/selectableItemBackground"
             />
