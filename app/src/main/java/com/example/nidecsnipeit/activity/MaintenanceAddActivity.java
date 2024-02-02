@@ -28,7 +28,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -127,7 +130,9 @@ public class MaintenanceAddActivity extends BaseActivity {
                 int year = datePicker.getYear();
                 int month = datePicker.getMonth();
                 int day = datePicker.getDayOfMonth();
-                String selectedDate = year + "-" + (month + 1) + "-" + day;
+                String selectedDateString = year + "-" + (month + 1) + "-" + day;
+                String selectedDate = convertStringToDate(selectedDateString);
+
                 String maintenanceType = valuesMap.get("asset_maintenance_type");
                 int supplierId = Integer.parseInt(Objects.requireNonNull(valuesMap.get("supplier")));
                 String title = valuesMap.get("title");
@@ -258,5 +263,24 @@ public class MaintenanceAddActivity extends BaseActivity {
             // Update dropdown selection following position
             adapter.updateDropdownSelection(adapter.getCurrentPosition(), scannedValue);
         }
+    }
+
+    private String convertStringToDate(String inputDate) {
+        String formattedDate = "";
+        try {
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date date = inputDateFormat.parse(inputDate);
+
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            assert date != null;
+            formattedDate = outputDateFormat.format(date);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
     }
 }

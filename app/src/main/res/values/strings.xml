@@ -34,4 +34,6 @@
     <string name="api_key">Api key</string>
     <string name="configure_app">CONFIGURE APP</string>
     <string name="default_configuration_demo">DEFAULT CONFIGURATION (DEMO)</string>
+    <string name="use_an_alternative_method">Use an alternative method</string>
+    <string name="or">OR</string>
 </resources>

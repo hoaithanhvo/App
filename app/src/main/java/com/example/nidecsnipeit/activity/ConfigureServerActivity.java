@@ -2,10 +2,18 @@ package com.example.nidecsnipeit.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.model.SnackbarCallback;
@@ -34,19 +42,47 @@ public class ConfigureServerActivity extends BaseActivity {
         EditText apiTokenEdit = findViewById(R.id.api_token_edit);
         urlServerEdit.setText(MyApp.getUrlServer());
 
+        // set text for guide config
+        TextView textView = findViewById(R.id.config_api_guide_text);
+        String htmlText = "Follow the instructions on: <a href='https://bit.ly/snipeitapp_config'>https://bit.ly/snipeitapp_config</a> to configure Api Key";
+        textView.setText(Html.fromHtml(htmlText));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch enableApiSwitch = findViewById(R.id.toggle_api_switch);
+        LinearLayout apiTokenLayout = findViewById(R.id.api_token_layout);
+
+        enableApiSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // show api token edit  checked
+                    apiTokenLayout.setVisibility(View.VISIBLE);
+                } else {
+                    // hide api token edit  checked
+                    apiTokenLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+
         configureServerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Common.showProgressDialog(ConfigureServerActivity.this, "Checking server configuration...");
                 String urlServer = String.valueOf(urlServerEdit.getText());
-                String apiToken = String.valueOf(apiTokenEdit.getText());
+                String apiToken;
+                if (enableApiSwitch.isChecked()) {
+                    apiToken = String.valueOf(apiTokenEdit.getText());
+                } else {
+                    apiToken = MyApp.getDefaultApiKeyServer();
+                }
                 NetworkManager apiServices = NetworkManager.getInstance(ConfigureServerActivity.this);
 
+                String finalApiToken = apiToken;
                 apiServices.checkConnection(urlServer, apiToken, new NetworkResponseListener<JSONObject>() {
                     @Override
                     public void onResult(JSONObject object) throws JSONException {
                         Common.hideProgressDialog();
-                        MyApp.setServerInfo(urlServer, apiToken);
+                        MyApp.setServerInfo(urlServer, finalApiToken);
                         Common.showCustomSnackBar(view, "App configured!", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                             @Override
                             public void onSnackbar() {
@@ -81,6 +117,9 @@ public class ConfigureServerActivity extends BaseActivity {
                         Common.showCustomSnackBar(view, "App configured!", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                             @Override
                             public void onSnackbar() {
+                                Intent intent = new Intent(ConfigureServerActivity.this, SettingsActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                                 finish();
                             }
                         });
