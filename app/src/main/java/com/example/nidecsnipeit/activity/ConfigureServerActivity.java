@@ -86,6 +86,7 @@ public class ConfigureServerActivity extends BaseActivity {
                         Common.showCustomSnackBar(view, "App configured!", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                             @Override
                             public void onSnackbar() {
+                                NetworkManager.resetInstance();
                                 Intent intent = new Intent(ConfigureServerActivity.this, SettingsActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
@@ -120,6 +121,7 @@ public class ConfigureServerActivity extends BaseActivity {
                         Common.showCustomSnackBar(view, "App configured!", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                             @Override
                             public void onSnackbar() {
+                                NetworkManager.resetInstance();
                                 Intent intent = new Intent(ConfigureServerActivity.this, SettingsActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);

@@ -54,6 +54,10 @@ public class NetworkManager {
         return instance;
     }
 
+    public static synchronized void resetInstance() {
+        instance = null;
+    }
+
     public static synchronized NetworkManager getInstance() {
         if (null == instance) {
             throw new IllegalStateException(NetworkManager.class.getSimpleName() +
