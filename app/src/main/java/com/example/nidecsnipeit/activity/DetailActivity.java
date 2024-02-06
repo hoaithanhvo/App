@@ -134,7 +134,6 @@ public class DetailActivity extends BaseActivity {
                 handleRequestBtn(deviceInfo);
             } catch (JSONException e) {
                 Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
-                throw new RuntimeException(e);
             }
         });
     }
@@ -150,7 +149,12 @@ public class DetailActivity extends BaseActivity {
         NetworkManager apiServices = NetworkManager.getInstance();
         int id = (int) details.get("id");
         String asset_name = details.getString("name");
-        String locationName = details.getJSONObject("location").getString("name");
+        String locationName;
+        if (details.getString("location").equals("null")) {
+            locationName = "";
+        } else {
+            locationName = details.getJSONObject("location").getString("name");
+        }
 
         if (mode == Config.CHECK_IN_MODE) {
             // handle logic for check-in mode

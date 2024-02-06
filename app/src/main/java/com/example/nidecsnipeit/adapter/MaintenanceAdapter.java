@@ -89,7 +89,7 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
                                     mInflater.getContext().startActivity(intent);
                                 }
                             } catch (JSONException e) {
-                                throw new RuntimeException(e);
+                                Common.showCustomSnackBar(v, e.getMessage(), Common.SnackBarType.ERROR, null);
                             }
                             Common.hideProgressDialog();
                         }

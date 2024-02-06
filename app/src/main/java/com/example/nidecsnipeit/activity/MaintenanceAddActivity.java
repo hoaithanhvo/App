@@ -112,7 +112,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                     Common.hideProgressDialog();
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
-                    throw new RuntimeException(e);
+                    Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
             }
         }, new NetworkResponseErrorListener() {
