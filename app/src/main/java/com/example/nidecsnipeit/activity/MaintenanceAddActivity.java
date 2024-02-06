@@ -112,7 +112,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                     Common.hideProgressDialog();
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
-                    throw new RuntimeException(e);
+                    Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
             }
         }, new NetworkResponseErrorListener() {
@@ -219,7 +219,7 @@ public class MaintenanceAddActivity extends BaseActivity {
                                                     Common.hideProgressDialog();
                                                 } else {
                                                     Common.hideProgressDialog();
-                                                    Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                                                    Common.showCustomSnackBar(rootView, "Asset Maintenance created successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                                                         @Override
                                                         public void onSnackbar() {
                                                             Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);

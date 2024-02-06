@@ -92,7 +92,7 @@ public class MaintenanceListActivity extends BaseActivity {
                     }
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
-                    throw new RuntimeException(e);
+                    Common.showCustomSnackBar(view, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
             }
         }, new NetworkResponseErrorListener() {

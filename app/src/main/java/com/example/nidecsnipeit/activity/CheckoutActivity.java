@@ -77,7 +77,6 @@ public class CheckoutActivity extends BaseActivity {
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
                     Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
-                    throw new RuntimeException(e);
                 }
             }
         }, new NetworkResponseErrorListener() {
@@ -85,7 +84,6 @@ public class CheckoutActivity extends BaseActivity {
             public void onErrorResult(Exception error) {
                 Common.hideProgressDialog();
                 Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
-                throw new RuntimeException(error);
             }
         });
 
