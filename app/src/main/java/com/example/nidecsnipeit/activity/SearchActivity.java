@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -55,22 +56,31 @@ public class SearchActivity extends BaseActivity {
                 break;
         }
 
+        // get reference EditText and Button
+        EditText inputSearch = findViewById(R.id.input_search);
+        inputSearch.requestFocus(); // focus to edit text
+        Button searchButton = findViewById(R.id.search_btn);
+
         // Set up QR scanner button
         ImageButton qrScannerBtn = findViewById(R.id.qr_scanner_btn);
         qrScannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(SearchActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+                if (Common.isHardScanButtonPressed) {
+                    String assetTag = inputSearch.getText().toString();
+                    if (!assetTag.trim().isEmpty()) {
+                        Common.hideKeyboard(SearchActivity.this, v);
+                        redirectToDetailScreen(assetTag);
+                    }
                 } else {
-                    QRScannerHelper.initiateScan(SearchActivity.this);
+                    if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(SearchActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+                    } else {
+                        QRScannerHelper.initiateScan(SearchActivity.this);
+                    }
                 }
             }
         });
-
-        // get reference EditText and Button
-        EditText inputSearch = findViewById(R.id.input_search);
-        Button searchButton = findViewById(R.id.search_btn);
 
         // disable searchButton if inputSearch is Empty
         if (inputSearch.getText().toString().trim().isEmpty()) {
@@ -108,6 +118,7 @@ public class SearchActivity extends BaseActivity {
             }
         );
 
+        // handle search button on keyboard
         inputSearch.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String assetTag = v.getText().toString();
@@ -120,6 +131,7 @@ public class SearchActivity extends BaseActivity {
             return false;
         });
 
+        // handle search button click event
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,12 +147,10 @@ public class SearchActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String qrContent = QRScannerHelper.processScanResult(requestCode, resultCode, data);
+        EditText editText = findViewById(R.id.input_search);
         if (qrContent != null) {
             // Set content to EditText
-            EditText editText = findViewById(R.id.input_search);
-            if (editText != null) {
-                editText.setText(qrContent);
-            }
+            editText.setText(qrContent);
 
             // Redirect to Detail screen if QR scan is successful
             redirectToDetailScreen(qrContent);
@@ -148,10 +158,13 @@ public class SearchActivity extends BaseActivity {
             Toast.makeText(this, "Scan cancelled", Toast.LENGTH_SHORT).show();
             super.onActivityResult(requestCode, resultCode, data);
         }
+        // focus to edit text
+        Common.focusCursorToEnd(editText);
     }
 
     public void redirectToDetailScreen(String qrResult) {
         NetworkManager apiServices = NetworkManager.getInstance(SearchActivity.this);
+        EditText editText = findViewById(R.id.input_search);
 
         Common.showProgressDialog(this, "Searching...");
         apiServices.getItemRequestByAssetTag(qrResult, new NetworkResponseListener<JSONObject>() {
@@ -161,11 +174,15 @@ public class SearchActivity extends BaseActivity {
                     if (object.has("status") && object.get("status").equals("error")) {
                         Common.hideProgressDialog();
                         Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
+                        // focus to edit text
+                        Common.focusCursorToEnd(editText);
                     } else {
                         boolean userCanCheckIn = !object.getBoolean("user_can_checkout");
                         if (!userCanCheckIn && searchMode == Config.CHECK_IN_MODE) {
                             Common.hideProgressDialog();
                             Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked in", false, null);
+                            // focus to edit text
+                            Common.focusCursorToEnd(editText);
                         } else {
                             Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
                             intent.putExtra("DEVICE_INFO", object.toString());
@@ -176,6 +193,8 @@ public class SearchActivity extends BaseActivity {
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
                     Common.showCustomSnackBar(rootView, e.toString(), Common.SnackBarType.ERROR, null);
+                    // focus to edit text
+                    Common.focusCursorToEnd(editText);
                 }
             }
         }, new NetworkResponseErrorListener() {
@@ -189,8 +208,24 @@ public class SearchActivity extends BaseActivity {
                 } else {
                     Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR, null);
                 }
+                // focus to edit text
+                Common.focusCursorToEnd(editText);
             }
         });
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        int KEYCODE_SCAN = 10036;
+        EditText editText = findViewById(R.id.input_search);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            return true;
+        } else if (keyCode == KEYCODE_SCAN || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
+            Common.focusCursorToEnd(editText);
+            Common.setHardScanButtonPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

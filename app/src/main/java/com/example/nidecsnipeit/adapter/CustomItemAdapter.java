@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import com.example.nidecsnipeit.utility.Common;
 import com.example.nidecsnipeit.utility.FullNameConvert;
 import com.example.nidecsnipeit.utility.QRScannerHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +74,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
         holder.editTextView.setVisibility(View.GONE);
         holder.dropdownView.setVisibility(View.GONE);
         holder.qrScannerView.setVisibility(View.GONE);
+        holder.autoCompleteTextView.setVisibility(View.GONE);
+
         switch (currentItem.getMode()) {
             case TEXT:
                 holder.valueTextView.setGravity(Gravity.CENTER_VERTICAL);
@@ -86,6 +91,9 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                 holder.editTextView.setGravity(Gravity.CENTER_VERTICAL);
                 holder.editTextView.setText(currentItem.getValue());
                 holder.editTextView.setVisibility(View.VISIBLE);
+                if (position == 0) {
+                    holder.editTextView.requestFocus();
+                }
                 holder.editTextView.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -127,6 +135,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                     }
                 });
 
+                // handle QR scanner
                 if (currentItem.isDropdownScanner()) {
                     holder.qrScannerView.setVisibility(View.VISIBLE);
                     holder.qrScannerView.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +146,48 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                         }
                     });
                 }
+                break;
+            case AUTOCOMPLETE_TEXT:
+                List<SpinnerItemModel> autoCompleteList = new ArrayList<>(currentItem.getDropdownItems());
+                AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(mInflater.getContext(), R.layout.custom_spinner_item, autoCompleteList);
+                holder.autoCompleteTextView.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+                holder.autoCompleteTextView.setAdapter(autoCompleteAdapter);
+                holder.autoCompleteTextView.setText(currentItem.getValue());
+                holder.autoCompleteTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 
+                holder.autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        Common.focusCursorToEnd(holder.autoCompleteTextView);
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        currentItem.setValue(editable.toString());
+                    }
+                });
+
+                holder.autoCompleteTextView.setVisibility(View.VISIBLE);
+                if (position == 0) {
+                    holder.autoCompleteTextView.requestFocus();
+                }
+                // handle QR scanner
+                if (currentItem.isDropdownScanner()) {
+                    holder.qrScannerView.setVisibility(View.VISIBLE);
+                    holder.qrScannerView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Common.isHardScanButtonPressed) {
+                                focusNextView(holder.getAdapterPosition());
+                            } else {
+                                setCurrentPosition(holder.getAdapterPosition());
+                                QRScannerHelper.initiateScan((Activity) v.getContext());
+                            }
+                        }
+                    });
+                }
                 break;
         }
     }
@@ -156,6 +206,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
         EditText editTextView;
         Spinner dropdownView;
         ImageButton qrScannerView;
+        AutoCompleteTextView autoCompleteTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -165,6 +216,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
             editTextView = itemView.findViewById(R.id.edit_text_item);
             dropdownView = itemView.findViewById(R.id.dropdown_item);
             qrScannerView = itemView.findViewById(R.id.qr_scanner_btn);
+            autoCompleteTextView = itemView.findViewById(R.id.auto_complete_text_item);
         }
     }
 
@@ -173,7 +225,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
 
         for (ListItemModel item : mData) {
             String keyTitle = FullNameConvert.getKeyByFullName(item.getTitle());
-            if (item.getMode() == ListItemModel.Mode.DROPDOWN && !keyTitle.equals("asset_maintenance_type")) {
+            if ((item.getMode() == ListItemModel.Mode.DROPDOWN && !keyTitle.equals("asset_maintenance_type"))
+                    || item.getMode() == ListItemModel.Mode.AUTOCOMPLETE_TEXT) {
                 valuesMap.put(keyTitle, this.getIdSpinnerItemByName(item.getDropdownItems(), item.getValue()));
             } else {
                 valuesMap.put(keyTitle, item.getValue());
@@ -196,12 +249,22 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                 listItem.setValue(selectedValue);
 
                 // Find the spinner corresponding with position
-                Spinner dropdownView = findDropdownViewForItem(position);
+                View dropdownView = findViewByPosition(position, ListItemModel.Mode.DROPDOWN);
 
                 // Set selection by selectedIndex in Spinner
                 if (dropdownView != null) {
-                    dropdownView.setSelection(selectedIndex);
+                    ((Spinner) dropdownView).setSelection(selectedIndex);
                 }
+            }
+        } else if ( listItem.getMode() == ListItemModel.Mode.AUTOCOMPLETE_TEXT) {
+            listItem.setValue(selectedValue);
+            // Find the AutoCompleteTextView corresponding with position
+            View autoCompleteTextView = findViewByPosition(position, ListItemModel.Mode.AUTOCOMPLETE_TEXT);
+
+            // Set selection by selectedIndex in AutoCompleteTextView
+            if (autoCompleteTextView != null) {
+                ((AutoCompleteTextView) autoCompleteTextView).setText(selectedValue);
+                this.focusNextView(position);
             }
         }
     }
@@ -217,11 +280,15 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
         return -1;
     }
 
-    private Spinner findDropdownViewForItem(int position) {
+    private View findViewByPosition(int position, ListItemModel.Mode mode) {
         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
 
         if (viewHolder instanceof CustomItemAdapter.ViewHolder) {
-            return ((CustomItemAdapter.ViewHolder) viewHolder).dropdownView;
+            if (mode == ListItemModel.Mode.DROPDOWN) {
+                return ((CustomItemAdapter.ViewHolder) viewHolder).dropdownView;
+            } else if (mode == ListItemModel.Mode.AUTOCOMPLETE_TEXT) {
+                return ((CustomItemAdapter.ViewHolder) viewHolder).autoCompleteTextView;
+            }
         }
 
         return null;
@@ -237,10 +304,33 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
 
     public String getIdSpinnerItemByName(List<SpinnerItemModel> spinnerItems, String name) {
         for (SpinnerItemModel item : spinnerItems) {
-            if (item.getName().equals(name)) {
+            String itemName = item.getName().toUpperCase();
+            if (itemName.equals(name.toUpperCase())) {
                 return item.getId();
             }
         }
-        return "-1";
+        if (name.equals("")) {
+            return "-1";
+        }
+        return "-99";
+    }
+
+    private void focusNextView (int currentPosition) {
+        ListItemModel.Mode mode;
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(currentPosition + 1);
+        CustomItemAdapter.ViewHolder nextViewHolder = null;
+
+        if (viewHolder instanceof CustomItemAdapter.ViewHolder) {
+            nextViewHolder = (CustomItemAdapter.ViewHolder) viewHolder;
+            mode = mData.get(nextViewHolder.getAdapterPosition()).getMode();
+
+            if (mode == ListItemModel.Mode.EDIT_TEXT) {
+                EditText nextView = nextViewHolder.editTextView;
+                Common.focusCursorToEnd(nextView);
+            } else if (mode == ListItemModel.Mode.AUTOCOMPLETE_TEXT) {
+                AutoCompleteTextView nextView = nextViewHolder.autoCompleteTextView;
+                Common.focusCursorToEnd(nextView);
+            }
+        }
     }
 }

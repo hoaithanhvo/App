@@ -1,5 +1,7 @@
 package com.example.nidecsnipeit.model;
 
+import androidx.annotation.NonNull;
+
 public class SpinnerItemModel {
     private String id;
     private String name;
@@ -14,6 +16,12 @@ public class SpinnerItemModel {
     }
 
     public String getName() {
+        return name;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
         return name;
     }
 }
