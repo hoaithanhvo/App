@@ -93,7 +93,8 @@ public class ListItemModel {
     public enum Mode {
         TEXT,
         EDIT_TEXT,
-        DROPDOWN
+        DROPDOWN,
+        AUTOCOMPLETE_TEXT
 
     }
 }

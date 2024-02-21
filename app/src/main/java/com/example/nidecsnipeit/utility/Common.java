@@ -13,6 +13,7 @@ import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import androidx.core.content.ContextCompat;
@@ -31,6 +32,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Common {
+    public static boolean isHardScanButtonPressed = false;
+    public static final int KEYCODE_SCAN = 10036;
+
+    private static final Handler handler = new Handler();
+
+    public static void setHardScanButtonPressed() {
+        isHardScanButtonPressed = true;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isHardScanButtonPressed = false;
+            }
+        }, 1000); // 500 milliseconds = 0.5 seconds
+    }
+
     public static int convertDpToPixel(int dp, Context context) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -164,5 +180,17 @@ public class Common {
         }
 
         return myList;
+    }
+
+    public static void focusCursorToEnd(EditText editText) {
+        editText.post(new Runnable() {
+            @Override
+            public void run() {
+                editText.requestFocus();
+                if (!editText.getText().toString().isEmpty()) {
+                    editText.setSelection(editText.getText().length());
+                }
+            }
+        });
     }
 }

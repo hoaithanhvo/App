@@ -1,5 +1,7 @@
 package com.example.nidecsnipeit.activity;
 
+import static com.example.nidecsnipeit.utility.Common.KEYCODE_SCAN;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,10 +65,8 @@ public class CheckoutActivity extends BaseActivity {
             @Override
             public void onResult(JSONObject object) {
                 try {
-                    SpinnerItemModel attentionLocation = new SpinnerItemModel("-99", "-- Select location --");
                     List<SpinnerItemModel> locationList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
-                    locationList.add(0, attentionLocation);
-                    dataList.add(new ListItemModel("Location", locationName, ListItemModel.Mode.DROPDOWN, locationList, true));
+                    dataList.add(new ListItemModel("Location", "", ListItemModel.Mode.AUTOCOMPLETE_TEXT, locationList, true));
                     dataList.add(new ListItemModel("Asset Name", assetName, ListItemModel.Mode.EDIT_TEXT));
 
                     RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
@@ -93,8 +93,10 @@ public class CheckoutActivity extends BaseActivity {
                 // bind data to params
                 Map<String, String> valuesMap = adapter.getAllValuesByTitle();
                 int locationId = Integer.parseInt(Objects.requireNonNull(valuesMap.get("location")));
-                if (locationId == -99) {
+                if (locationId == -1) {
                     Common.showCustomAlertDialog(CheckoutActivity.this, null, "Please, select a location first", false, null);
+                } else if (locationId == -99) {
+                    Common.showCustomAlertDialog(CheckoutActivity.this, null, "This location is not in the list", false, null);
                 } else {
                     String asset_name = valuesMap.get("name");
                     CheckoutItemModel checkoutItems = new CheckoutItemModel(locationId, asset_name);
@@ -190,6 +192,9 @@ public class CheckoutActivity extends BaseActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
+            return true;
+        } else if (keyCode == KEYCODE_SCAN || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
+            Common.setHardScanButtonPressed();
             return true;
         }
         return super.onKeyDown(keyCode, event);
