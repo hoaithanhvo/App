@@ -8,10 +8,19 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.nidecsnipeit.R;
+import com.example.nidecsnipeit.model.AlertDialogCallback;
+import com.example.nidecsnipeit.network.NetworkManager;
+import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
+import com.example.nidecsnipeit.network.NetworkResponseListener;
+import com.example.nidecsnipeit.utility.Common;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -21,16 +30,45 @@ public class SettingsActivity extends BaseActivity {
         setContentView(R.layout.activity_settings);
         setupActionBar("Settings");
         MyApplication MyApp = (MyApplication) getApplication();
+        NetworkManager apiServices = NetworkManager.getInstance(this);
 
-        LinearLayout configureServer = findViewById(R.id.configure_server);
-        TextView urlText = findViewById(R.id.url_server_text);
-        urlText.setText(MyApp.getUrlServer());
+        TextView usernameText = findViewById(R.id.username_text);
+        usernameText.setText(MyApp.getUserFullName());
 
-        configureServer.setOnClickListener(new View.OnClickListener() {
+        Button logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, ConfigureServerActivity.class);
-                startActivity(intent);
+                Common.showCustomAlertDialog(SettingsActivity.this, null, "Are you sure you want to log out?", true, new AlertDialogCallback() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        Common.showProgressDialog(SettingsActivity.this, "Logout...");
+                        // call api to logout
+                        apiServices.logout(MyApp.getIdApiKeyServer(), new NetworkResponseListener<JSONObject>() {
+                            @Override
+                            public void onResult(JSONObject object) throws JSONException {
+                                Common.hideProgressDialog();
+                                MyApp.resetLoginInfo();
+                                Intent loginIntent = new Intent(SettingsActivity.this, LoginActivity.class);
+                                loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(loginIntent);
+                                finish();
+                            }
+                        }, new NetworkResponseErrorListener() {
+                            @Override
+                            public void onErrorResult(Exception error) {
+                                Common.hideProgressDialog();
+                                Common.tokenInvalid(SettingsActivity.this);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onNegativeButtonClick() {
+
+                    }
+                });
+
             }
         });
     }
@@ -38,9 +76,6 @@ public class SettingsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-//            Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
             finish();
             return true;
         }
@@ -50,9 +85,6 @@ public class SettingsActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
             finish();
             return true;
         }

@@ -40,74 +40,14 @@
                 android:text="@string/set_server_eg"
                 android:textColor="@color/text_color_secondary"/>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/config_api_guide_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="@dimen/text_size"
-           />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:text="@string/or"
-            />
-
-        <Switch
-            android:id="@+id/toggle_api_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/text_color_secondary"
-            android:text="@string/use_an_alternative_method"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <LinearLayout
-            android:id="@+id/api_token_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:paddingHorizontal="4dp"
-                android:textSize="12sp"
-                android:text="@string/write_your_api_key_here"
-                android:textColor="@color/text_color_secondary"/>
-
-            <EditText
-                android:id="@+id/api_token_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/api_key"
-                android:autofillHints="false"
-                android:inputType="textUri"
-                android:textSize="@dimen/text_size"/>
-        </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/configure_default_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_screen"
-        android:backgroundTint="@color/secondary"
-        android:textColor="@color/white"
-        android:text="@string/default_configuration_demo"
-        android:layout_gravity="bottom"/>
 
     <Button
         android:id="@+id/configure_server_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_screen"
+        android:paddingVertical="@dimen/margin_screen"
         android:backgroundTint="@color/secondary"
         android:textColor="@color/white"
         android:text="@string/configure_app"

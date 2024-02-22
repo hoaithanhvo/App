@@ -14,6 +14,7 @@ import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
 import com.example.nidecsnipeit.model.GetManufacturerParamItemModel;
 import com.example.nidecsnipeit.model.GetModelParamItemModel;
 import com.example.nidecsnipeit.model.GetSupplierParamItemModel;
+import com.example.nidecsnipeit.model.LoginItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
 
 import org.json.JSONException;
@@ -39,14 +40,6 @@ public class NetworkManager {
         ACCESS_TOKEN = MyApp.getApiKeyServer();
     }
 
-    public void setServerURL(String serverURL) {
-        URL = serverURL;
-    }
-
-    public String getServerURL() {
-        return this.URL;
-    }
-
     public static synchronized NetworkManager getInstance(Context context) {
         if (instance == null) {
             instance = new NetworkManager(context);
@@ -67,18 +60,47 @@ public class NetworkManager {
     }
 
     // =============================================
+    // ===== Login with username and password ======
+    // =============================================
+
+    /**
+     * Login with username and password
+     * @param loginItem
+     * @param listener
+     * @param errorListener
+     */
+    public void login(LoginItemModel loginItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/account/personal-access-tokens/create-from-username-password";
+        this.postAPI(url, Request.Method.POST, loginItem, listener, errorListener);
+    }
+
+    // =============================================
+    // ===== Logout ======
+    // =============================================
+
+    /**
+     * Logout
+     * @param tokenId
+     * @param listener
+     * @param errorListener
+     */
+    public void logout(String tokenId, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/account/personal-access-tokens/mobile/" + tokenId;
+        this.postAPI(url, Request.Method.DELETE, null, listener, errorListener);
+    }
+
+    // =============================================
     // === Check connection with API Bearer token ==
     // =============================================
 
     /**
      * Check connection
-     * @param url
      * @param token
      * @param listener
      * @param errorListener
      */
-    public void checkConnection(String url, String token, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        url = url +  "/api/v1/users/me";
+    public void checkConnection(String token, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/users/me";
         this.getAPI(url, Request.Method.GET, null, token, listener, errorListener);
     }
 

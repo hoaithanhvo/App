@@ -206,7 +206,7 @@ public class SearchActivity extends BaseActivity {
                 if (error.getMessage() == null) {
                     Common.showCustomSnackBar(rootView, "Failed to connect to server", Common.SnackBarType.ERROR, null);
                 } else {
-                    Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR, null);
+                    Common.tokenInvalid(SearchActivity.this);
                 }
                 // focus to edit text
                 Common.focusCursorToEnd(editText);

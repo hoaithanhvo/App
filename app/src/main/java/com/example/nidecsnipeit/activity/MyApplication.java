@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.example.nidecsnipeit.model.DetailFieldModel;
+import com.example.nidecsnipeit.utility.Common;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MyApplication extends Application {
@@ -13,13 +16,19 @@ public class MyApplication extends Application {
     private final List<DetailFieldModel> detailScreenFields = new ArrayList<>();
     private String currentUrlServer;
     private String currentApiKeyServer;
-    private final String urlServerDefault = "https://develop.snipeitapp.com";
-    private final String apiTokenDefault = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZTU2MDc0MjVmYjM5YTEwYjFjNTZlZTAxMTBmZDk4ZjQ0ZjVjODMzYjcxZWVhYjZlNDk1NGMwOThlY2YzMzU2MDY4Mzg4MmFhMDMzOTAzNzciLCJpYXQiOjE2MzI4NjU5MTgsIm5iZiI6MTYzMjg2NTkxOCwiZXhwIjoyMjY0MDIxNTE4LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.LgGVzyH67IRhXvccHd4j2Dn6TDuIuQTBoo30_wD9jPehy8v_h0xBmE1-dOUBRJyeJOI8B4gwPeALsWaudpGj9Lb5qWAtKV7eYtH9IYQKoLF_iHgOGXnAUcNwID6zBU_YyLNSI6gp8zjutLJias33CBLsHy5ZRNpxVibVrZouJ_HjYuIYbtZyLus-KFFeibtZoPiTWOeHhQFD37MR6ifx4dBqT37fN-xDS99mONtrkAplEIou5aSO1oZ4IlJIPCUyA1lixPgpn1YU7PxiBDZp1teeugD0WEmrAqxRS2I0bH4qPsuTsrVXS_lo87Sf5LBGLW7lGHKqyYH6J47OZOM0K-SrxLKtE1ww8jyLBgnnxH0lJHRLCBiwUnL5ZGTUmiOysUA-wSJ6s78o8Pc-ec6bpBvAlelHdiQ-wslE7gzEJDptbejFg-75b_CEwgJYh7J2D18ul6Qu5EFCUEgt033mm04dgVk0isWTDt6EW5ZvTo5Qhr1LY0YnEIXCTqIRN-BSQjL55sZaCrtwR_21bnBGgniyI5MRDYblFawVmFKroeClCpSjBo9vi66akdD5hjpvx67RL3r33BZQhEXmPifUPNH5wP_U-IHGFUD99TJk2c1awF0RASveZRLSunbJb1x6hGAVUaIvQV4r2quWzXqYyKLph9kGTyJYrb6iJtH5smE";
-
-    private static final String PREF_NAME = "NIDEC_SNIPEIT";
-    private static final String IS_FIRST_RUN = "IS_FIRST_RUN";
-    private static final String URL_SERVER = "URL_SERVER";
-    private static final String API_KEY_SERVER = "API_KEY_SERVER";
+    private String currentIdApiKeyServer;
+    private Date expireApiKeyServer;
+    private Boolean isFirstRun;
+    private String userFullName;
+//    private final String urlServerDefault = "https://develop.snipeitapp.com";
+    private final String urlServerDefault = "http://192.168.0.190:4402";
+    private final String PREF_NAME = "NIDEC_SNIPEIT";
+    private final String URL_SERVER = "URL_SERVER";
+    private final String API_KEY_SERVER = "API_KEY_SERVER";
+    private final String ID_API_KEY_SERVER = "ID_API_KEY_SERVER";
+    private final String EXPIRE_API_KEY_SERVER = "EXPIRE_API_KEY_SERVER";
+    private final String IS_FIRST_RUN = "IS_FIRST_RUN";
+    private final String USER_FULL_NAME = "USER_FULL_NAME";
 
     @Override
     public void onCreate() {
@@ -39,62 +48,107 @@ public class MyApplication extends Application {
     // load server information from local storage
     private void loadDataFromPreferences() {
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        boolean isFirstRun = preferences.getBoolean(IS_FIRST_RUN, true);
         String urlServer = preferences.getString(URL_SERVER, urlServerDefault);
-        String apiKey = preferences.getString(API_KEY_SERVER, apiTokenDefault);
+        String apiKey = preferences.getString(API_KEY_SERVER, null);
+        String idApiKey = preferences.getString(ID_API_KEY_SERVER, null);
+        String expireApiKey = preferences.getString(EXPIRE_API_KEY_SERVER, null);
+        boolean isFirstRun = preferences.getBoolean(IS_FIRST_RUN, true);
+        String userFullName = preferences.getString(USER_FULL_NAME, "");
 
-        if (isFirstRun) {
-            // First time, save default value to SharedPreferences
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(URL_SERVER, urlServerDefault);
-            editor.putString(API_KEY_SERVER, apiTokenDefault);
-            editor.putBoolean(IS_FIRST_RUN, false);
-            editor.apply();
-            this.currentUrlServer = urlServerDefault;
-            this.currentApiKeyServer = apiTokenDefault;
-        } else {
-            this.currentUrlServer = urlServer;
-            this.currentApiKeyServer = apiKey;
-        }
+        this.currentUrlServer = urlServer;
+        this.currentApiKeyServer = apiKey;
+        this.currentIdApiKeyServer = idApiKey;
+        this.expireApiKeyServer = Common.convertStringToDate(expireApiKey);
+        this.isFirstRun = isFirstRun;
+        this.userFullName = userFullName;
     }
 
     public List<DetailFieldModel> getDetailScreenFields() {
         return detailScreenFields;
     }
 
+    public String getUserFullName() {
+        return this.userFullName;
+    }
+
+    public boolean isFirstRun() {
+        return this.isFirstRun;
+    }
     public String getUrlServer() {
         return this.currentUrlServer;
+    }
+    public void setUrlServer(String newUrl) {
+        this.currentUrlServer = newUrl;
+        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(URL_SERVER, this.currentUrlServer);
+        editor.apply();
     }
 
     public String getApiKeyServer() {
         return this.currentApiKeyServer;
+    }
+    public String getIdApiKeyServer() {
+        return this.currentIdApiKeyServer;
     }
 
     public String getDefaultUrlServer() {
         return this.urlServerDefault;
     }
 
-    public String getDefaultApiKeyServer() {
-        return this.apiTokenDefault;
-    }
+    // setting server info
+    public void setLoginInfo(String newIdApiKey, String newApiKey, Date newExpireApiKey, String userFullName) {
+        // add 7 days to expire time token
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newExpireApiKey);
+        calendar.add(Calendar.DAY_OF_MONTH, 0);
+        Date expireTime =  calendar.getTime();
 
-    public void setServerInfo(String newUrlServer, String newApiKey) {
+        // save server info to SharedPreferences
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(URL_SERVER, newUrlServer);
+        editor.putString(ID_API_KEY_SERVER, newIdApiKey);
         editor.putString(API_KEY_SERVER, newApiKey);
+        editor.putString(EXPIRE_API_KEY_SERVER, Common.convertDateToString(expireTime));
+        editor.putBoolean(IS_FIRST_RUN, false);
+        editor.putString(USER_FULL_NAME, userFullName);
         editor.apply();
-        this.currentUrlServer = newUrlServer;
+        this.currentIdApiKeyServer = newIdApiKey;
         this.currentApiKeyServer = newApiKey;
+        this.expireApiKeyServer = expireTime;
+        this.isFirstRun = false;
+        this.userFullName = userFullName;
+    }
+
+    // reset server info
+    public void resetLoginInfo() {
+        // save server info to SharedPreferences
+        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(ID_API_KEY_SERVER, null);
+        editor.putString(API_KEY_SERVER, null);
+        editor.putString(EXPIRE_API_KEY_SERVER, null);
+        editor.putBoolean(IS_FIRST_RUN, true);
+        editor.putString(USER_FULL_NAME, null);
+        editor.apply();
+        this.currentIdApiKeyServer = null;
+        this.currentApiKeyServer = null;
+        this.expireApiKeyServer = null;
+        this.isFirstRun = true;
+        this.userFullName = "";
     }
 
     public void setDefaultServerInfo() {
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(URL_SERVER, urlServerDefault);
-        editor.putString(API_KEY_SERVER, apiTokenDefault);
+        editor.putString(ID_API_KEY_SERVER, null);
+        editor.putString(API_KEY_SERVER, null);
+        editor.putString(EXPIRE_API_KEY_SERVER, null);
         editor.apply();
         this.currentUrlServer = urlServerDefault;
-        this.currentApiKeyServer = apiTokenDefault;
+        this.currentIdApiKeyServer = null;
+        this.currentApiKeyServer = null;
+        this.expireApiKeyServer = null;
     }
 }

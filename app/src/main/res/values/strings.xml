@@ -36,4 +36,10 @@
     <string name="default_configuration_demo">DEFAULT CONFIGURATION (DEMO)</string>
     <string name="use_an_alternative_method">Use an alternative method</string>
     <string name="or">OR</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="hide_unhide_password">hide_unhide_password</string>
+    <string name="show_password">Show password</string>
 </resources>

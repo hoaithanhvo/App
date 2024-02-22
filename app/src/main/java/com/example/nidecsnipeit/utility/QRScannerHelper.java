@@ -19,7 +19,7 @@ public class QRScannerHelper {
         integrator.setOrientationLocked(true);
         integrator.setBeepEnabled(true);
         integrator.setCaptureActivity(CapturePortraitActivity.class);
-        integrator.setPrompt("Scan a QR code");
+        integrator.setPrompt("Scan a QR code or barcode");
         integrator.setRequestCode(QR_SCAN_REQUEST_CODE);
         integrator.initiateScan();
     }

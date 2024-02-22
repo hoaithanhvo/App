@@ -1,20 +1,41 @@
 package com.example.nidecsnipeit.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.nidecsnipeit.Config;
 import com.example.nidecsnipeit.R;
+import com.example.nidecsnipeit.network.NetworkManager;
+import com.example.nidecsnipeit.service.TokenValidationService;
 
 
 public class MenuActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MyApplication MyApp = (MyApplication) getApplication();
+        if (MyApp.isFirstRun()) {
+            // if app first run, redirect to login screen
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
+        } else {
+            Intent serviceIntent = new Intent(this, TokenValidationService.class);
+            startService(serviceIntent);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
