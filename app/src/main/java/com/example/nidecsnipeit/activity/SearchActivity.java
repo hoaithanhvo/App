@@ -176,18 +176,10 @@ public class SearchActivity extends BaseActivity {
                         // focus to edit text
                         Common.focusCursorToEnd(editText);
                     } else {
-                        boolean userCanCheckIn = !object.getBoolean("user_can_checkout");
-                        if (!userCanCheckIn && searchMode == DetailActivity.CHECK_IN_MODE) {
-                            Common.hideProgressDialog();
-                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked in", false, null);
-                            // focus to edit text
-                            Common.focusCursorToEnd(editText);
-                        } else {
-                            Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
-                            intent.putExtra("DEVICE_INFO", object.toString());
-                            intent.putExtra("MODE", searchMode);
-                            startActivity(intent);
-                        }
+                        Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
+                        intent.putExtra("DEVICE_INFO", object.toString());
+                        intent.putExtra("MODE", searchMode);
+                        startActivity(intent);
                     }
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
