@@ -35,27 +35,37 @@ import java.util.Map;
 import java.util.Objects;
 
 public class CheckoutActivity extends BaseActivity {
+    public static final int CHECK_IN = 1;
+    public static final int CHECK_OUT = 2;
     private CustomItemAdapter adapter;
     private View rootView;
     private NetworkManager apiServices;
+    private int mode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
         rootView = findViewById(android.R.id.content);
 
-        setupActionBar("Checkout");
         Common.showProgressDialog(this, "Loading...");
 
         // Get detail data
         apiServices = NetworkManager.getInstance(this);
         Intent intent = getIntent();
+        mode = intent.getIntExtra("CHECKOUT_MODE", CHECK_OUT);
         int assetId = intent.getIntExtra("ASSET_ID", 0);
         String assetName = intent.getStringExtra("ASSET_NAME");
-        String locationName = intent.getStringExtra("LOCATION_NAME");
         boolean checkoutAvailable = intent.getBooleanExtra("CHECKOUT_AVAILABLE", false);
 
         Button checkoutBtn = findViewById(R.id.checkout_btn);
+        // setup title for checkout mode
+        if (mode == CHECK_OUT) {
+            setupActionBar("Checkout");
+            checkoutBtn.setText(R.string.check_out);
+        } else if (mode == CHECK_IN) {
+            setupActionBar("Check-in");
+            checkoutBtn.setText(R.string.check_in);
+        }
 
         List<ListItemModel> dataList = new ArrayList<>();
         GetLocationParamItemModel locationItems = new GetLocationParamItemModel();
@@ -67,7 +77,9 @@ public class CheckoutActivity extends BaseActivity {
                 try {
                     List<SpinnerItemModel> locationList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
                     dataList.add(new ListItemModel("Location", "", ListItemModel.Mode.AUTOCOMPLETE_TEXT, locationList, true));
-                    dataList.add(new ListItemModel("Asset Name", assetName, ListItemModel.Mode.EDIT_TEXT));
+                    if (mode == CHECK_OUT) {
+                        dataList.add(new ListItemModel("Asset Name", assetName, ListItemModel.Mode.EDIT_TEXT));
+                    }
 
                     RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
                     recyclerView.setLayoutManager(new LinearLayoutManager(CheckoutActivity.this));
@@ -99,6 +111,9 @@ public class CheckoutActivity extends BaseActivity {
                     Common.showCustomAlertDialog(CheckoutActivity.this, null, "This location is not in the list", false, null);
                 } else {
                     String asset_name = valuesMap.get("name");
+                    if (mode != CHECK_OUT) {
+                        asset_name = assetName;
+                    }
                     CheckoutItemModel checkoutItems = new CheckoutItemModel(locationId, asset_name);
                     Common.showProgressDialog(CheckoutActivity.this, "Checking...");
                     if (checkoutAvailable) {
@@ -140,7 +155,11 @@ public class CheckoutActivity extends BaseActivity {
                     Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
                 } else {
                     Common.hideProgressDialog();
-                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                    String messageSuccessful = "Asset checked out successfully.";
+                    if (mode == CHECK_IN) {
+                        messageSuccessful = "Asset checked in successfully.";
+                    }
+                    Common.showCustomSnackBar(rootView, messageSuccessful, Common.SnackBarType.SUCCESS, new SnackbarCallback() {
                         @Override
                         public void onSnackbar() {
                             Intent intent = new Intent(CheckoutActivity.this, MenuActivity.class);

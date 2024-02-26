@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nidecsnipeit.Config;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CustomItemAdapter;
 import com.example.nidecsnipeit.model.AlertDialogCallback;
@@ -33,6 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DetailActivity extends BaseActivity {
+    public static final int CHECK_IN_MODE = 1;
+    public static final int CHECK_OUT_MODE = 2;
+    public static final int MAINTENANCE_MODE = 3;
+    public static final int SETTING_MODE = 4;
     CustomItemAdapter adapter;
     private int mode;
     private View rootView;
@@ -54,7 +56,7 @@ public class DetailActivity extends BaseActivity {
         // Get detail data
         Intent intent = getIntent();
         String deviceInfoJson = intent.getStringExtra("DEVICE_INFO");
-        mode = intent.getIntExtra("MODE", Config.CHECK_IN_MODE);
+        mode = intent.getIntExtra("MODE", CHECK_IN_MODE);
         List<ListItemModel> dataList = new ArrayList<>();
         try {
             assert deviceInfoJson != null;
@@ -120,14 +122,14 @@ public class DetailActivity extends BaseActivity {
 
         Button requestBtn = findViewById(R.id.check_in_detail);
         switch (mode) {
-            case Config.CHECK_IN_MODE:
-                requestBtn.setText("CHECK-IN");
+            case CHECK_IN_MODE:
+                requestBtn.setText(R.string.check_in);
                 break;
-            case Config.CHECK_OUT_MODE:
-                requestBtn.setText("CHECKOUT (LOCATION)");
+            case CHECK_OUT_MODE:
+                requestBtn.setText(R.string.check_out);
                 break;
-            case Config.MAINTENANCE_MODE:
-                requestBtn.setText("MAINTENANCES");
+            case MAINTENANCE_MODE:
+                requestBtn.setText(R.string.maintenance);
                 break;
         }
         requestBtn.setOnClickListener(v -> {
@@ -157,63 +159,24 @@ public class DetailActivity extends BaseActivity {
             locationName = details.getJSONObject("location").getString("name");
         }
 
-        if (mode == Config.CHECK_IN_MODE) {
-            // handle logic for check-in mode
-            Common.showCustomAlertDialog(DetailActivity.this, "Checkin Asset",
-            "Do you want to checkin this asset? It will be available for checkout", true, new AlertDialogCallback() {
-                @Override
-                public void onPositiveButtonClick() {
-                    Common.showProgressDialog(DetailActivity.this, "Checking...");
-                    apiServices.checkinItem(id, new NetworkResponseListener<JSONObject>() {
-                        @Override
-                        public void onResult(JSONObject object) {
-                            try {
-                                if (object.has("status") && object.get("status").equals("error")) {
-                                    Common.hideProgressDialog();
-                                    Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
-                                } else {
-                                    Common.hideProgressDialog();
-                                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                                        @Override
-                                        public void onSnackbar() {
-                                            Intent intent = new Intent(DetailActivity.this, MenuActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
-                                }
-                            } catch (JSONException e) {
-                                Common.hideProgressDialog();
-                                Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
-                            }
-                        }
-                    }, new NetworkResponseErrorListener() {
-                        @Override
-                        public void onErrorResult(Exception error) {
-                            Common.hideProgressDialog();
-                            Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
-                        }
-                    });
-                }
-
-                @Override
-                public void onNegativeButtonClick() {
-
-                }
-            });
-        } else if (mode == Config.CHECK_OUT_MODE) {
+        if (mode == CHECK_OUT_MODE || mode == CHECK_IN_MODE) {
             // handle logic for checkout mode
             boolean checkoutAvailable = details.getBoolean("user_can_checkout");
             Intent intent = new Intent(DetailActivity.this, CheckoutActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            if (mode == CHECK_IN_MODE) {
+                intent.putExtra("CHECKOUT_MODE", CheckoutActivity.CHECK_IN);
+            } else if (mode == CHECK_OUT_MODE) {
+                intent.putExtra("CHECKOUT_MODE", CheckoutActivity.CHECK_OUT);
+            }
+
             intent.putExtra("ASSET_ID", id);
             intent.putExtra("ASSET_NAME", asset_name);
             intent.putExtra("LOCATION_NAME", locationName);
             intent.putExtra("CHECKOUT_AVAILABLE", checkoutAvailable);
             startActivity(intent);
             finish();
-        } else if (mode == Config.MAINTENANCE_MODE) {
+        } else if (mode == MAINTENANCE_MODE) {
             // handle logic for maintenance mode
             Intent intent = new Intent(DetailActivity.this, MaintenanceListActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

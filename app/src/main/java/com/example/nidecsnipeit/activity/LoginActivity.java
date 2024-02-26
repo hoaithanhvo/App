@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (userName.isEmpty() || password.isEmpty()) {
                     Common.showCustomSnackBar(v, "Please enter username and password.", Common.SnackBarType.ERROR, null);
                 } else {
-                    Common.showProgressDialog(LoginActivity.this, "Checking...");
+                    Common.showProgressDialog(LoginActivity.this, "Login...");
                     apiServices.login(loginItem, new NetworkResponseListener<JSONObject>() {
                         @Override
                         public void onResult(JSONObject object) throws JSONException {

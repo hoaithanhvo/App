@@ -1,22 +1,13 @@
 package com.example.nidecsnipeit.activity;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.nidecsnipeit.Config;
 import com.example.nidecsnipeit.R;
-import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.service.TokenValidationService;
 
 
@@ -46,10 +37,10 @@ public class MenuActivity extends AppCompatActivity {
         Button settingBtn = findViewById(R.id.setting_btn);
 
         // OnClickListener for button
-        checkInBtn.setOnClickListener(createButtonClickListener(Config.CHECK_IN_MODE));
-        checkOutBtn.setOnClickListener(createButtonClickListener(Config.CHECK_OUT_MODE));
-        maintenanceBtn.setOnClickListener(createButtonClickListener(Config.MAINTENANCE_MODE));
-        settingBtn.setOnClickListener(createButtonClickListener(Config.SETTING_MODE));
+        checkInBtn.setOnClickListener(createButtonClickListener(DetailActivity.CHECK_IN_MODE));
+        checkOutBtn.setOnClickListener(createButtonClickListener(DetailActivity.CHECK_OUT_MODE));
+        maintenanceBtn.setOnClickListener(createButtonClickListener(DetailActivity.MAINTENANCE_MODE));
+        settingBtn.setOnClickListener(createButtonClickListener(DetailActivity.SETTING_MODE));
     }
 
     private View.OnClickListener createButtonClickListener(final Integer mode) {
@@ -63,7 +54,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void handleButtonClick(Integer mode) {
         Intent intent;
-        if (mode == Config.SETTING_MODE) {
+        if (mode == DetailActivity.SETTING_MODE) {
             intent = new Intent(this, SettingsActivity.class);
         } else {
             intent = new Intent(this, SearchActivity.class);
