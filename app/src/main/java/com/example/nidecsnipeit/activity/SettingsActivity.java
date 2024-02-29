@@ -1,7 +1,6 @@
 package com.example.nidecsnipeit.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,11 +30,17 @@ public class SettingsActivity extends BaseActivity {
         setupActionBar("Settings");
         MyApplication MyApp = (MyApplication) getApplication();
         NetworkManager apiServices = NetworkManager.getInstance(this);
+        if (!MyApp.isAdmin()) {
+            // if is not admin, hide appearance_configuration view
+            LinearLayout appearanceConfigView = findViewById(R.id.appearance_configuration);
+            appearanceConfigView.setVisibility(View.GONE);
+        }
 
         TextView usernameText = findViewById(R.id.username_text);
         usernameText.setText(MyApp.getUserFullName());
 
         Button logoutButton = findViewById(R.id.logout_button);
+        LinearLayout customFieldsButton = findViewById(R.id.custom_field);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +74,15 @@ public class SettingsActivity extends BaseActivity {
                     }
                 });
 
+            }
+        });
+
+        // redirect to CustomFields screen
+        customFieldsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, CategoryListActivity.class);
+                startActivity(intent);
             }
         });
     }

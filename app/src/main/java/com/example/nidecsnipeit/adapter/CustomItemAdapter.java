@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nidecsnipeit.activity.MyApplication;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.model.ListItemModel;
-import com.example.nidecsnipeit.model.SpinnerItemModel;
+import com.example.nidecsnipeit.model.BasicItemModel;
 import com.example.nidecsnipeit.utility.Common;
 import com.example.nidecsnipeit.utility.FullNameConvert;
 import com.example.nidecsnipeit.utility.QRScannerHelper;
@@ -41,14 +41,12 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
     private final LayoutInflater mInflater;
     private final RecyclerView recyclerView;
     private int currentPosition;
-    private final MyApplication MyApp;
 
     // Data is passed into the constructor
     public CustomItemAdapter(Context context, List<ListItemModel> data, RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.recyclerView = recyclerView;
-        this.MyApp = (MyApplication) context.getApplicationContext();
     }
 
     // Inflates the row layout from xml when needed
@@ -70,6 +68,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
 
         int paddingHorizontal = Common.convertDpToPixel(2, holder.itemView.getContext());
         int paddingVertical = Common.convertDpToPixel(8, holder.itemView.getContext());
+        holder.textIconView.setVisibility(View.GONE);
         holder.valueTextView.setVisibility(View.GONE);
         holder.editTextView.setVisibility(View.GONE);
         holder.dropdownView.setVisibility(View.GONE);
@@ -125,7 +124,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                 holder.dropdownView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        SpinnerItemModel selectedModel = (SpinnerItemModel) parentView.getItemAtPosition(position);
+                        BasicItemModel selectedModel = (BasicItemModel) parentView.getItemAtPosition(position);
                         String selectedValue = selectedModel.getName();
                         currentItem.setValue(selectedValue);
                     }
@@ -148,7 +147,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                 }
                 break;
             case AUTOCOMPLETE_TEXT:
-                List<SpinnerItemModel> autoCompleteList = new ArrayList<>(currentItem.getDropdownItems());
+                List<BasicItemModel> autoCompleteList = new ArrayList<>(currentItem.getDropdownItems());
                 AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(mInflater.getContext(), R.layout.custom_spinner_item, autoCompleteList);
                 holder.autoCompleteTextView.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
                 holder.autoCompleteTextView.setAdapter(autoCompleteAdapter);
@@ -240,7 +239,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
         ListItemModel listItem = mData.get(position);
 
         if (listItem.getMode() == ListItemModel.Mode.DROPDOWN) {
-            List<SpinnerItemModel> dropdownItems = listItem.getDropdownItems();
+            List<BasicItemModel> dropdownItems = listItem.getDropdownItems();
 
             // Find index selectedValue in dropdownItems list
             int selectedIndex = findSelectedIndex(dropdownItems, selectedValue);
@@ -269,9 +268,9 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
         }
     }
 
-    private int findSelectedIndex(List<SpinnerItemModel> itemList, String targetValue) {
+    private int findSelectedIndex(List<BasicItemModel> itemList, String targetValue) {
         int index = 0;
-        for (SpinnerItemModel item : itemList) {
+        for (BasicItemModel item : itemList) {
             if (item.getName().equals(targetValue)) {
                 return index;
             }
@@ -302,8 +301,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
         return this.currentPosition;
     }
 
-    public String getIdSpinnerItemByName(List<SpinnerItemModel> spinnerItems, String name) {
-        for (SpinnerItemModel item : spinnerItems) {
+    public String getIdSpinnerItemByName(List<BasicItemModel> spinnerItems, String name) {
+        for (BasicItemModel item : spinnerItems) {
             String itemName = item.getName().toUpperCase();
             if (itemName.equals(name.toUpperCase())) {
                 return item.getId();

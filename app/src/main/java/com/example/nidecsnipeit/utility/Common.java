@@ -13,7 +13,6 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -24,19 +23,17 @@ import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.activity.LoginActivity;
 import com.example.nidecsnipeit.activity.MyApplication;
 import com.example.nidecsnipeit.model.AlertDialogCallback;
+import com.example.nidecsnipeit.model.CategoryFieldModel;
 import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.SpinnerItemModel;
+import com.example.nidecsnipeit.model.BasicItemModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -176,14 +173,31 @@ public class Common {
         }
     }
 
-    public static List<SpinnerItemModel> convertArrayJsonToListIdName(JSONArray jsonArray) {
-        List<SpinnerItemModel> myList = new ArrayList<>();
+    public static List<BasicItemModel> convertArrayJsonToListIdName(JSONArray jsonArray) {
+        List<BasicItemModel> myList = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = null;
             try {
                 jsonObject = jsonArray.getJSONObject(i);
-                SpinnerItemModel myObject = new SpinnerItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
+                BasicItemModel myObject = new BasicItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
+                myList.add(myObject);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return myList;
+    }
+
+    public static List<CategoryFieldModel> convertArrayJsonCategoryField(JSONArray jsonArray) {
+        List<CategoryFieldModel> myList = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = jsonArray.getJSONObject(i);
+                CategoryFieldModel myObject = new CategoryFieldModel(jsonObject.getString("name"), jsonObject.getString("db_column"), jsonObject.getInt("is_displayed"));
                 myList.add(myObject);
             } catch (JSONException e) {
                 throw new RuntimeException(e);

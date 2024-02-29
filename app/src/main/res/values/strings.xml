@@ -42,4 +42,13 @@
     <string name="hide_unhide_password">hide_unhide_password</string>
     <string name="show_password">Show password</string>
     <string name="checkout">Checkout</string>
+    <string name="customized_fields_based_on_category">Customized fields based on category</string>
+    <string name="custom_fields">Custom fields</string>
+    <string name="appearance_configuration">Appearance Configuration</string>
+    <string name="custom_field_guide">Select a category to customize the allowed display fields.</string>
+    <string name="transfer">Transfer</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_password">Enter password</string>
+    <string name="enter_username">Enter username</string>
 </resources>

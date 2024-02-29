@@ -19,15 +19,21 @@ import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText usernameEditText;
+    private TextInputEditText usernameEditText;
     private EditText passwordEditText;
     private ImageButton showPasswordButton;
 
@@ -108,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                     Common.showCustomSnackBar(v, "Please enter username and password.", Common.SnackBarType.ERROR, null);
                 } else {
                     Common.showProgressDialog(LoginActivity.this, "Login...");
+                    // proceed login
                     apiServices.login(loginItem, new NetworkResponseListener<JSONObject>() {
                         @Override
                         public void onResult(JSONObject object) throws JSONException {
@@ -123,14 +130,32 @@ public class LoginActivity extends AppCompatActivity {
                                 String idToken = dataToken.getString("id");
                                 String userFullName = dataToken.getString("user_full_name");
                                 String expireTokenString = dataToken.getString("expires_at");
-                                Date expireTokenDate = Common.convertStringToDate(expireTokenString);
+                                boolean isAdmin = dataToken.getBoolean("is_admin");
                                 // save token to local storage
-                                MyApp.setLoginInfo(idToken, accessToken, expireTokenDate, userFullName);
+                                MyApp.setLoginInfo(idToken, accessToken, userFullName, isAdmin);
 
-                                Common.hideProgressDialog();
-                                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                                startActivity(intent);
-                                finish();
+                                // load data setting
+                                NetworkManager apiServices = NetworkManager.getInstance(LoginActivity.this);
+                                apiServices.getFieldsAllCategory(new NetworkResponseListener<JSONObject>() {
+                                    @Override
+                                    public void onResult(JSONObject object) throws JSONException {
+                                        // Convert JSON to String to save shared preferences
+                                        String jsonString = object.getJSONObject("payload").toString();
+                                        MyApp.setDisplayedFields(jsonString);
+
+                                        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        Common.hideProgressDialog();
+                                    }
+                                }, new NetworkResponseErrorListener() {
+                                    @Override
+                                    public void onErrorResult(Exception error) {
+                                        MyApp.resetLoginInfo();
+                                        Common.hideProgressDialog();
+                                        Common.showCustomSnackBar(v, error.getMessage(), Common.SnackBarType.ERROR, null);
+                                    }
+                                });
                             }
 
                         }

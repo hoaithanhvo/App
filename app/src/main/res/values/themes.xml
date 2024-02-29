@@ -35,7 +35,7 @@
     <!-- Main theme. -->
     <style name="Theme.LoginCustom" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/secondary</item>
         <item name="colorPrimaryVariant">@color/status_bar</item>
         <!-- Color hover button -->
         <item name="colorOnPrimary">@color/primary</item>
@@ -43,7 +43,7 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondary</item>
 
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/secondary</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>

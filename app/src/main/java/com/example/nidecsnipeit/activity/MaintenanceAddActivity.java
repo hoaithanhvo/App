@@ -13,11 +13,10 @@ import android.widget.DatePicker;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CustomItemAdapter;
 import com.example.nidecsnipeit.model.AlertDialogCallback;
-import com.example.nidecsnipeit.model.DetailFieldModel;
 import com.example.nidecsnipeit.model.ListItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
 import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.SpinnerItemModel;
+import com.example.nidecsnipeit.model.BasicItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
@@ -27,7 +26,6 @@ import com.example.nidecsnipeit.utility.QRScannerHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,13 +50,13 @@ public class MaintenanceAddActivity extends BaseActivity {
         MyApplication MyApp = (MyApplication) getApplication();
         NetworkManager apiServices = NetworkManager.getInstance(this);
 
-        List<SpinnerItemModel> maintenanceTypes = new ArrayList<>(); // {"Maintenance", "Repair", "PAT Test", "Upgrade", "Hardware Support", "Software Support"};
-        maintenanceTypes.add(new SpinnerItemModel("0", "Maintenance"));
-        maintenanceTypes.add(new SpinnerItemModel("1", "Repair"));
-        maintenanceTypes.add(new SpinnerItemModel("2", "PAT Test"));
-        maintenanceTypes.add(new SpinnerItemModel("3", "Upgrade"));
-        maintenanceTypes.add(new SpinnerItemModel("4", "Hardware Support"));
-        maintenanceTypes.add(new SpinnerItemModel("5", "Software Support"));
+        List<BasicItemModel> maintenanceTypes = new ArrayList<>(); // {"Maintenance", "Repair", "PAT Test", "Upgrade", "Hardware Support", "Software Support"};
+        maintenanceTypes.add(new BasicItemModel("0", "Maintenance"));
+        maintenanceTypes.add(new BasicItemModel("1", "Repair"));
+        maintenanceTypes.add(new BasicItemModel("2", "PAT Test"));
+        maintenanceTypes.add(new BasicItemModel("3", "Upgrade"));
+        maintenanceTypes.add(new BasicItemModel("4", "Hardware Support"));
+        maintenanceTypes.add(new BasicItemModel("5", "Software Support"));
 
         List<ListItemModel> dataList = new ArrayList<>();
 
@@ -91,7 +89,7 @@ public class MaintenanceAddActivity extends BaseActivity {
             @Override
             public void onResult(JSONObject object) {
                 try {
-                    List<SpinnerItemModel> supplierList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
+                    List<BasicItemModel> supplierList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
                     if (maintenanceInfo != null) {
                         // UPDATE event
                         dataList.add(new ListItemModel("Maintenance type", maintenanceInfo.getAssetMaintenanceType(), ListItemModel.Mode.DROPDOWN, maintenanceTypes));

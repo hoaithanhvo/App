@@ -34,75 +34,139 @@
                 android:textStyle="bold"
                 android:text="@string/assets_management"/>
 
-            <GridLayout
-                android:id="@+id/gridLayout"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:rowCount="2">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/margin_screen">
 
-                <!-- Button 1 -->
-                <Button
-                    android:id="@+id/checkin_btn"
-                    style="@style/ButtonCustomStyle"
-                    android:layout_width="0dp"
+                <EditText
+                    android:id="@+id/input_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/margin_screen"
+                    android:autofillHints="false"
+                    android:hint="@string/asset_tag"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:minHeight="48dp"
+                    android:padding="8dp"
+                    android:textSize="@dimen/text_size"
+                    android:layout_toStartOf="@+id/search_img_btn"/>
+
+                <ImageButton
+                    android:id="@+id/qr_scanner_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="6dp"
-                    android:drawableTop="@drawable/ic_checkin"
-                    android:text="@string/check_in"
-                    android:textColor="@color/black"/>
+                    android:layout_toStartOf="@+id/search_img_btn"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/qr_scanner"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="4dp"
+                    android:src="@drawable/ic_qr_scan_green" />
 
-                <!-- Button 2 -->
-                <Button
-                    android:id="@+id/checkout_btn"
-                    style="@style/ButtonCustomStyle"
-                    android:layout_width="0dp"
+                <ImageButton
+                    android:id="@+id/search_img_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1"
-                    android:layout_columnWeight="1"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="12dp"
-                    android:drawableTop="@drawable/ic_checkout_location"
-                    android:text="@string/check_out"
-                    android:textColor="@color/black"/>
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="@dimen/margin_screen"
+                    android:backgroundTint="?attr/colorSecondary"
+                    android:contentDescription="@string/qr_scanner"
+                    android:paddingHorizontal="28dp"
+                    android:paddingVertical="12dp"
+                    android:src="@drawable/ic_search" />
+            </RelativeLayout>
 
-                <!-- Button 3 -->
-                <Button
-                    android:id="@+id/maintenance_btn"
-                    style="@style/ButtonCustomStyle"
-                    android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="0"
-                    android:layout_columnWeight="1"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="6dp"
-                    android:drawableTop="@drawable/ic_maintenance"
-                    android:text="@string/maintenance"
-                    android:textColor="@color/black"/>
+                    android:orientation="horizontal">
 
-                <!-- Button 3 -->
-                <Button
-                    android:id="@+id/setting_btn"
-                    style="@style/ButtonCustomStyle"
-                    android:layout_width="0dp"
+                    <!-- Button 1 -->
+                    <Button
+                        android:id="@+id/transfer_btn"
+                        style="@style/ButtonCustomStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="6dp"
+                        android:drawableTop="@drawable/ic_transfer"
+                        android:text="@string/transfer"
+                        android:textColor="@color/black"/>
+
+                    <!-- Button 2 -->
+                    <Button
+                        android:id="@+id/checkin_btn"
+                        style="@style/ButtonCustomStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginEnd="6dp"
+                        android:drawableTop="@drawable/ic_checkin"
+                        android:text="@string/check_in"
+                        android:textColor="@color/black"/>
+
+                    <!-- Button 3 -->
+                    <Button
+                        android:id="@+id/checkout_btn"
+                        style="@style/ButtonCustomStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginEnd="12dp"
+                        android:drawableTop="@drawable/ic_checkout_location"
+                        android:text="@string/check_out"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+                <!-- Hàng thứ hai -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1"
-                    android:layout_columnWeight="1"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="12dp"
-                    android:drawableTop="@drawable/ic_setting"
-                    android:text="@string/setting"
-                    android:textColor="@color/black"/>
+                    android:orientation="horizontal">
 
-            </GridLayout>
+                    <!-- Button 4 -->
+                    <Button
+                        android:id="@+id/maintenance_btn"
+                        style="@style/ButtonCustomStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="6dp"
+                        android:drawableTop="@drawable/ic_maintenance"
+                        android:text="@string/maintenance"
+                        android:textColor="@color/black"/>
+
+                    <!-- Button 5 -->
+                    <Button
+                        android:id="@+id/setting_btn"
+                        style="@style/ButtonCustomStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginEnd="12dp"
+                        android:drawableTop="@drawable/ic_setting"
+                        android:text="@string/setting"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

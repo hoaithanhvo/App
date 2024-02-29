@@ -13,36 +13,27 @@ import java.util.List;
 
 public class MyApplication extends Application {
 
-    private final List<DetailFieldModel> detailScreenFields = new ArrayList<>();
     private String currentUrlServer;
     private String currentApiKeyServer;
     private String currentIdApiKeyServer;
-    private Date expireApiKeyServer;
     private Boolean isFirstRun;
     private String userFullName;
-//    private final String urlServerDefault = "https://develop.snipeitapp.com";
-    private final String urlServerDefault = "http://192.168.0.190:4402";
+    private boolean isAdmin;
+    private final String urlServerDefault = "https://develop.snipeitapp.com";
+    private String displayedFieldsJsonString;
     private final String PREF_NAME = "NIDEC_SNIPEIT";
     private final String URL_SERVER = "URL_SERVER";
     private final String API_KEY_SERVER = "API_KEY_SERVER";
     private final String ID_API_KEY_SERVER = "ID_API_KEY_SERVER";
-    private final String EXPIRE_API_KEY_SERVER = "EXPIRE_API_KEY_SERVER";
     private final String IS_FIRST_RUN = "IS_FIRST_RUN";
     private final String USER_FULL_NAME = "USER_FULL_NAME";
+    private final String IS_ADMIN = "IS_ADMIN";
+    private final String DISPLAYED_FIELDS = "DISPLAYED_FIELDS";
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initDetailScreenFields();
         loadDataFromPreferences();
-    }
-
-    private void initDetailScreenFields() {
-        detailScreenFields.add(new DetailFieldModel("model"));
-        detailScreenFields.add(new DetailFieldModel("serial"));
-        detailScreenFields.add(new DetailFieldModel("name"));
-        detailScreenFields.add(new DetailFieldModel("assigned_to"));
-        detailScreenFields.add(new DetailFieldModel("notes"));
     }
 
     // load server information from local storage
@@ -51,26 +42,26 @@ public class MyApplication extends Application {
         String urlServer = preferences.getString(URL_SERVER, urlServerDefault);
         String apiKey = preferences.getString(API_KEY_SERVER, null);
         String idApiKey = preferences.getString(ID_API_KEY_SERVER, null);
-        String expireApiKey = preferences.getString(EXPIRE_API_KEY_SERVER, null);
         boolean isFirstRun = preferences.getBoolean(IS_FIRST_RUN, true);
         String userFullName = preferences.getString(USER_FULL_NAME, "");
+        boolean isAdmin = preferences.getBoolean(IS_ADMIN, false);
+        String displayedFields = preferences.getString(DISPLAYED_FIELDS, "");
 
         this.currentUrlServer = urlServer;
         this.currentApiKeyServer = apiKey;
         this.currentIdApiKeyServer = idApiKey;
-        this.expireApiKeyServer = Common.convertStringToDate(expireApiKey);
         this.isFirstRun = isFirstRun;
         this.userFullName = userFullName;
-    }
-
-    public List<DetailFieldModel> getDetailScreenFields() {
-        return detailScreenFields;
+        this.isAdmin = isAdmin;
+        this.displayedFieldsJsonString = displayedFields;
     }
 
     public String getUserFullName() {
         return this.userFullName;
     }
-
+    public boolean isAdmin() {
+        return this.isAdmin;
+    }
     public boolean isFirstRun() {
         return this.isFirstRun;
     }
@@ -85,6 +76,18 @@ public class MyApplication extends Application {
         editor.apply();
     }
 
+    public void setDisplayedFields(String displayedFields) {
+        this.displayedFieldsJsonString = displayedFields;
+        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(DISPLAYED_FIELDS, this.displayedFieldsJsonString);
+        editor.apply();
+    }
+
+    public String getDisplayedFieldsJsonString() {
+        return this.displayedFieldsJsonString;
+    }
+
     public String getApiKeyServer() {
         return this.currentApiKeyServer;
     }
@@ -97,27 +100,21 @@ public class MyApplication extends Application {
     }
 
     // setting server info
-    public void setLoginInfo(String newIdApiKey, String newApiKey, Date newExpireApiKey, String userFullName) {
-        // add 7 days to expire time token
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(newExpireApiKey);
-        calendar.add(Calendar.DAY_OF_MONTH, 0);
-        Date expireTime =  calendar.getTime();
-
+    public void setLoginInfo(String newIdApiKey, String newApiKey, String userFullName, boolean isAdmin) {
         // save server info to SharedPreferences
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(ID_API_KEY_SERVER, newIdApiKey);
         editor.putString(API_KEY_SERVER, newApiKey);
-        editor.putString(EXPIRE_API_KEY_SERVER, Common.convertDateToString(expireTime));
         editor.putBoolean(IS_FIRST_RUN, false);
         editor.putString(USER_FULL_NAME, userFullName);
+        editor.putBoolean(IS_ADMIN, isAdmin);
         editor.apply();
         this.currentIdApiKeyServer = newIdApiKey;
         this.currentApiKeyServer = newApiKey;
-        this.expireApiKeyServer = expireTime;
         this.isFirstRun = false;
         this.userFullName = userFullName;
+        this.isAdmin = isAdmin;
     }
 
     // reset server info
@@ -127,28 +124,16 @@ public class MyApplication extends Application {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(ID_API_KEY_SERVER, null);
         editor.putString(API_KEY_SERVER, null);
-        editor.putString(EXPIRE_API_KEY_SERVER, null);
         editor.putBoolean(IS_FIRST_RUN, true);
         editor.putString(USER_FULL_NAME, null);
+        editor.putString(DISPLAYED_FIELDS, null);
+        editor.putBoolean(IS_ADMIN, false);
         editor.apply();
         this.currentIdApiKeyServer = null;
         this.currentApiKeyServer = null;
-        this.expireApiKeyServer = null;
         this.isFirstRun = true;
         this.userFullName = "";
-    }
-
-    public void setDefaultServerInfo() {
-        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(URL_SERVER, urlServerDefault);
-        editor.putString(ID_API_KEY_SERVER, null);
-        editor.putString(API_KEY_SERVER, null);
-        editor.putString(EXPIRE_API_KEY_SERVER, null);
-        editor.apply();
-        this.currentUrlServer = urlServerDefault;
-        this.currentIdApiKeyServer = null;
-        this.currentApiKeyServer = null;
-        this.expireApiKeyServer = null;
+        this.isAdmin = false;
+        this.displayedFieldsJsonString = "";
     }
 }

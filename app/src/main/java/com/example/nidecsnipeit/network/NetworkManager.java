@@ -13,9 +13,9 @@ import com.example.nidecsnipeit.model.GetLocationParamItemModel;
 import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
 import com.example.nidecsnipeit.model.GetManufacturerParamItemModel;
 import com.example.nidecsnipeit.model.GetModelParamItemModel;
-import com.example.nidecsnipeit.model.GetSupplierParamItemModel;
 import com.example.nidecsnipeit.model.LoginItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
+import com.example.nidecsnipeit.model.UpdateDisplayedFieldModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +29,7 @@ public class NetworkManager {
     private static final String TAG = "NetworkManager";
     private static NetworkManager instance = null;
 
-    private String URL;
+    private final String URL;
     private final String ACCESS_TOKEN;
     public RequestQueue requestQueue;
 
@@ -105,8 +105,19 @@ public class NetworkManager {
     }
 
     // =============================================
-    // ======= Checkin/Checkout ====================
+    // ======= Checkin/Checkout/Transfer location ====================
     // =============================================
+
+    /**
+     * Transfer asset item
+     * @param assetID
+     * @param listener
+     * @param errorListener
+     */
+    public void transferItem(int assetID, CheckinItemModel transferItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/hardware/" + assetID + "/transfer";
+        this.postAPI(url, Request.Method.POST, transferItem, listener, errorListener);
+    }
 
     /**
      * Check in asset item
@@ -114,9 +125,9 @@ public class NetworkManager {
      * @param listener
      * @param errorListener
      */
-    public void checkinItem(int assetID, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+    public void checkinItem(int assetID, CheckinItemModel checkinItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/hardware/" + assetID + "/checkin";
-        this.postAPI(url, Request.Method.POST, null, listener, errorListener);
+        this.postAPI(url, Request.Method.POST, checkinItem, listener, errorListener);
     }
 
     /**
@@ -181,9 +192,24 @@ public class NetworkManager {
         this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
-    public void getCategoryList(GetCategoryParamItemModel categoryParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+    public void getCategoryList(final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         String url = URL +  "/categories";
-        this.getAPI(url, Request.Method.GET, categoryParamItem, ACCESS_TOKEN, listener, errorListener);
+        this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
+    }
+
+    public void getFieldsByCategoryId(String id, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/categories/fields/byid/" + id;
+        this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
+    }
+
+    public void updateDisplayedFieldByCategoryId(UpdateDisplayedFieldModel object, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/categories/fields/update";
+        this.postAPI(url, Request.Method.POST, object, listener, errorListener);
+    }
+
+    public void getFieldsAllCategory(final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL +  "/categories/fields/all";
+        this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getModelList(GetModelParamItemModel modelParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {

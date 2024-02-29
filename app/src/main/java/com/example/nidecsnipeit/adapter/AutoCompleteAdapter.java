@@ -11,20 +11,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.example.nidecsnipeit.model.SpinnerItemModel;
+import com.example.nidecsnipeit.model.BasicItemModel;
 import com.example.nidecsnipeit.utility.Common;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AutoCompleteAdapter extends ArrayAdapter<SpinnerItemModel> implements Filterable {
+public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements Filterable {
     private final Context context;
     private final int textViewResourceId;
-    private List<SpinnerItemModel> mList;
-    private final List<SpinnerItemModel> mListAll;
+    private List<BasicItemModel> mList;
+    private final List<BasicItemModel> mListAll;
     public AutoCompleteAdapter(Context context, int textViewResourceId,
-                               List<SpinnerItemModel> mList) {
+                               List<BasicItemModel> mList) {
         super(context, textViewResourceId, mList);
         this.context = context;
         this.textViewResourceId = textViewResourceId;
@@ -33,7 +33,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<SpinnerItemModel> implemen
     }
 
     @Override
-    public SpinnerItemModel getItem(int position) {
+    public BasicItemModel getItem(int position) {
         return mList.get(position);
     }
 
@@ -52,7 +52,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<SpinnerItemModel> implemen
         }
 
         TextView textView = view.findViewById(android.R.id.text1);
-        SpinnerItemModel item = mList.get(position);
+        BasicItemModel item = mList.get(position);
         if (textView != null && item != null) {
             textView.setText(item.getName());
         }
@@ -71,7 +71,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<SpinnerItemModel> implemen
         protected void publishResults(CharSequence constraint, FilterResults results) {
             if (results != null && results.count > 0) {
                 clear();
-                mList = (List<SpinnerItemModel>) results.values;
+                mList = (List<BasicItemModel>) results.values;
                 addAll(mList);
                 notifyDataSetChanged();
             } else {
@@ -82,7 +82,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<SpinnerItemModel> implemen
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
-            List<SpinnerItemModel> filteredList = new ArrayList<>();
+            List<BasicItemModel> filteredList = new ArrayList<>();
 
             if (Common.isHardScanButtonPressed) {
                 // if the hard scan button is pressed, return default value
@@ -94,7 +94,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<SpinnerItemModel> implemen
             if (constraint != null) {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (SpinnerItemModel item : mListAll) {
+                for (BasicItemModel item : mListAll) {
                     if (item.getName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }

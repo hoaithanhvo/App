@@ -27,7 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SearchActivity extends BaseActivity {
-    private static final int PERMISSION_REQUEST_CAMERA = 1;
+    static final int PERMISSION_REQUEST_CAMERA = 1;
     private int searchMode;
     private View rootView;
 
@@ -41,6 +41,9 @@ public class SearchActivity extends BaseActivity {
         Intent intent = getIntent();
         searchMode = intent.getIntExtra("mode", DetailActivity.CHECK_IN_MODE);
         switch (searchMode) {
+            case DetailActivity.TRANSFER_MODE:
+                setupActionBar("Transfer search");
+                break;
             case DetailActivity.CHECK_IN_MODE:
                 setupActionBar("Check-in search");
                 break;
@@ -176,10 +179,28 @@ public class SearchActivity extends BaseActivity {
                         // focus to edit text
                         Common.focusCursorToEnd(editText);
                     } else {
-                        Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
-                        intent.putExtra("DEVICE_INFO", object.toString());
-                        intent.putExtra("MODE", searchMode);
-                        startActivity(intent);
+                        boolean userCanCheckIn = !object.getBoolean("user_can_checkout");
+                        if (userCanCheckIn && searchMode == DetailActivity.TRANSFER_MODE) {
+                            Common.hideProgressDialog();
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked out.", false, null);
+                            // focus to edit text
+                            Common.focusCursorToEnd(editText);
+                        } else if (!userCanCheckIn && searchMode == DetailActivity.CHECK_IN_MODE) {
+                            Common.hideProgressDialog();
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked in.", false, null);
+                            // focus to edit text
+                            Common.focusCursorToEnd(editText);
+                        } else if (userCanCheckIn && searchMode == DetailActivity.CHECK_OUT_MODE) {
+                            Common.hideProgressDialog();
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked out.", false, null);
+                            // focus to edit text
+                            Common.focusCursorToEnd(editText);
+                        }else {
+                            Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
+                            intent.putExtra("DEVICE_INFO", object.toString());
+                            intent.putExtra("MODE", searchMode);
+                            startActivity(intent);
+                        }
                     }
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
