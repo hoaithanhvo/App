@@ -191,7 +191,7 @@ public class MenuActivity extends AppCompatActivity {
                 Common.hideProgressDialog();
 
                 if (error.getMessage() == null) {
-                    Common.showCustomSnackBar(rootView, "Failed to connect to server", Common.SnackBarType.ERROR, null);
+                    Common.showCustomSnackBar(rootView, "No permission", Common.SnackBarType.ERROR, null);
                 } else {
                     Common.tokenInvalid(MenuActivity.this);
                 }

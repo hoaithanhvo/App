@@ -50,9 +50,10 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:minHeight="48dp"
-                    android:padding="8dp"
+                    android:paddingEnd="48dp"
                     android:textSize="@dimen/text_size"
-                    android:layout_toStartOf="@+id/search_img_btn"/>
+                    android:layout_toStartOf="@+id/search_img_btn"
+                    tools:ignore="RtlSymmetry" />
 
                 <ImageButton
                     android:id="@+id/qr_scanner_btn"
@@ -73,7 +74,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginStart="8dp"
                     android:layout_marginEnd="@dimen/margin_screen"
                     android:backgroundTint="?attr/colorSecondary"
                     android:contentDescription="@string/qr_scanner"

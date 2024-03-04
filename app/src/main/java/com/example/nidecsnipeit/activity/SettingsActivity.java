@@ -36,11 +36,16 @@ public class SettingsActivity extends BaseActivity {
             appearanceConfigView.setVisibility(View.GONE);
         }
 
+        // Set app information
         TextView usernameText = findViewById(R.id.username_text);
+        TextView serverUrlText = findViewById(R.id.server_url_text);
         usernameText.setText(MyApp.getUserFullName());
+        serverUrlText.setText(MyApp.getUrlServer());
 
         Button logoutButton = findViewById(R.id.logout_button);
         LinearLayout customFieldsButton = findViewById(R.id.custom_field);
+
+        // handle logic to logout
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

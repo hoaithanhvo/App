@@ -5,27 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".activity.CategoryListActivity"
     android:orientation="vertical">
-
-    <RelativeLayout
+    <TextView
+        android:id="@+id/select_field_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_screen"
-            android:text="Field name"
-            android:textSize="14sp"
-            android:textColor="?android:attr/textColorSecondary" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_screen"
-            android:layout_alignParentEnd="true"
-            android:text="Show"
-            android:textSize="14sp"
-            android:textColor="?android:attr/textColorSecondary" />
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_screen"
+        android:layout_marginTop="@dimen/margin_screen"
+        android:text="@string/select_fields_to_allow_display"
+        android:textSize="14sp"
+        android:textColor="?android:attr/textColorSecondary" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/category_fields_recycler"
@@ -41,7 +29,7 @@
         android:paddingVertical="@dimen/margin_screen"
         android:backgroundTint="@color/secondary"
         android:textColor="@color/white"
-        android:text="Save"
+        android:text="@string/save"
         android:textAlignment="center"
         />
 

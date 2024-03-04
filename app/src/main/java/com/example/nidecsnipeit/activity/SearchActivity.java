@@ -216,7 +216,7 @@ public class SearchActivity extends BaseActivity {
                 Common.hideProgressDialog();
 
                 if (error.getMessage() == null) {
-                    Common.showCustomSnackBar(rootView, "Failed to connect to server", Common.SnackBarType.ERROR, null);
+                    Common.showCustomSnackBar(rootView, "No permission", Common.SnackBarType.ERROR, null);
                 } else {
                     Common.tokenInvalid(SearchActivity.this);
                 }
