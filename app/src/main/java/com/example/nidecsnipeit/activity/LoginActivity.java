@@ -163,7 +163,11 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onErrorResult(Exception error) {
                             Common.hideProgressDialog();
-                            Common.showCustomSnackBar(v, error.getMessage(), Common.SnackBarType.ERROR, null);
+                            if (error.getMessage() == null) {
+                                Common.showCustomSnackBar(v, "Failed to connect to server", Common.SnackBarType.ERROR, null);
+                            } else {
+                                Common.showCustomSnackBar(v, error.getMessage(), Common.SnackBarType.ERROR, null);
+                            }
                         }
                     });
                 }
