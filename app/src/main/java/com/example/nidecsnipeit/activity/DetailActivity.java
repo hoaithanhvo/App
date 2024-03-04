@@ -4,25 +4,20 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nidecsnipeit.Config;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CustomItemAdapter;
-import com.example.nidecsnipeit.model.AlertDialogCallback;
-import com.example.nidecsnipeit.model.DetailFieldModel;
 import com.example.nidecsnipeit.model.ListItemModel;
-import com.example.nidecsnipeit.model.SnackbarCallback;
 import com.example.nidecsnipeit.network.NetworkManager;
-import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
-import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
-import com.example.nidecsnipeit.utility.FullNameConvert;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -31,8 +26,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DetailActivity extends BaseActivity {
+    public static final int CHECK_IN_MODE = 1;
+    public static final int CHECK_OUT_MODE = 2;
+    public static final int MAINTENANCE_MODE = 3;
+    public static final int SETTING_MODE = 4;
+    public static final int TRANSFER_MODE = 5;
     CustomItemAdapter adapter;
     private int mode;
     private View rootView;
@@ -49,23 +50,41 @@ public class DetailActivity extends BaseActivity {
         setupActionBar("Device details");
 
         MyApplication myApp = (MyApplication) getApplication();
-        List<DetailFieldModel> fields = myApp.getDetailScreenFields();
+//        List<DetailFieldModel> fields = myApp.getDetailScreenFields();
+        List<Field> displayedFields = null;
 
         // Get detail data
         Intent intent = getIntent();
         String deviceInfoJson = intent.getStringExtra("DEVICE_INFO");
-        mode = intent.getIntExtra("MODE", Config.CHECK_IN_MODE);
+        mode = intent.getIntExtra("MODE", -1);
         List<ListItemModel> dataList = new ArrayList<>();
         try {
             assert deviceInfoJson != null;
             deviceInfo = new JSONObject(deviceInfoJson);
+            JSONObject customFields = deviceInfo.getJSONObject("custom_fields");
             // get image to show on screen
             String imageUrl = deviceInfo.get("image").toString();
+            String categoryId = deviceInfo.getJSONObject("category").getString("id");
+
+            // get displayed fields by category id
+            String displayedFieldsString = myApp.getDisplayedFieldsJsonString();
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, List<Field>> dataMap = objectMapper.readValue(displayedFieldsString, new TypeReference<Map<String, List<Field>>>() {});
+
+            for (Map.Entry<String, List<Field>> entry : dataMap.entrySet()) {
+                String key = entry.getKey();
+                List<Field> value = entry.getValue();
+
+                if (key.equals(categoryId)) {
+                    displayedFields = value;
+                }
+            }
 
             // get values for all displayed fields
-            for (DetailFieldModel field : fields) {
+            assert displayedFields != null;
+            for (Field field : displayedFields) {
                 String valueField = "Not defined";
-                String fieldName = field.getName();
+                String fieldName = field.getDb_column();
                 if (deviceInfo.has(fieldName)) {
                     Object fieldObject = deviceInfo.get(fieldName);
                     String typeAssignedTo = "";
@@ -75,17 +94,18 @@ public class DetailActivity extends BaseActivity {
                             if (fieldName.equals("assigned_to")) {
                                 typeAssignedTo = StringEscapeUtils.unescapeHtml4(((JSONObject) fieldObject).getString("type"));
                             }
+                        } else if (((JSONObject) fieldObject).has("datetime")) {
+                            valueField = ((JSONObject) fieldObject).getString("datetime");
                         }
                     } else {
                         if (!fieldObject.toString().equals("") && !fieldObject.toString().equals("null")) {
                             valueField = StringEscapeUtils.unescapeHtml4(fieldObject.toString());
-                        } else if (fieldObject.toString().equals("null")) {
+                        } else {
                             valueField = "";
                         }
                     }
 
-                    String titleField = FullNameConvert.getFullName(fieldName);
-                    ListItemModel.Mode typeField = field.getType();
+                    String titleFullName = field.getName();
 
                     // add new field for dataList
                     if (fieldName.equals("assigned_to")) {
@@ -94,11 +114,15 @@ public class DetailActivity extends BaseActivity {
                             if (!typeAssignedTo.equals("user")) {
                                 assignIcon = R.drawable.ic_location;
                             }
-                            dataList.add(new ListItemModel(titleField, valueField, typeField, getDrawable(assignIcon)));
+                            dataList.add(new ListItemModel(titleFullName, valueField, ListItemModel.Mode.TEXT, getDrawable(assignIcon)));
                         }
                     } else {
-                        dataList.add(new ListItemModel(titleField, valueField, typeField));
+                        dataList.add(new ListItemModel(titleFullName, valueField, ListItemModel.Mode.TEXT));
                     }
+                } else if (customFields.has(field.getName())) {
+                    String fieldCustomName = field.getName();
+                    JSONObject customField = customFields.getJSONObject(fieldCustomName);
+                    dataList.add(new ListItemModel(fieldCustomName, customField.getString("value"), ListItemModel.Mode.TEXT));
                 }
 
             }
@@ -108,7 +132,7 @@ public class DetailActivity extends BaseActivity {
                 Picasso.get().load(imageUrl).into(detailImage);
             }
 
-        } catch (JSONException e) {
+        } catch (JSONException | JsonProcessingException e) {
             Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
         }
 
@@ -119,15 +143,23 @@ public class DetailActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
 
         Button requestBtn = findViewById(R.id.check_in_detail);
+        requestBtn.setVisibility(View.VISIBLE);
+
         switch (mode) {
-            case Config.CHECK_IN_MODE:
-                requestBtn.setText("CHECK-IN");
+            case TRANSFER_MODE:
+                requestBtn.setText(R.string.transfer);
                 break;
-            case Config.CHECK_OUT_MODE:
-                requestBtn.setText("CHECKOUT (LOCATION)");
+            case CHECK_IN_MODE:
+                requestBtn.setText(R.string.check_in);
                 break;
-            case Config.MAINTENANCE_MODE:
-                requestBtn.setText("MAINTENANCES");
+            case CHECK_OUT_MODE:
+                requestBtn.setText(R.string.check_out);
+                break;
+            case MAINTENANCE_MODE:
+                requestBtn.setText(R.string.maintenance);
+                break;
+            default:
+                requestBtn.setVisibility(View.GONE);
                 break;
         }
         requestBtn.setOnClickListener(v -> {
@@ -157,69 +189,55 @@ public class DetailActivity extends BaseActivity {
             locationName = details.getJSONObject("location").getString("name");
         }
 
-        if (mode == Config.CHECK_IN_MODE) {
-            // handle logic for check-in mode
-            Common.showCustomAlertDialog(DetailActivity.this, "Checkin Asset",
-            "Do you want to checkin this asset? It will be available for checkout", true, new AlertDialogCallback() {
-                @Override
-                public void onPositiveButtonClick() {
-                    Common.showProgressDialog(DetailActivity.this, "Checking...");
-                    apiServices.checkinItem(id, new NetworkResponseListener<JSONObject>() {
-                        @Override
-                        public void onResult(JSONObject object) {
-                            try {
-                                if (object.has("status") && object.get("status").equals("error")) {
-                                    Common.hideProgressDialog();
-                                    Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
-                                } else {
-                                    Common.hideProgressDialog();
-                                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                                        @Override
-                                        public void onSnackbar() {
-                                            Intent intent = new Intent(DetailActivity.this, MenuActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
-                                }
-                            } catch (JSONException e) {
-                                Common.hideProgressDialog();
-                                Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
-                            }
-                        }
-                    }, new NetworkResponseErrorListener() {
-                        @Override
-                        public void onErrorResult(Exception error) {
-                            Common.hideProgressDialog();
-                            Common.showCustomSnackBar(rootView, error.getMessage(), Common.SnackBarType.ERROR, null);
-                        }
-                    });
-                }
-
-                @Override
-                public void onNegativeButtonClick() {
-
-                }
-            });
-        } else if (mode == Config.CHECK_OUT_MODE) {
+        if (mode == CHECK_OUT_MODE || mode == CHECK_IN_MODE || mode == TRANSFER_MODE) {
             // handle logic for checkout mode
             boolean checkoutAvailable = details.getBoolean("user_can_checkout");
             Intent intent = new Intent(DetailActivity.this, CheckoutActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            if (mode == CHECK_IN_MODE) {
+                intent.putExtra("CHECKOUT_MODE", CheckoutActivity.CHECK_IN);
+            } else if (mode == CHECK_OUT_MODE) {
+                intent.putExtra("CHECKOUT_MODE", CheckoutActivity.CHECK_OUT);
+            } else {
+                intent.putExtra("CHECKOUT_MODE", CheckoutActivity.TRANSFER);
+            }
+
             intent.putExtra("ASSET_ID", id);
             intent.putExtra("ASSET_NAME", asset_name);
             intent.putExtra("LOCATION_NAME", locationName);
             intent.putExtra("CHECKOUT_AVAILABLE", checkoutAvailable);
             startActivity(intent);
             finish();
-        } else if (mode == Config.MAINTENANCE_MODE) {
+        } else if (mode == MAINTENANCE_MODE) {
             // handle logic for maintenance mode
             Intent intent = new Intent(DetailActivity.this, MaintenanceListActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("ASSET_ID", id);
             startActivity(intent);
             finish();
+        } else {
+            finish();
+        }
+    }
+
+    static class Field {
+        private String name;
+        private String db_column;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDb_column() {
+            return db_column;
+        }
+
+        public void setDb_column(String db_column) {
+            this.db_column = db_column;
         }
     }
 }

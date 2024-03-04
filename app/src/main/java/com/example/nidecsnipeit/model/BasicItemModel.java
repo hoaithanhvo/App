@@ -2,11 +2,11 @@ package com.example.nidecsnipeit.model;
 
 import androidx.annotation.NonNull;
 
-public class SpinnerItemModel {
+public class BasicItemModel {
     private String id;
     private String name;
 
-    public SpinnerItemModel(String id, String name) {
+    public BasicItemModel(String id, String name) {
         this.id = id;
         this.name = name;
     }

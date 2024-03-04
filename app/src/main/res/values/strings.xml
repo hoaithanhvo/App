@@ -18,7 +18,6 @@
     <string name="delete">Delete</string>
     <string name="no_maintenances_for_this_asset">No maintenances for this asset</string>
     <string name="text_icon_for_common_field">Text icon for common field</string>
-    <string name="checkout_location">CHECKOUT (LOCATION)</string>
     <string name="assets_management">ASSETS MANAGEMENT</string>
     <string name="setting">SETTINGS</string>
     <string name="snipe_it_server_address">Snipe-IT server address</string>
@@ -36,4 +35,21 @@
     <string name="default_configuration_demo">DEFAULT CONFIGURATION (DEMO)</string>
     <string name="use_an_alternative_method">Use an alternative method</string>
     <string name="or">OR</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="hide_unhide_password">hide_unhide_password</string>
+    <string name="show_password">Show password</string>
+    <string name="checkout">Checkout</string>
+    <string name="customized_fields_based_on_category">Customized fields based on category</string>
+    <string name="custom_fields">Custom fields</string>
+    <string name="appearance_configuration">Appearance Configuration</string>
+    <string name="custom_field_guide">Select a category to customize the allowed display fields</string>
+    <string name="transfer">Transfer</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="enter_username">Enter your username</string>
+    <string name="select_fields_to_allow_display">Select fields to allow display</string>
+    <string name="save">Save</string>
+    <string name="server_url">Server URL</string>
 </resources>

@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.nidecsnipeit.Config;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
@@ -28,7 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SearchActivity extends BaseActivity {
-    private static final int PERMISSION_REQUEST_CAMERA = 1;
+    static final int PERMISSION_REQUEST_CAMERA = 1;
     private int searchMode;
     private View rootView;
 
@@ -40,15 +39,18 @@ public class SearchActivity extends BaseActivity {
         rootView = findViewById(android.R.id.content);
 
         Intent intent = getIntent();
-        searchMode = intent.getIntExtra("mode", Config.CHECK_IN_MODE);
+        searchMode = intent.getIntExtra("mode", DetailActivity.CHECK_IN_MODE);
         switch (searchMode) {
-            case Config.CHECK_IN_MODE:
+            case DetailActivity.TRANSFER_MODE:
+                setupActionBar("Transfer search");
+                break;
+            case DetailActivity.CHECK_IN_MODE:
                 setupActionBar("Check-in search");
                 break;
-            case Config.CHECK_OUT_MODE:
+            case DetailActivity.CHECK_OUT_MODE:
                 setupActionBar("Checkout search");
                 break;
-            case Config.MAINTENANCE_MODE:
+            case DetailActivity.MAINTENANCE_MODE:
                 setupActionBar("Maintenance search");
                 break;
             default:
@@ -178,12 +180,22 @@ public class SearchActivity extends BaseActivity {
                         Common.focusCursorToEnd(editText);
                     } else {
                         boolean userCanCheckIn = !object.getBoolean("user_can_checkout");
-                        if (!userCanCheckIn && searchMode == Config.CHECK_IN_MODE) {
+                        if (userCanCheckIn && searchMode == DetailActivity.TRANSFER_MODE) {
                             Common.hideProgressDialog();
-                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked in", false, null);
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked out.", false, null);
                             // focus to edit text
                             Common.focusCursorToEnd(editText);
-                        } else {
+                        } else if (!userCanCheckIn && searchMode == DetailActivity.CHECK_IN_MODE) {
+                            Common.hideProgressDialog();
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked in.", false, null);
+                            // focus to edit text
+                            Common.focusCursorToEnd(editText);
+                        } else if (userCanCheckIn && searchMode == DetailActivity.CHECK_OUT_MODE) {
+                            Common.hideProgressDialog();
+                            Common.showCustomAlertDialog(SearchActivity.this, null, "This asset is already checked out.", false, null);
+                            // focus to edit text
+                            Common.focusCursorToEnd(editText);
+                        }else {
                             Intent intent = new Intent(SearchActivity.this, DetailActivity.class);
                             intent.putExtra("DEVICE_INFO", object.toString());
                             intent.putExtra("MODE", searchMode);
@@ -204,9 +216,9 @@ public class SearchActivity extends BaseActivity {
                 Common.hideProgressDialog();
 
                 if (error.getMessage() == null) {
-                    Common.showCustomSnackBar(rootView, "Failed to connect to server", Common.SnackBarType.ERROR, null);
+                    Common.showCustomSnackBar(rootView, "No permission", Common.SnackBarType.ERROR, null);
                 } else {
-                    Common.showCustomSnackBar(rootView, error.toString(), Common.SnackBarType.ERROR, null);
+                    Common.tokenInvalid(SearchActivity.this);
                 }
                 // focus to edit text
                 Common.focusCursorToEnd(editText);

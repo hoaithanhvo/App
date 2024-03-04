@@ -1,8 +1,6 @@
 package com.example.nidecsnipeit.model;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageButton;
 
 import com.example.nidecsnipeit.R;
 
@@ -12,7 +10,7 @@ public class ListItemModel {
     private final String title;
     private int titleColor = R.color.secondary;
     private String value;
-    private List<SpinnerItemModel> dropdownItems;
+    private List<BasicItemModel> dropdownItems;
     private final Mode mode;
     private final Drawable icon;
     private boolean dropdownScanner = false;
@@ -44,7 +42,7 @@ public class ListItemModel {
         this.mode = mode;
         this.icon = icon;
     }
-    public ListItemModel(String title, String value, Mode mode, List<SpinnerItemModel> dropdownItems) {
+    public ListItemModel(String title, String value, Mode mode, List<BasicItemModel> dropdownItems) {
         this.title = title;
         this.value = value;
         this.mode = mode;
@@ -52,7 +50,7 @@ public class ListItemModel {
         this.icon = null;
     }
 
-    public ListItemModel(String title, String value, Mode mode, List<SpinnerItemModel> dropdownItems, boolean dropdownScanner) {
+    public ListItemModel(String title, String value, Mode mode, List<BasicItemModel> dropdownItems, boolean dropdownScanner) {
         this.title = title;
         this.value = value;
         this.mode = mode;
@@ -79,7 +77,7 @@ public class ListItemModel {
         this.value = value;
     }
 
-    public List<SpinnerItemModel> getDropdownItems() {
+    public List<BasicItemModel> getDropdownItems() {
         return this.dropdownItems;
     }
     public boolean isDropdownScanner() {

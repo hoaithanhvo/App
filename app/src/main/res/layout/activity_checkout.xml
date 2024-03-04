@@ -19,6 +19,6 @@
         android:layout_gravity="bottom"
         android:backgroundTint="@color/button_dark"
         android:textColor="@color/white"
-        android:text="@string/checkout_location"
+        android:text="@string/check_out"
         android:layout_marginHorizontal="@dimen/margin_screen" />
 </LinearLayout>

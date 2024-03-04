@@ -22,6 +22,33 @@
         android:theme="@style/Theme.NidecSnipeIt"
         tools:targetApi="31">
         <activity
+            android:name=".activity.SetupFieldActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CategoryListActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".service.TokenValidationService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="TODO" />
+
+        <activity
+            android:name=".activity.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.LoginCustom" />
+        <activity
+            android:name=".activity.MenuActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MainCustom">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activity.ConfigureServerActivity"
             android:exported="false" />
         <activity
@@ -52,16 +79,6 @@
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".activity.MenuActivity"
-            android:exported="true"
-            android:theme="@style/Theme.MainCustom">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

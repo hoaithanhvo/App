@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -19,17 +20,24 @@ import android.widget.ProgressBar;
 import androidx.core.content.ContextCompat;
 
 import com.example.nidecsnipeit.R;
+import com.example.nidecsnipeit.activity.LoginActivity;
+import com.example.nidecsnipeit.activity.MyApplication;
 import com.example.nidecsnipeit.model.AlertDialogCallback;
+import com.example.nidecsnipeit.model.CategoryFieldModel;
 import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.SpinnerItemModel;
+import com.example.nidecsnipeit.model.BasicItemModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Common {
     public static boolean isHardScanButtonPressed = false;
@@ -44,7 +52,7 @@ public class Common {
             public void run() {
                 isHardScanButtonPressed = false;
             }
-        }, 1000); // 500 milliseconds = 0.5 seconds
+        }, 1000); // 1000 milliseconds = 1 seconds
     }
 
     public static int convertDpToPixel(int dp, Context context) {
@@ -165,14 +173,31 @@ public class Common {
         }
     }
 
-    public static List<SpinnerItemModel> convertArrayJsonToListIdName(JSONArray jsonArray) {
-        List<SpinnerItemModel> myList = new ArrayList<>();
+    public static List<BasicItemModel> convertArrayJsonToListIdName(JSONArray jsonArray) {
+        List<BasicItemModel> myList = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = null;
             try {
                 jsonObject = jsonArray.getJSONObject(i);
-                SpinnerItemModel myObject = new SpinnerItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
+                BasicItemModel myObject = new BasicItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
+                myList.add(myObject);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return myList;
+    }
+
+    public static List<CategoryFieldModel> convertArrayJsonCategoryField(JSONArray jsonArray) {
+        List<CategoryFieldModel> myList = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = jsonArray.getJSONObject(i);
+                CategoryFieldModel myObject = new CategoryFieldModel(jsonObject.getString("name"), jsonObject.getString("db_column"), jsonObject.getInt("is_displayed"));
                 myList.add(myObject);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
@@ -192,5 +217,38 @@ public class Common {
                 }
             }
         });
+    }
+
+    public static Date convertStringToDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.forLanguageTag("vi-VN"));
+        if (dateString != null) {
+            try {
+                return dateFormat.parse(dateString);
+            } catch (ParseException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+
+    }
+
+    public static String convertDateToString(Date currentDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.forLanguageTag("vi-VN"));
+        if (currentDate != null) {
+            return dateFormat.format(currentDate);
+        } else {
+            return null;
+        }
+    }
+
+    public static void tokenInvalid(Context context) {
+        MyApplication MyApp = (MyApplication) context.getApplicationContext();
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("TOKEN_EXPIRED", true);
+        context.startActivity(intent);
+        // set status logout for app
+        MyApp.resetLoginInfo();
     }
 }
