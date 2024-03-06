@@ -1,11 +1,11 @@
 package com.example.nidecsnipeit.model;
 
 public class CheckinItemModel {
-    public Integer status;
+    public int status_id;
     public String location_id;
 
-    public CheckinItemModel(Integer status, String location_id) {
-        this.status = status;
+    public CheckinItemModel(int status_id, String location_id) {
+        this.status_id = status_id;
         this.location_id = location_id;
     }
 }

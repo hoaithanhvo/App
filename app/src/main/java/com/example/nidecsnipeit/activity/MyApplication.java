@@ -3,14 +3,6 @@ package com.example.nidecsnipeit.activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.example.nidecsnipeit.model.DetailFieldModel;
-import com.example.nidecsnipeit.utility.Common;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 public class MyApplication extends Application {
 
     private String currentUrlServer;
@@ -19,7 +11,6 @@ public class MyApplication extends Application {
     private Boolean isFirstRun;
     private String userFullName;
     private boolean isAdmin;
-    private final String urlServerDefault = "https://develop.snipeitapp.com";
     private String displayedFieldsJsonString;
     private final String PREF_NAME = "NIDEC_SNIPEIT";
     private final String URL_SERVER = "URL_SERVER";
@@ -39,7 +30,7 @@ public class MyApplication extends Application {
     // load server information from local storage
     private void loadDataFromPreferences() {
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        String urlServer = preferences.getString(URL_SERVER, urlServerDefault);
+        String urlServer = preferences.getString(URL_SERVER, "https://develop.snipeitapp.com");
         String apiKey = preferences.getString(API_KEY_SERVER, null);
         String idApiKey = preferences.getString(ID_API_KEY_SERVER, null);
         boolean isFirstRun = preferences.getBoolean(IS_FIRST_RUN, true);
@@ -93,10 +84,6 @@ public class MyApplication extends Application {
     }
     public String getIdApiKeyServer() {
         return this.currentIdApiKeyServer;
-    }
-
-    public String getDefaultUrlServer() {
-        return this.urlServerDefault;
     }
 
     // setting server info

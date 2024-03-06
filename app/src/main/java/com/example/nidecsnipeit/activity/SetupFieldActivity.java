@@ -37,7 +37,7 @@ public class SetupFieldActivity extends BaseActivity {
         String categoryName = intent.getStringExtra("CATEGORY_NAME");
         setupActionBar("Custom for " + categoryName);
 
-        NetworkManager apiServices = (NetworkManager) NetworkManager.getInstance();
+        NetworkManager apiServices = NetworkManager.getInstance();
         Common.showProgressDialog(this, "Loading...");
         // get field list by category id
         apiServices.getFieldsByCategoryId(categoryId, new NetworkResponseListener<JSONObject>() {
