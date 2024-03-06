@@ -1,6 +1,7 @@
 package com.example.nidecsnipeit.model;
 
 public class CheckoutItemModel {
+    public int status_id = 5;
     public String checkout_to_type;
     public int assigned_location;
 

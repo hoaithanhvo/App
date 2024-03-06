@@ -57,7 +57,6 @@ public class CheckoutActivity extends BaseActivity {
         mode = intent.getIntExtra("CHECKOUT_MODE", CHECK_OUT);
         int assetId = intent.getIntExtra("ASSET_ID", 0);
         String assetName = intent.getStringExtra("ASSET_NAME");
-        boolean checkoutAvailable = intent.getBooleanExtra("CHECKOUT_AVAILABLE", false);
 
         Button checkoutBtn = findViewById(R.id.checkout_btn);
         // setup title for checkout mode
@@ -84,6 +83,11 @@ public class CheckoutActivity extends BaseActivity {
                     dataList.add(new ListItemModel("Location", "", ListItemModel.Mode.AUTOCOMPLETE_TEXT, locationList, true));
                     if (mode == CHECK_OUT) {
                         dataList.add(new ListItemModel("Asset Name", assetName, ListItemModel.Mode.EDIT_TEXT));
+                    } else {
+                        List<BasicItemModel> statusItems = new ArrayList<>();
+                        statusItems.add(new BasicItemModel("2", "Ready to Deploy"));
+                        statusItems.add(new BasicItemModel("4", "In Stock"));
+                        dataList.add(new ListItemModel("Status", "", ListItemModel.Mode.DROPDOWN, statusItems));
                     }
 
                     RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
@@ -117,15 +121,19 @@ public class CheckoutActivity extends BaseActivity {
                 } else {
                     String asset_name = valuesMap.get("name");
                     CheckoutItemModel checkoutItems = new CheckoutItemModel(locationId, asset_name);
-                    Common.showProgressDialog(CheckoutActivity.this, "Checking...");
                     if (mode == CHECK_OUT) {
+                        Common.showProgressDialog(CheckoutActivity.this, "Checking...");
                         handleCheckOutLocation(assetId, checkoutItems);
-                    } else if (mode == CHECK_IN) {
-                        CheckinItemModel checkinItems = new CheckinItemModel(null, String.valueOf(locationId));
-                        handleCheckInLocation(assetId, checkinItems);
                     } else {
-                        CheckinItemModel checkinItems = new CheckinItemModel(null, String.valueOf(locationId));
-                        handleTransferLocation(assetId, checkinItems);
+                        // handle logic transfer and checkin
+                        int status_id = Integer.parseInt(Objects.requireNonNull(valuesMap.get("status")));
+                        CheckinItemModel checkinItems = new CheckinItemModel(status_id, String.valueOf(locationId));
+                        Common.showProgressDialog(CheckoutActivity.this, "Checking...");
+                        if (mode == CHECK_IN) {
+                            handleCheckInLocation(assetId, checkinItems);
+                        } else {
+                            handleTransferLocation(assetId, checkinItems);
+                        }
                     }
                 }
             }

@@ -19,17 +19,10 @@ import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -129,7 +122,6 @@ public class LoginActivity extends AppCompatActivity {
                                 String accessToken = dataToken.getString("token");
                                 String idToken = dataToken.getString("id");
                                 String userFullName = dataToken.getString("user_full_name");
-                                String expireTokenString = dataToken.getString("expires_at");
                                 boolean isAdmin = dataToken.getBoolean("is_admin");
                                 // save token to local storage
                                 MyApp.setLoginInfo(idToken, accessToken, userFullName, isAdmin);
@@ -140,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onResult(JSONObject object) throws JSONException {
                                         // Convert JSON to String to save shared preferences
-                                        String jsonString = object.getJSONObject("payload").toString();
+                                        String jsonString = object.getString("payload");
                                         MyApp.setDisplayedFields(jsonString);
 
                                         Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
