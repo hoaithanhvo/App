@@ -52,7 +52,7 @@ public class Common {
             public void run() {
                 isHardScanButtonPressed = false;
             }
-        }, 1000); // 1000 milliseconds = 1 seconds
+        }, 2000); // 1000 milliseconds = 1 seconds
     }
 
     public static int convertDpToPixel(int dp, Context context) {

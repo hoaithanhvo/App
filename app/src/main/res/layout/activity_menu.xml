@@ -56,6 +56,18 @@
                     tools:ignore="RtlSymmetry" />
 
                 <ImageButton
+                    android:id="@+id/search_img_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/margin_screen"
+                    android:backgroundTint="?attr/colorSecondary"
+                    android:contentDescription="@string/qr_scanner"
+                    android:paddingHorizontal="28dp"
+                    android:paddingVertical="12dp"
+                    android:src="@drawable/ic_search" />
+
+                <ImageButton
                     android:id="@+id/qr_scanner_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,18 +80,6 @@
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="4dp"
                     android:src="@drawable/ic_qr_scan_green" />
-
-                <ImageButton
-                    android:id="@+id/search_img_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/margin_screen"
-                    android:backgroundTint="?attr/colorSecondary"
-                    android:contentDescription="@string/qr_scanner"
-                    android:paddingHorizontal="28dp"
-                    android:paddingVertical="12dp"
-                    android:src="@drawable/ic_search" />
             </RelativeLayout>
 
             <LinearLayout

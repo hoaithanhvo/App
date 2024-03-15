@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +52,6 @@ public class DetailActivity extends BaseActivity {
 
         MyApplication myApp = (MyApplication) getApplication();
 //        List<DetailFieldModel> fields = myApp.getDetailScreenFields();
-        List<Field> displayedFields = null;
 
         // Get detail data
         Intent intent = getIntent();
@@ -68,23 +68,15 @@ public class DetailActivity extends BaseActivity {
 
             // get displayed fields by category id
             String displayedFieldsString = myApp.getDisplayedFieldsJsonString();
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, List<Field>> dataMap = objectMapper.readValue(displayedFieldsString, new TypeReference<Map<String, List<Field>>>() {});
+            JSONObject displayedFieldObject = new JSONObject(displayedFieldsString);
 
-            for (Map.Entry<String, List<Field>> entry : dataMap.entrySet()) {
-                String key = entry.getKey();
-                List<Field> value = entry.getValue();
-
-                if (key.equals(categoryId)) {
-                    displayedFields = value;
-                }
-            }
+            JSONArray displayedFields = displayedFieldObject.getJSONArray(categoryId);
 
             // get values for all displayed fields
-            assert displayedFields != null;
-            for (Field field : displayedFields) {
+            for (int i = 0; i < displayedFields.length(); i++) {
+                JSONObject field = displayedFields.getJSONObject(i);
                 String valueField = "Not defined";
-                String fieldName = field.getDb_column();
+                String fieldName = field.getString("db_column");
                 if (deviceInfo.has(fieldName)) {
                     Object fieldObject = deviceInfo.get(fieldName);
                     String typeAssignedTo = "";
@@ -105,7 +97,7 @@ public class DetailActivity extends BaseActivity {
                         }
                     }
 
-                    String titleFullName = field.getName();
+                    String titleFullName = field.getString("name");
 
                     // add new field for dataList
                     if (fieldName.equals("assigned_to")) {
@@ -119,8 +111,8 @@ public class DetailActivity extends BaseActivity {
                     } else {
                         dataList.add(new ListItemModel(titleFullName, valueField, ListItemModel.Mode.TEXT));
                     }
-                } else if (customFields.has(field.getName())) {
-                    String fieldCustomName = field.getName();
+                } else if (customFields.has(field.getString("name"))) {
+                    String fieldCustomName = field.getString("name");
                     JSONObject customField = customFields.getJSONObject(fieldCustomName);
                     dataList.add(new ListItemModel(fieldCustomName, customField.getString("value"), ListItemModel.Mode.TEXT));
                 }
@@ -132,7 +124,7 @@ public class DetailActivity extends BaseActivity {
                 Picasso.get().load(imageUrl).into(detailImage);
             }
 
-        } catch (JSONException | JsonProcessingException e) {
+        } catch (JSONException e) {
             Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
         }
 
@@ -217,27 +209,6 @@ public class DetailActivity extends BaseActivity {
             finish();
         } else {
             finish();
-        }
-    }
-
-    static class Field {
-        private String name;
-        private String db_column;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getDb_column() {
-            return db_column;
-        }
-
-        public void setDb_column(String db_column) {
-            this.db_column = db_column;
         }
     }
 }

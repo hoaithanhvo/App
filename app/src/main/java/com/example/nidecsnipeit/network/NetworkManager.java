@@ -172,7 +172,7 @@ public class NetworkManager {
         String url = URL +  "/hardware/bytag/" + assetTag;
         if (assetTag.contains("/hardware/")) {
             String[] parts = assetTag.split("/hardware/");
-            url = URL +  "/hardware/" + parts[1];
+            url = URL +  "/hardware/" + parts[parts.length - 1];
         }
         this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
