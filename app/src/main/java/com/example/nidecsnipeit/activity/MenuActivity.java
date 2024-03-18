@@ -4,10 +4,13 @@ import static com.example.nidecsnipeit.activity.SearchActivity.PERMISSION_REQUES
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -30,7 +33,7 @@ import org.json.JSONObject;
 
 public class MenuActivity extends AppCompatActivity {
     private View rootView;
-
+    private EditText inputSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         MyApplication MyApp = (MyApplication) getApplication();
@@ -67,20 +70,60 @@ public class MenuActivity extends AppCompatActivity {
         settingBtn.setOnClickListener(createButtonClickListener(DetailActivity.SETTING_MODE));
 
         // get reference EditText and Button
-        EditText inputSearch = findViewById(R.id.input_search);
+        inputSearch = findViewById(R.id.input_search);
         ImageButton searchButton = findViewById(R.id.search_img_btn);
+        ImageButton removeTextButton = findViewById(R.id.remove_text);
+        ImageButton qrScannerBtn = findViewById(R.id.qr_scanner_btn);
+
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                // disable searchButton if inputSearch is Empty
+                if (s.toString().trim().isEmpty()) {
+                    removeTextButton.setEnabled(false);
+                    removeTextButton.setVisibility(View.GONE);
+                    qrScannerBtn.setEnabled(true);
+                    qrScannerBtn.setVisibility(View.VISIBLE);
+                } else {
+                    removeTextButton.setEnabled(true);
+                    removeTextButton.setVisibility(View.VISIBLE);
+                    qrScannerBtn.setEnabled(false);
+                    qrScannerBtn.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        // Set up remove text button
+        removeTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Common.isHardScanButtonPressed) {
+                    String assetTag = inputSearch.getText().toString();
+                    Common.hideKeyboard(MenuActivity.this, v);
+                    Common.focusCursorToEnd(inputSearch);
+                    redirectToDetailScreen(assetTag);
+                } else {
+                    inputSearch.setText("");
+                    Common.focusCursorToEnd(inputSearch);
+                }
+            }
+        });
 
         // Set up QR scanner button
-        ImageButton qrScannerBtn = findViewById(R.id.qr_scanner_btn);
         qrScannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Common.isHardScanButtonPressed) {
                     String assetTag = inputSearch.getText().toString();
-                    if (!assetTag.trim().isEmpty()) {
-                        Common.hideKeyboard(MenuActivity.this, v);
-                        redirectToDetailScreen(assetTag);
-                    }
+                    Common.hideKeyboard(MenuActivity.this, v);
+                    Common.focusCursorToEnd(inputSearch);
+                    redirectToDetailScreen(assetTag);
                 } else {
                     if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(MenuActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
@@ -127,23 +170,30 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void handleButtonClick(Integer mode) {
-        Intent intent;
-        if (mode == DetailActivity.SETTING_MODE) {
-            intent = new Intent(this, SettingsActivity.class);
+        if (Common.isHardScanButtonPressed) {
+            String assetTag = inputSearch.getText().toString();
+            Common.hideKeyboard(MenuActivity.this, rootView);
+            Common.focusCursorToEnd(inputSearch);
+            redirectToDetailScreen(assetTag);
         } else {
-            intent = new Intent(this, SearchActivity.class);
-            intent.putExtra("mode", mode);
+            Intent intent;
+            if (mode == DetailActivity.SETTING_MODE) {
+                intent = new Intent(this, SettingsActivity.class);
+            } else {
+                intent = new Intent(this, SearchActivity.class);
+                intent.putExtra("mode", mode);
+            }
+            startActivity(intent);
         }
-        startActivity(intent);
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String qrContent = QRScannerHelper.processScanResult(requestCode, resultCode, data);
-        EditText editText = findViewById(R.id.input_search);
         if (qrContent != null) {
             // Set content to EditText
-            editText.setText(qrContent);
+            inputSearch.setText(qrContent);
 
             // Redirect to Detail screen if QR scan is successful
             redirectToDetailScreen(qrContent);
@@ -152,13 +202,14 @@ public class MenuActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
         // focus to edit text
-        Common.focusCursorToEnd(editText);
+        Common.focusCursorToEnd(inputSearch);
     }
 
     public void redirectToDetailScreen(String qrResult) {
         NetworkManager apiServices = NetworkManager.getInstance(MenuActivity.this);
-        EditText editText = findViewById(R.id.input_search);
-
+        if (qrResult.trim().isEmpty()) {
+            qrResult = inputSearch.getText().toString();
+        }
         Common.showProgressDialog(this, "Searching...");
         apiServices.getItemRequestByAssetTag(qrResult, new NetworkResponseListener<JSONObject>() {
             @Override
@@ -168,7 +219,7 @@ public class MenuActivity extends AppCompatActivity {
                         Common.hideProgressDialog();
                         Common.showCustomSnackBar(rootView, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
                         // focus to edit text
-                        Common.focusCursorToEnd(editText);
+                        Common.focusCursorToEnd(inputSearch);
                     } else {
                         Intent intent = new Intent(MenuActivity.this, DetailActivity.class);
                         intent.putExtra("DEVICE_INFO", object.toString());
@@ -178,7 +229,7 @@ public class MenuActivity extends AppCompatActivity {
                     Common.hideProgressDialog();
                     Common.showCustomSnackBar(rootView, e.toString(), Common.SnackBarType.ERROR, null);
                     // focus to edit text
-                    Common.focusCursorToEnd(editText);
+                    Common.focusCursorToEnd(inputSearch);
                 }
             }
         }, new NetworkResponseErrorListener() {
@@ -193,7 +244,7 @@ public class MenuActivity extends AppCompatActivity {
                     Common.tokenInvalid(MenuActivity.this);
                 }
                 // focus to edit text
-                Common.focusCursorToEnd(editText);
+                Common.focusCursorToEnd(inputSearch);
             }
         });
     }

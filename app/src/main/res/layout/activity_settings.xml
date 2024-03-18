@@ -122,7 +122,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/version"
+                android:text="20240315"
                 android:textSize="14sp"
                 android:textColor="?android:attr/textColorSecondary" />
         </LinearLayout>
