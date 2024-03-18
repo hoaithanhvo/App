@@ -72,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toStartOf="@+id/search_img_btn"
-                    android:background="?android:attr/selectableItemBackground"
+                    android:background="@drawable/background_rounded_ripple"
                     android:focusable="true"
                     android:clickable="true"
                     android:layout_centerVertical="true"
@@ -80,6 +80,21 @@
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="4dp"
                     android:src="@drawable/ic_qr_scan_green" />
+
+                <ImageButton
+                    android:id="@+id/remove_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@+id/search_img_btn"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:background="@drawable/background_rounded_ripple"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/remove_all_text"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="4dp"
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
             <LinearLayout
