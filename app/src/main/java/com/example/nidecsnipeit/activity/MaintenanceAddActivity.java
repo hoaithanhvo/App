@@ -158,22 +158,26 @@ public class MaintenanceAddActivity extends BaseActivity {
                                     apiServices.updateMaintenanceItem(finalMaintenanceId, maintenanceInfo,
                                         new NetworkResponseListener<JSONObject>() {
                                             @Override
-                                            public void onResult(JSONObject object) throws JSONException {
-                                                if (object.has("status") && object.get("status").equals("error")) {
-                                                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
-                                                    Common.hideProgressDialog();
-                                                } else {
-                                                    Common.hideProgressDialog();
-                                                    Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                                                        @Override
-                                                        public void onSnackbar() {
-                                                            Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
-                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                            intent.putExtra("ASSET_ID", asset_id);
-                                                            startActivity(intent);
-                                                            finish();
-                                                        }
-                                                    });
+                                            public void onResult(JSONObject object) {
+                                                try {
+                                                    if (object.has("status") && object.get("status").equals("error")) {
+                                                        Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                                                        Common.hideProgressDialog();
+                                                    } else {
+                                                        Common.hideProgressDialog();
+                                                        Common.showCustomSnackBar(rootView, "Asset Maintenance edited successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                                                            @Override
+                                                            public void onSnackbar() {
+                                                                Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                intent.putExtra("ASSET_ID", asset_id);
+                                                                startActivity(intent);
+                                                                finish();
+                                                            }
+                                                        });
+                                                    }
+                                                } catch (JSONException e) {
+                                                    Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
                                                 }
                                             }
                                         }, new NetworkResponseErrorListener() {
@@ -211,22 +215,26 @@ public class MaintenanceAddActivity extends BaseActivity {
                                     apiServices.createMaintenanceItem(params,
                                         new NetworkResponseListener<JSONObject>() {
                                             @Override
-                                            public void onResult(JSONObject object) throws JSONException {
-                                                if (object.has("status") && object.get("status").equals("error")) {
-                                                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
-                                                    Common.hideProgressDialog();
-                                                } else {
-                                                    Common.hideProgressDialog();
-                                                    Common.showCustomSnackBar(rootView, "Asset Maintenance created successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                                                        @Override
-                                                        public void onSnackbar() {
-                                                            Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
-                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                            intent.putExtra("ASSET_ID", asset_id);
-                                                            startActivity(intent);
-                                                            finish();
-                                                        }
-                                                    });
+                                            public void onResult(JSONObject object) {
+                                                try {
+                                                    if (object.has("status") && object.get("status").equals("error")) {
+                                                        Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                                                        Common.hideProgressDialog();
+                                                    } else {
+                                                        Common.hideProgressDialog();
+                                                        Common.showCustomSnackBar(rootView, "Asset Maintenance created successfully", Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                                                            @Override
+                                                            public void onSnackbar() {
+                                                                Intent intent = new Intent(MaintenanceAddActivity.this, MaintenanceListActivity.class);
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                intent.putExtra("ASSET_ID", asset_id);
+                                                                startActivity(intent);
+                                                                finish();
+                                                            }
+                                                        });
+                                                    }
+                                                } catch (JSONException e) {
+                                                    Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
                                                 }
                                             }
                                         }, new NetworkResponseErrorListener() {

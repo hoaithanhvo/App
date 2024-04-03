@@ -31,6 +31,7 @@ public class SetupFieldActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_field);
+        View view = findViewById(android.R.id.content);
 
         Intent intent = getIntent();
         String categoryId = intent.getStringExtra("CATEGORY_ID");
@@ -42,16 +43,20 @@ public class SetupFieldActivity extends BaseActivity {
         // get field list by category id
         apiServices.getFieldsByCategoryId(categoryId, new NetworkResponseListener<JSONObject>() {
             @Override
-            public void onResult(JSONObject object) throws JSONException {
-                if (object.getJSONArray("payload").length() > 0) {
-                    JSONArray dataJSON = object.getJSONArray("payload");
-                    List<CategoryFieldModel> dataList = Common.convertArrayJsonCategoryField(dataJSON);
+            public void onResult(JSONObject object) {
+                try {
+                    if (object.getJSONArray("payload").length() > 0) {
+                        JSONArray dataJSON = object.getJSONArray("payload");
+                        List<CategoryFieldModel> dataList = Common.convertArrayJsonCategoryField(dataJSON);
 
-                    RecyclerView recyclerView = findViewById(R.id.category_fields_recycler);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(SetupFieldActivity.this));
-                    adapter = new CategoryFieldAdapter(SetupFieldActivity.this, dataList);
-                    recyclerView.setAdapter(adapter);
+                        RecyclerView recyclerView = findViewById(R.id.category_fields_recycler);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(SetupFieldActivity.this));
+                        adapter = new CategoryFieldAdapter(SetupFieldActivity.this, dataList);
+                        recyclerView.setAdapter(adapter);
 
+                    }
+                } catch (JSONException e) {
+                    Common.showCustomSnackBar(view, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
                 Common.hideProgressDialog();
             }
@@ -77,28 +82,38 @@ public class SetupFieldActivity extends BaseActivity {
 
                     apiServices.updateDisplayedFieldByCategoryId(updateDisplayedFieldItem, new NetworkResponseListener<JSONObject>() {
                         @Override
-                        public void onResult(JSONObject object) throws JSONException {
-                            if (object.getString("status").equals("success")) {
-                                MyApplication MyApp = (MyApplication) getApplication();
+                        public void onResult(JSONObject object) {
+                            try {
+                                if (object.getString("status").equals("success")) {
+                                    MyApplication MyApp = (MyApplication) getApplication();
 
-                                // update displayed field list
-                                apiServices.getFieldsAllCategory(new NetworkResponseListener<JSONObject>() {
-                                    @Override
-                                    public void onResult(JSONObject object) throws JSONException {
-                                        // Convert JSON to String to save shared preferences
-                                        String jsonString = object.getJSONObject("payload").toString();
-                                        MyApp.setDisplayedFields(jsonString);
-                                        Common.hideProgressDialog();
-                                        Common.showCustomSnackBar(v, "Settings saved.", Common.SnackBarType.SUCCESS, null);
-                                        finish();
-                                    }
-                                }, new NetworkResponseErrorListener() {
-                                    @Override
-                                    public void onErrorResult(Exception error) {
-                                        Common.hideProgressDialog();
-                                        Common.tokenInvalid(SetupFieldActivity.this);
-                                    }
-                                });
+                                    // update displayed field list
+                                    apiServices.getFieldsAllCategory(new NetworkResponseListener<JSONObject>() {
+                                        @Override
+                                        public void onResult(JSONObject object) {
+                                            // Convert JSON to String to save shared preferences
+                                            String jsonString = null;
+                                            try {
+                                                jsonString = object.getString("payload");
+                                                MyApp.setDisplayedFields(jsonString);
+                                                Common.showCustomSnackBar(v, "Settings saved.", Common.SnackBarType.SUCCESS, null);
+                                                finish();
+                                            } catch (JSONException e) {
+                                                Common.showCustomSnackBar(v, e.getMessage(), Common.SnackBarType.ERROR, null);
+                                            }
+                                            Common.hideProgressDialog();
+                                        }
+                                    }, new NetworkResponseErrorListener() {
+                                        @Override
+                                        public void onErrorResult(Exception error) {
+                                            Common.hideProgressDialog();
+                                            Common.tokenInvalid(SetupFieldActivity.this);
+                                        }
+                                    });
+                                }
+                            } catch (JSONException e) {
+                                Common.hideProgressDialog();
+                                Common.showCustomSnackBar(v, e.getMessage(), Common.SnackBarType.ERROR, null);
                             }
                         }
                     }, new NetworkResponseErrorListener() {

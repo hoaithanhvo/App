@@ -56,7 +56,7 @@ public class SettingsActivity extends BaseActivity {
                         // call api to logout
                         apiServices.logout(MyApp.getIdApiKeyServer(), new NetworkResponseListener<JSONObject>() {
                             @Override
-                            public void onResult(JSONObject object) throws JSONException {
+                            public void onResult(JSONObject object) {
                                 Common.hideProgressDialog();
                                 MyApp.resetLoginInfo();
                                 Intent loginIntent = new Intent(SettingsActivity.this, LoginActivity.class);

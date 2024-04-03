@@ -8,7 +8,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.nidecsnipeit.activity.MyApplication;
 import com.example.nidecsnipeit.model.CheckinItemModel;
 import com.example.nidecsnipeit.model.CheckoutItemModel;
-import com.example.nidecsnipeit.model.GetCategoryParamItemModel;
 import com.example.nidecsnipeit.model.GetLocationParamItemModel;
 import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
 import com.example.nidecsnipeit.model.GetManufacturerParamItemModel;
@@ -17,7 +16,6 @@ import com.example.nidecsnipeit.model.LoginItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
 import com.example.nidecsnipeit.model.UpdateDisplayedFieldModel;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -42,7 +40,7 @@ public class NetworkManager {
 
     public static synchronized NetworkManager getInstance(Context context) {
         if (instance == null) {
-            instance = new NetworkManager(context);
+            instance = new NetworkManager(context.getApplicationContext());
         }
         return instance;
     }
@@ -229,8 +227,8 @@ public class NetworkManager {
             for (Field field: fields) {
                 try {
                     params.put(field.getName(), String.valueOf(field.get(myObject)));
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                } catch (IllegalAccessException ignored) {
+
                 }
             }
             jsonObject = new JSONObject(params);
@@ -239,11 +237,7 @@ public class NetworkManager {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try {
-                    listener.onResult(response);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                listener.onResult(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -272,11 +266,8 @@ public class NetworkManager {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try {
-                    listener.onResult(response);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                listener.onResult(response);
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -292,7 +283,7 @@ public class NetworkManager {
                 return headerMap;
             }
         };
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(60000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -306,8 +297,8 @@ public class NetworkManager {
         for (Field field: fields) {
             try {
                 queryParams.append(field.getName()).append("=").append(String.valueOf(field.get(myObject))).append("&");
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+            } catch (IllegalAccessException ignored) {
+
             }
         }
         return queryParams.substring(0, queryParams.length() - 1);

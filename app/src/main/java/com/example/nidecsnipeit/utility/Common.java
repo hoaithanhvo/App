@@ -128,6 +128,7 @@ public class Common {
 
     // custom snack bar
     public static void showCustomSnackBar(final View view, String message, SnackBarType type, final SnackbarCallback callback) {
+        hideProgressDialog();
         final Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
         View snackbarView = snackbar.getView();
 
@@ -173,35 +174,28 @@ public class Common {
         }
     }
 
-    public static List<BasicItemModel> convertArrayJsonToListIdName(JSONArray jsonArray) {
+    public static List<BasicItemModel> convertArrayJsonToListIdName(JSONArray jsonArray) throws JSONException {
         List<BasicItemModel> myList = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = null;
-            try {
-                jsonObject = jsonArray.getJSONObject(i);
-                BasicItemModel myObject = new BasicItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
-                myList.add(myObject);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            jsonObject = jsonArray.getJSONObject(i);
+            BasicItemModel myObject = new BasicItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
+            myList.add(myObject);
+
         }
 
         return myList;
     }
 
-    public static List<CategoryFieldModel> convertArrayJsonCategoryField(JSONArray jsonArray) {
+    public static List<CategoryFieldModel> convertArrayJsonCategoryField(JSONArray jsonArray) throws JSONException {
         List<CategoryFieldModel> myList = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = null;
-            try {
-                jsonObject = jsonArray.getJSONObject(i);
-                CategoryFieldModel myObject = new CategoryFieldModel(jsonObject.getString("name"), jsonObject.getString("db_column"), jsonObject.getInt("is_displayed"));
-                myList.add(myObject);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            jsonObject = jsonArray.getJSONObject(i);
+            CategoryFieldModel myObject = new CategoryFieldModel(jsonObject.getString("name"), jsonObject.getString("db_column"), jsonObject.getInt("is_displayed"));
+            myList.add(myObject);
         }
 
         return myList;

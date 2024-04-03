@@ -110,44 +110,53 @@ public class LoginActivity extends AppCompatActivity {
                     // proceed login
                     apiServices.login(loginItem, new NetworkResponseListener<JSONObject>() {
                         @Override
-                        public void onResult(JSONObject object) throws JSONException {
-                            if (object.getString("status").equals("error")) {
-                                Common.hideProgressDialog();
-                                Common.showCustomSnackBar(v, object.getString("messages"), Common.SnackBarType.ERROR, null);
-                            } else {
-                                // reset instance network
-                                NetworkManager.resetInstance();
+                        public void onResult(JSONObject object) {
+                            try {
+                                if (object.getString("status").equals("error")) {
+                                    Common.hideProgressDialog();
+                                    Common.showCustomSnackBar(v, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                                } else {
+                                    // reset instance network
+                                    NetworkManager.resetInstance();
 
-                                JSONObject dataToken = object.getJSONObject("payload");
-                                String accessToken = dataToken.getString("token");
-                                String idToken = dataToken.getString("id");
-                                String userFullName = dataToken.getString("user_full_name");
-                                boolean isAdmin = dataToken.getBoolean("is_admin");
-                                // save token to local storage
-                                MyApp.setLoginInfo(idToken, accessToken, userFullName, isAdmin);
+                                    JSONObject dataToken = object.getJSONObject("payload");
+                                    String accessToken = dataToken.getString("token");
+                                    String idToken = dataToken.getString("id");
+                                    String userFullName = dataToken.getString("user_full_name");
+                                    boolean isAdmin = dataToken.getBoolean("is_admin");
+                                    // save token to local storage
+                                    MyApp.setLoginInfo(idToken, accessToken, userFullName, isAdmin);
 
-                                // load data setting
-                                NetworkManager apiServices = NetworkManager.getInstance(LoginActivity.this);
-                                apiServices.getFieldsAllCategory(new NetworkResponseListener<JSONObject>() {
-                                    @Override
-                                    public void onResult(JSONObject object) throws JSONException {
-                                        // Convert JSON to String to save shared preferences
-                                        String jsonString = object.getString("payload");
-                                        MyApp.setDisplayedFields(jsonString);
+                                    // load data setting
+                                    NetworkManager apiServices = NetworkManager.getInstance(LoginActivity.this);
+                                    apiServices.getFieldsAllCategory(new NetworkResponseListener<JSONObject>() {
+                                        @Override
+                                        public void onResult(JSONObject object) {
+                                            // Convert JSON to String to save shared preferences
+                                            String jsonString = null;
+                                            try {
+                                                jsonString = object.getString("payload");
+                                            } catch (JSONException e) {
+                                                Common.showCustomSnackBar(v, e.getMessage(), Common.SnackBarType.ERROR, null);
+                                            }
+                                            MyApp.setDisplayedFields(jsonString);
 
-                                        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                        Common.hideProgressDialog();
-                                    }
-                                }, new NetworkResponseErrorListener() {
-                                    @Override
-                                    public void onErrorResult(Exception error) {
-                                        MyApp.resetLoginInfo();
-                                        Common.hideProgressDialog();
-                                        Common.showCustomSnackBar(v, error.getMessage(), Common.SnackBarType.ERROR, null);
-                                    }
-                                });
+                                            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                            Common.hideProgressDialog();
+                                        }
+                                    }, new NetworkResponseErrorListener() {
+                                        @Override
+                                        public void onErrorResult(Exception error) {
+                                            MyApp.resetLoginInfo();
+                                            Common.hideProgressDialog();
+                                            Common.showCustomSnackBar(v, error.getMessage(), Common.SnackBarType.ERROR, null);
+                                        }
+                                    });
+                                }
+                            } catch (JSONException e) {
+                                Common.showCustomSnackBar(v, e.getMessage(), Common.SnackBarType.ERROR, null);
                             }
 
                         }
