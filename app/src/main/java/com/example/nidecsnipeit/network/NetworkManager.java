@@ -176,7 +176,7 @@ public class NetworkManager {
     }
 
     public void getLocationsList(GetLocationParamItemModel locationParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/locations";
+        String url = URL +  "/locations/list";
         this.getAPI(url, Request.Method.GET, locationParamItem, ACCESS_TOKEN, listener, errorListener);
     }
 
