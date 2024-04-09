@@ -154,7 +154,7 @@ public class NetworkManager {
     }
 
     public void createMaintenanceItem(MaintenanceItemModel maintenanceItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/maintenances/";
+        String url = URL +  "/maintenances/create";
         this.postAPI(url, Request.Method.POST, maintenanceItem, listener, errorListener);
     }
 
