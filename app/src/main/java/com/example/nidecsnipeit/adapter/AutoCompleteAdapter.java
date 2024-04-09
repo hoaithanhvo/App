@@ -29,7 +29,8 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
         this.context = context;
         this.textViewResourceId = textViewResourceId;
         this.mList = new ArrayList<>(mList);
-        this.mListAll = new ArrayList<>(mList);
+        this.mListAll = new ArrayList<>();
+        this.mListAll.addAll(mList);
     }
 
     @Override

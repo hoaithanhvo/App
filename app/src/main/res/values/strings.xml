@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Nidec Assets Manager</string>
+    <string name="version_app">20240409</string>
     <string name="action_back">Back</string>
     <string name="check_in">CHECK-IN</string>
     <string name="check_out">CHECKOUT</string>
@@ -25,7 +26,6 @@
     <string name="server_sample">http://192.168.0.190:4402</string>
     <string name="information">Information</string>
     <string name="application_version">Application version</string>
-    <string name="version">0.1.0 - Nidec Assets Management</string>
     <string name="snipeit_server_address">SnipeIT server address</string>
     <string name="server_address">Server address</string>
     <string name="set_server_eg">Set your server address e.g., https://develop.snipeitapp.com</string>

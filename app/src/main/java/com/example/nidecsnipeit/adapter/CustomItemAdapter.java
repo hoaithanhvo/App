@@ -157,7 +157,6 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                 holder.autoCompleteTextView.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        Common.focusCursorToEnd(holder.autoCompleteTextView);
                     }
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -179,7 +178,6 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                         @Override
                         public void onClick(View v) {
                             if (Common.isHardScanButtonPressed) {
-                                focusNextView(holder.getAdapterPosition());
                             } else {
                                 setCurrentPosition(holder.getAdapterPosition());
                                 QRScannerHelper.initiateScan((Activity) v.getContext());

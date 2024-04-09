@@ -38,13 +38,17 @@ public class CategoryListActivity extends BaseActivity {
         Common.showProgressDialog(this, "Loading...");
         apiServices.getCategoryList(new NetworkResponseListener<JSONObject>() {
             @Override
-            public void onResult(JSONObject object) throws JSONException {
-                if (object.getInt("total") > 0) {
-                    List<BasicItemModel> dataList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
-                    RecyclerView recyclerView = findViewById(R.id.category_list_recycler);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(CategoryListActivity.this));
-                    CategoryListAdapter adapter = new CategoryListAdapter(CategoryListActivity.this, dataList);
-                    recyclerView.setAdapter(adapter);
+            public void onResult(JSONObject object) {
+                try {
+                    if (object.getInt("total") > 0) {
+                        List<BasicItemModel> dataList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
+                        RecyclerView recyclerView = findViewById(R.id.category_list_recycler);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(CategoryListActivity.this));
+                        CategoryListAdapter adapter = new CategoryListAdapter(CategoryListActivity.this, dataList);
+                        recyclerView.setAdapter(adapter);
+                    }
+                } catch (JSONException e) {
+                    Common.showCustomSnackBar(view, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
                 Common.hideProgressDialog();
             }

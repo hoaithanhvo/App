@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -74,26 +75,32 @@ public class CheckoutActivity extends BaseActivity {
         List<ListItemModel> dataList = new ArrayList<>();
         GetLocationParamItemModel locationItems = new GetLocationParamItemModel();
 
+        RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
+        recyclerView.setLayoutManager(new LinearLayoutManager(CheckoutActivity.this));
+        adapter = new CustomItemAdapter(CheckoutActivity.this, dataList, recyclerView);
+        recyclerView.setAdapter(adapter);
+
         // get location list and display fields checkout
         apiServices.getLocationsList(locationItems, new NetworkResponseListener<JSONObject>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResult(JSONObject object) {
                 try {
-                    List<BasicItemModel> locationList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
-                    dataList.add(new ListItemModel("Location", "", ListItemModel.Mode.AUTOCOMPLETE_TEXT, locationList, true));
-                    if (mode == CHECK_OUT) {
-                        dataList.add(new ListItemModel("Asset Name", assetName, ListItemModel.Mode.EDIT_TEXT));
+                    if (object.has("status") && object.get("status").equals("error")) {
+                        Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
                     } else {
-                        List<BasicItemModel> statusItems = new ArrayList<>();
-                        statusItems.add(new BasicItemModel("2", "Ready to Deploy"));
-                        statusItems.add(new BasicItemModel("4", "In Stock"));
-                        dataList.add(new ListItemModel("Status", "", ListItemModel.Mode.DROPDOWN, statusItems));
+                        List<BasicItemModel> locationList = Common.convertArrayJsonToListIdName(object.getJSONArray("payload"));
+                        dataList.add(new ListItemModel("Location", "", ListItemModel.Mode.AUTOCOMPLETE_TEXT, locationList, true));
+                        if (mode == CHECK_OUT) {
+                            dataList.add(new ListItemModel("Asset Name", assetName, ListItemModel.Mode.EDIT_TEXT));
+                        } else {
+                            List<BasicItemModel> statusItems = new ArrayList<>();
+                            statusItems.add(new BasicItemModel("2", "Ready to Deploy"));
+                            statusItems.add(new BasicItemModel("4", "In Stock"));
+                            dataList.add(new ListItemModel("Status", "", ListItemModel.Mode.DROPDOWN, statusItems));
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-
-                    RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(CheckoutActivity.this));
-                    adapter = new CustomItemAdapter(CheckoutActivity.this, dataList, recyclerView);
-                    recyclerView.setAdapter(adapter);
                     Common.hideProgressDialog();
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
@@ -143,25 +150,29 @@ public class CheckoutActivity extends BaseActivity {
     public void handleCheckOutLocation (int id, CheckoutItemModel params) {
         apiServices.checkoutItem(id, params, new NetworkResponseListener<JSONObject>() {
             @Override
-            public void onResult(JSONObject object) throws JSONException {
-                if (object.has("status") && object.get("status").equals("error")) {
-                    Common.hideProgressDialog();
-                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
-                } else {
-                    Common.hideProgressDialog();
-                    String messageSuccessful = "Asset checked out successfully.";
-                    if (mode == CHECK_IN) {
-                        messageSuccessful = "Asset checked in successfully.";
-                    }
-                    Common.showCustomSnackBar(rootView, messageSuccessful, Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                        @Override
-                        public void onSnackbar() {
-                            Intent intent = new Intent(CheckoutActivity.this, MenuActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
+            public void onResult(JSONObject object) {
+                try {
+                    if (object.has("status") && object.get("status").equals("error")) {
+                        Common.hideProgressDialog();
+                        Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                    } else {
+                        Common.hideProgressDialog();
+                        String messageSuccessful = "Asset checked out successfully.";
+                        if (mode == CHECK_IN) {
+                            messageSuccessful = "Asset checked in successfully.";
                         }
-                    });
+                        Common.showCustomSnackBar(rootView, messageSuccessful, Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                            @Override
+                            public void onSnackbar() {
+                                Intent intent = new Intent(CheckoutActivity.this, MenuActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
             }
         }, new NetworkResponseErrorListener() {
@@ -176,22 +187,26 @@ public class CheckoutActivity extends BaseActivity {
     public void handleCheckInLocation (int id, CheckinItemModel params) {
         apiServices.checkinItem(id, params, new NetworkResponseListener<JSONObject>() {
             @Override
-            public void onResult(JSONObject object) throws JSONException {
-                if (object.has("status") && object.get("status").equals("error")) {
-                    Common.hideProgressDialog();
-                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
-                } else {
-                    Common.hideProgressDialog();
-                    String messageSuccessful = "Asset checked in successfully.";
-                    Common.showCustomSnackBar(rootView, messageSuccessful, Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                        @Override
-                        public void onSnackbar() {
-                            Intent intent = new Intent(CheckoutActivity.this, MenuActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
+            public void onResult(JSONObject object) {
+                try {
+                    if (object.has("status") && object.get("status").equals("error")) {
+                        Common.hideProgressDialog();
+                        Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                    } else {
+                        Common.hideProgressDialog();
+                        String messageSuccessful = "Asset checked in successfully.";
+                        Common.showCustomSnackBar(rootView, messageSuccessful, Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                            @Override
+                            public void onSnackbar() {
+                                Intent intent = new Intent(CheckoutActivity.this, MenuActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
             }
         }, new NetworkResponseErrorListener() {
@@ -206,22 +221,26 @@ public class CheckoutActivity extends BaseActivity {
     public void handleTransferLocation (int id, CheckinItemModel params) {
         apiServices.transferItem(id, params, new NetworkResponseListener<JSONObject>() {
             @Override
-            public void onResult(JSONObject object) throws JSONException {
-                if (object.has("status") && object.get("status").equals("error")) {
-                    Common.hideProgressDialog();
-                    Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
-                } else {
-                    Common.hideProgressDialog();
-                    String messageSuccessful = "Asset transfer location successfully.";
-                    Common.showCustomSnackBar(rootView, messageSuccessful, Common.SnackBarType.SUCCESS, new SnackbarCallback() {
-                        @Override
-                        public void onSnackbar() {
-                            Intent intent = new Intent(CheckoutActivity.this, MenuActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
+            public void onResult(JSONObject object) {
+                try {
+                    if (object.has("status") && object.get("status").equals("error")) {
+                        Common.hideProgressDialog();
+                        Common.showCustomSnackBar(rootView, object.getString("messages"), Common.SnackBarType.ERROR, null);
+                    } else {
+                        Common.hideProgressDialog();
+                        String messageSuccessful = "Asset transfer location successfully.";
+                        Common.showCustomSnackBar(rootView, messageSuccessful, Common.SnackBarType.SUCCESS, new SnackbarCallback() {
+                            @Override
+                            public void onSnackbar() {
+                                Intent intent = new Intent(CheckoutActivity.this, MenuActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    Common.showCustomSnackBar(rootView, e.getMessage(), Common.SnackBarType.ERROR, null);
                 }
             }
         }, new NetworkResponseErrorListener() {
