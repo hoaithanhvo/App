@@ -57,6 +57,7 @@ public class CheckoutActivity extends BaseActivity {
         Intent intent = getIntent();
         mode = intent.getIntExtra("CHECKOUT_MODE", CHECK_OUT);
         int assetId = intent.getIntExtra("ASSET_ID", 0);
+        String companyId = intent.getStringExtra("COMPANY_ID");
         String assetName = intent.getStringExtra("ASSET_NAME");
 
         Button checkoutBtn = findViewById(R.id.checkout_btn);
@@ -73,7 +74,7 @@ public class CheckoutActivity extends BaseActivity {
         }
 
         List<ListItemModel> dataList = new ArrayList<>();
-        GetLocationParamItemModel locationItems = new GetLocationParamItemModel();
+        GetLocationParamItemModel locationItems = new GetLocationParamItemModel(companyId);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
         recyclerView.setLayoutManager(new LinearLayoutManager(CheckoutActivity.this));

@@ -175,10 +175,17 @@ public class DetailActivity extends BaseActivity {
         int id = (int) details.get("id");
         String asset_name = details.getString("name");
         String locationName;
+        String companyId;
         if (details.getString("location").equals("null")) {
             locationName = "";
         } else {
             locationName = details.getJSONObject("location").getString("name");
+        }
+
+        if (details.getString("company").equals("null")) {
+            companyId = "-1";
+        } else {
+            companyId = details.getJSONObject("company").getString("id");
         }
 
         if (mode == CHECK_OUT_MODE || mode == CHECK_IN_MODE || mode == TRANSFER_MODE) {
@@ -198,6 +205,7 @@ public class DetailActivity extends BaseActivity {
             intent.putExtra("ASSET_NAME", asset_name);
             intent.putExtra("LOCATION_NAME", locationName);
             intent.putExtra("CHECKOUT_AVAILABLE", checkoutAvailable);
+            intent.putExtra("COMPANY_ID", companyId);
             startActivity(intent);
             finish();
         } else if (mode == MAINTENANCE_MODE) {
