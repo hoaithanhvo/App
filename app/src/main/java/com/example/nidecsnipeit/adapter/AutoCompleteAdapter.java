@@ -79,18 +79,20 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
     private final Filter nameFilter = new Filter() {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            if (Common.isHardScanButtonPressed && results != null && results.count == 1) { // only 1 result
+            if (results != null && results.count > 0) {
                 mList = (List<BasicItemModel>) results.values;
-                BasicItemModel singleItem = mList.get(0);
 
-                if (mOnSingleResultListener != null) {
-                    mOnSingleResultListener.onSingleResult(singleItem);
+                if (results.count == 1) { // only 1 result
+                    BasicItemModel singleItem = mList.get(0);
+
+                    if (mOnSingleResultListener != null && Common.isHardScanButtonPressed && singleItem.getName().equals(constraint.toString())) {
+                        mOnSingleResultListener.onSingleResult(singleItem);
+                    }
                 }
-            } else if (results != null && results.count > 0) {
-                clear();
-                mList = (List<BasicItemModel>) results.values;
-                addAll(mList);
-                notifyDataSetChanged();
+
+//                clear();
+//                addAll(mList);
+//                notifyDataSetChanged();
             } else {
                 notifyDataSetInvalidated();
             }

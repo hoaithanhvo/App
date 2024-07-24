@@ -156,8 +156,6 @@ public class MenuActivity extends BaseActivity {
         Intent intent;
         if (mode == DetailActivity.SETTING_MODE) {
             intent = new Intent(this, SettingsActivity.class);
-        } else if (mode == DetailActivity.AUDIT_MODE) {
-            intent = new Intent(this, AuditActivity.class);
         } else {
             intent = new Intent(this, SearchActivity.class);
             intent.putExtra("mode", mode);
