@@ -15,7 +15,6 @@ import com.example.nidecsnipeit.model.BasicItemModel;
 import com.example.nidecsnipeit.utility.Common;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements Filterable {
@@ -31,6 +30,16 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
         this.mList = new ArrayList<>(mList);
         this.mListAll = new ArrayList<>();
         this.mListAll.addAll(mList);
+    }
+
+    public interface OnSingleResultListener {
+        void onSingleResult(BasicItemModel item);
+    }
+
+    private OnSingleResultListener mOnSingleResultListener;
+
+    public void setOnSingleResultListener(OnSingleResultListener listener) {
+        this.mOnSingleResultListener = listener;
     }
 
     @Override
@@ -70,7 +79,14 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
     private final Filter nameFilter = new Filter() {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            if (results != null && results.count > 0) {
+            if (Common.isHardScanButtonPressed && results != null && results.count == 1) { // only 1 result
+                mList = (List<BasicItemModel>) results.values;
+                BasicItemModel singleItem = mList.get(0);
+
+                if (mOnSingleResultListener != null) {
+                    mOnSingleResultListener.onSingleResult(singleItem);
+                }
+            } else if (results != null && results.count > 0) {
                 clear();
                 mList = (List<BasicItemModel>) results.values;
                 addAll(mList);
@@ -84,13 +100,6 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
             List<BasicItemModel> filteredList = new ArrayList<>();
-
-            if (Common.isHardScanButtonPressed) {
-                // if the hard scan button is pressed, return default value
-                filterResults.values = Collections.emptyList();
-                filterResults.count = 0;
-                return filterResults;
-            }
 
             if (constraint != null) {
                 String filterPattern = constraint.toString().toLowerCase().trim();

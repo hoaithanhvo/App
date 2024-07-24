@@ -35,6 +35,7 @@ public class DetailActivity extends BaseActivity {
     public static final int MAINTENANCE_MODE = 3;
     public static final int SETTING_MODE = 4;
     public static final int TRANSFER_MODE = 5;
+    public static final int AUDIT_MODE = 6;
     CustomItemAdapter adapter;
     private int mode;
     private View rootView;

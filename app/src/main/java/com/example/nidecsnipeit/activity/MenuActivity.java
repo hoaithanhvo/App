@@ -2,16 +2,13 @@ package com.example.nidecsnipeit.activity;
 
 import static com.example.nidecsnipeit.activity.SearchActivity.PERMISSION_REQUEST_CAMERA;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -31,7 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends BaseActivity {
     private View rootView;
     private EditText inputSearch;
     @Override
@@ -103,15 +100,8 @@ public class MenuActivity extends AppCompatActivity {
         removeTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Common.isHardScanButtonPressed) {
-                    String assetTag = inputSearch.getText().toString();
-                    Common.hideKeyboard(MenuActivity.this, v);
-                    Common.focusCursorToEnd(inputSearch);
-                    redirectToDetailScreen(assetTag);
-                } else {
-                    inputSearch.setText("");
-                    Common.focusCursorToEnd(inputSearch);
-                }
+                inputSearch.setText("");
+                Common.focusCursorToEnd(inputSearch);
             }
         });
 
@@ -119,17 +109,10 @@ public class MenuActivity extends AppCompatActivity {
         qrScannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Common.isHardScanButtonPressed) {
-                    String assetTag = inputSearch.getText().toString();
-                    Common.hideKeyboard(MenuActivity.this, v);
-                    Common.focusCursorToEnd(inputSearch);
-                    redirectToDetailScreen(assetTag);
+                if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MenuActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
                 } else {
-                    if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MenuActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
-                    } else {
-                        QRScannerHelper.initiateScan(MenuActivity.this);
-                    }
+                    QRScannerHelper.initiateScan(MenuActivity.this);
                 }
             }
         });
@@ -170,22 +153,16 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void handleButtonClick(Integer mode) {
-        if (Common.isHardScanButtonPressed) {
-            String assetTag = inputSearch.getText().toString();
-            Common.hideKeyboard(MenuActivity.this, rootView);
-            Common.focusCursorToEnd(inputSearch);
-            redirectToDetailScreen(assetTag);
+        Intent intent;
+        if (mode == DetailActivity.SETTING_MODE) {
+            intent = new Intent(this, SettingsActivity.class);
+        } else if (mode == DetailActivity.AUDIT_MODE) {
+            intent = new Intent(this, AuditActivity.class);
         } else {
-            Intent intent;
-            if (mode == DetailActivity.SETTING_MODE) {
-                intent = new Intent(this, SettingsActivity.class);
-            } else {
-                intent = new Intent(this, SearchActivity.class);
-                intent.putExtra("mode", mode);
-            }
-            startActivity(intent);
+            intent = new Intent(this, SearchActivity.class);
+            intent.putExtra("mode", mode);
         }
-
+        startActivity(intent);
     }
 
     @Override
@@ -250,18 +227,14 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        int KEYCODE_SCAN = 10036;
-        EditText editText = findViewById(R.id.input_search);
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            return true;
-        } else if (keyCode == KEYCODE_SCAN || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
-            Common.focusCursorToEnd(editText);
-            Common.setHardScanButtonPressed();
-            return true;
+    public void onScanDataReceived(String qrContent) {
+        if (qrContent != null) {
+            // Set content to EditText
+            inputSearch.setText(qrContent);
+            Common.hideKeyboard(MenuActivity.this, rootView);
+            Common.focusCursorToEnd(inputSearch);
+            redirectToDetailScreen(qrContent);
         }
-        return super.onKeyDown(keyCode, event);
     }
 
 }

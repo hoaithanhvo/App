@@ -41,20 +41,9 @@ import java.util.Locale;
 
 public class Common {
     public static boolean isHardScanButtonPressed = false;
-    public static final int KEYCODE_SCAN = 10036;
-
-    private static final Handler handler = new Handler();
-
-    public static void setHardScanButtonPressed() {
-        isHardScanButtonPressed = true;
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                isHardScanButtonPressed = false;
-            }
-        }, 2000); // 1000 milliseconds = 1 seconds
+    public static void setHardScanButtonPressed(boolean isPressed) {
+        isHardScanButtonPressed = isPressed;
     }
-
     public static int convertDpToPixel(int dp, Context context) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,

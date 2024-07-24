@@ -8,6 +8,10 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.symbol.emdk.permission.EMDK" />
+    <queries>
+        <package android:name="com.symbol.emdk.emdkservice" />
+    </queries>
 
     <application
         android:name=".activity.MyApplication"
@@ -21,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NidecSnipeIt"
         tools:targetApi="31">
+        <uses-library android:name="com.symbol.emdk" android:required="false"/>
         <activity
             android:name=".activity.SetupFieldActivity"
             android:exported="false" />
@@ -41,7 +46,8 @@
         <activity
             android:name=".activity.MenuActivity"
             android:exported="true"
-            android:theme="@style/Theme.MainCustom">
+            android:theme="@style/Theme.MainCustom"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
