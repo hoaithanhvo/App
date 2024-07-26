@@ -193,7 +193,13 @@ public class BaseActivity extends AppCompatActivity implements EMDKManager.EMDKL
                 break;
             case SCANNING:
                 Common.setHardScanButtonPressed(true);
+                break;
             case WAITING:
+                runOnUiThread(() -> {
+                    Handler handler = new Handler();
+                    handler.postDelayed(() -> Common.setHardScanButtonPressed(false), 1000);
+                });
+                break;
 //                showMessageHardScan("Ready!");
             case DISABLED:
             case ERROR:

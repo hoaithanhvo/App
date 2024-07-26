@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -42,6 +43,7 @@ import java.util.Locale;
 public class Common {
     public static boolean isHardScanButtonPressed = false;
     public static void setHardScanButtonPressed(boolean isPressed) {
+        Log.d("Common", "setHardScanButtonPressed: " + isPressed); // Log tên Activity
         isHardScanButtonPressed = isPressed;
     }
     public static int convertDpToPixel(int dp, Context context) {
