@@ -190,6 +190,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Version: 5/2024"
+        android:text="Version: 7/2024"
         android:autofillHints="" />
 </RelativeLayout>
