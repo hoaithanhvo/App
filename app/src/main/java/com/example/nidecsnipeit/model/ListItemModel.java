@@ -10,6 +10,7 @@ public class ListItemModel {
     private final String title;
     private int titleColor = R.color.secondary;
     private String value;
+    private String id;
     private List<BasicItemModel> dropdownItems;
     private final Mode mode;
     private final Drawable icon;
@@ -77,9 +78,22 @@ public class ListItemModel {
         this.value = value;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public List<BasicItemModel> getDropdownItems() {
         return this.dropdownItems;
     }
+
+    public void setDropdownItems(List<BasicItemModel> dropdownItems) {
+        this.dropdownItems = dropdownItems;
+    }
+
     public boolean isDropdownScanner() {
         return this.dropdownScanner;
     }

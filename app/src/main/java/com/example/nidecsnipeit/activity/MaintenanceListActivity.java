@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.MaintenanceAdapter;
+import com.example.nidecsnipeit.model.AlertDialogCallback;
 import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
 import com.example.nidecsnipeit.model.MaintenanceItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
@@ -41,12 +42,60 @@ public class MaintenanceListActivity extends BaseActivity {
 
         Intent intent = getIntent();
         int asset_id = intent.getIntExtra("ASSET_ID", 0);
-        boolean isDeleted = intent.getBooleanExtra("DELETED", false);
 
         NetworkManager apiServices = NetworkManager.getInstance();
         GetMaintenanceParamItemModel paramItem = new GetMaintenanceParamItemModel(asset_id);
         List<MaintenanceItemModel> dataList = new ArrayList<>();
         Common.showProgressDialog(this, "Loading...");
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_maintenance);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MaintenanceListActivity.this));
+        adapter = new MaintenanceAdapter(MaintenanceListActivity.this, dataList, recyclerView);
+        recyclerView.setAdapter(adapter);
+
+        // handle event delete item
+        adapter.setOnDeleteItemListener(position -> {
+            Common.showCustomAlertDialog(MaintenanceListActivity.this, "Delete maintenance", "Are you sure you want to delete this maintenance? This operation cannot be undone", true, new AlertDialogCallback() {
+                @Override
+                public void onPositiveButtonClick() {
+                    Common.showProgressDialog(MaintenanceListActivity.this, "Deleting...");
+                    apiServices.deleteMaintenanceItem(dataList.get(position).getId(), new NetworkResponseListener<JSONObject>() {
+                        @Override
+                        public void onResult(JSONObject object) {
+                            Common.hideProgressDialog();
+                            try {
+                                if (object.has("status") && object.get("status").equals("error")) {
+                                    Common.showCustomSnackBar(view, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
+                                } else {
+                                    dataList.remove(position);
+                                    adapter.notifyItemRemoved(position);
+                                    Common.showCustomSnackBar(view, "The asset maintenance was deleted successfully", Common.SnackBarType.SUCCESS, null);
+
+                                    // show text if data list is empty
+                                    if (dataList.isEmpty()) {
+                                        TextView textAlert = findViewById(R.id.no_maintenance);
+                                        textAlert.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                Common.showCustomSnackBar(view, e.getMessage(), Common.SnackBarType.ERROR, null);
+                            }
+                        }
+                    }, new NetworkResponseErrorListener() {
+                        @Override
+                        public void onErrorResult(Exception error) {
+                            Common.hideProgressDialog();
+                            Common.showCustomSnackBar(view, error.getMessage(), Common.SnackBarType.ERROR, null);
+                        }
+                    });
+                }
+                @Override
+                public void onNegativeButtonClick() {
+                    Common.hideProgressDialog();
+                }
+            });
+
+        });
 
         // get and show maintenance list
         apiServices.getMaintenanceList(paramItem, new NetworkResponseListener<JSONObject>() {
@@ -75,20 +124,12 @@ public class MaintenanceListActivity extends BaseActivity {
                         }
 
                         // map item list to view
-                        RecyclerView recyclerView = findViewById(R.id.recycler_maintenance);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(MaintenanceListActivity.this));
-                        adapter = new MaintenanceAdapter(MaintenanceListActivity.this, dataList, recyclerView);
-                        recyclerView.setAdapter(adapter);
+                        adapter.notifyItemRangeInserted(0, dataList.size());
                         Common.hideProgressDialog();
                     } else {
                         TextView textAlert = findViewById(R.id.no_maintenance);
                         textAlert.setVisibility(View.VISIBLE);
                         Common.hideProgressDialog();
-                    }
-
-                    // display message if deleted item
-                    if (isDeleted) {
-                        Common.showCustomSnackBar(view, "The asset maintenance was deleted successfully", Common.SnackBarType.SUCCESS, null);
                     }
                 } catch (JSONException e) {
                     Common.hideProgressDialog();

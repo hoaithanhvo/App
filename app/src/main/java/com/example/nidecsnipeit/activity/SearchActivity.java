@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -68,18 +67,10 @@ public class SearchActivity extends BaseActivity {
         qrScannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Common.isHardScanButtonPressed) {
-                    String assetTag = inputSearch.getText().toString();
-                    if (!assetTag.trim().isEmpty()) {
-                        Common.hideKeyboard(SearchActivity.this, v);
-                        redirectToDetailScreen(assetTag);
-                    }
+                if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(SearchActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
                 } else {
-                    if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(SearchActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
-                    } else {
-                        QRScannerHelper.initiateScan(SearchActivity.this);
-                    }
+                    QRScannerHelper.initiateScan(SearchActivity.this);
                 }
             }
         });
@@ -227,17 +218,16 @@ public class SearchActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        int KEYCODE_SCAN = 10036;
-        EditText editText = findViewById(R.id.input_search);
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            return true;
-        } else if (keyCode == KEYCODE_SCAN || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
+    public void onScanDataReceived(String qrContent) {
+        if (qrContent != null) {
+            EditText editText = findViewById(R.id.input_search);
+            // Set content to EditText
+            editText.setText(qrContent);
+            // focus to edit text
             Common.focusCursorToEnd(editText);
-            Common.setHardScanButtonPressed();
-            return true;
+
+            // Redirect to Detail screen if QR scan is successful
+            redirectToDetailScreen(qrContent);
         }
-        return super.onKeyDown(keyCode, event);
     }
 }

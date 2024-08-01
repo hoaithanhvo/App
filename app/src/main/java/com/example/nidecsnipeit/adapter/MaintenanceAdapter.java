@@ -33,10 +33,19 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
     private final List<MaintenanceItemModel> mData;
     private final LayoutInflater mInflater;
     private final RecyclerView recyclerView;
+    private OnDeleteItemListener mOnDeleteItemListener;
+
     public MaintenanceAdapter(Context context, List<MaintenanceItemModel> data, RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.recyclerView = recyclerView;
+    }
+
+    public interface OnDeleteItemListener {
+        void onDeleteItem(int position);
+    }
+    public void setOnDeleteItemListener(OnDeleteItemListener listener) {
+        this.mOnDeleteItemListener = listener;
     }
 
     @NonNull
@@ -70,41 +79,9 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
 
         // handle delete event
         holder.buttonDeleteView.setOnClickListener(v -> {
-            NetworkManager apiServices = NetworkManager.getInstance();
-            Common.showCustomAlertDialog(mInflater.getContext(), "Delete maintenance", "Are you sure you want to delete this maintenance? This operation cannot be undone", true, new AlertDialogCallback() {
-                @Override
-                public void onPositiveButtonClick() {
-                    Common.showProgressDialog(mInflater.getContext(), "Deleting...");
-                    apiServices.deleteMaintenanceItem(currentItem.getId(), new NetworkResponseListener<JSONObject>() {
-                        @Override
-                        public void onResult(JSONObject object) {
-                            try {
-                                if (object.has("status") && object.get("status").equals("error")) {
-                                    Common.showCustomSnackBar(v, object.get("messages").toString(), Common.SnackBarType.ERROR, null);
-                                } else {
-                                    Intent intent = new Intent(mInflater.getContext(), MaintenanceListActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    intent.putExtra("ASSET_ID", currentItem.getAssetID());
-                                    intent.putExtra("DELETED", true);
-                                    mInflater.getContext().startActivity(intent);
-                                }
-                            } catch (JSONException e) {
-                                Common.showCustomSnackBar(v, e.getMessage(), Common.SnackBarType.ERROR, null);
-                            }
-                            Common.hideProgressDialog();
-                        }
-                    }, new NetworkResponseErrorListener() {
-                        @Override
-                        public void onErrorResult(Exception error) {
-                            Common.hideProgressDialog();
-                        }
-                    });
-                }
-                @Override
-                public void onNegativeButtonClick() {
-                    Common.hideProgressDialog();
-                }
-            });
+            if (holder.getAdapterPosition() != RecyclerView.NO_POSITION && mOnDeleteItemListener != null) {
+                mOnDeleteItemListener.onDeleteItem(holder.getAdapterPosition());
+            }
         });
     }
 

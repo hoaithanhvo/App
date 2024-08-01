@@ -1,7 +1,5 @@
 package com.example.nidecsnipeit.activity;
 
-import static com.example.nidecsnipeit.utility.Common.KEYCODE_SCAN;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CustomItemAdapter;
@@ -41,6 +40,7 @@ public class CheckoutActivity extends BaseActivity {
     public static final int CHECK_OUT = 2;
     public static final int TRANSFER = 3;
     private CustomItemAdapter adapter;
+    List<ListItemModel> dataList;
     private View rootView;
     private NetworkManager apiServices;
     private int mode;
@@ -57,6 +57,7 @@ public class CheckoutActivity extends BaseActivity {
         Intent intent = getIntent();
         mode = intent.getIntExtra("CHECKOUT_MODE", CHECK_OUT);
         int assetId = intent.getIntExtra("ASSET_ID", 0);
+        String companyId = intent.getStringExtra("COMPANY_ID");
         String assetName = intent.getStringExtra("ASSET_NAME");
 
         Button checkoutBtn = findViewById(R.id.checkout_btn);
@@ -72,8 +73,8 @@ public class CheckoutActivity extends BaseActivity {
             checkoutBtn.setText(R.string.transfer);
         }
 
-        List<ListItemModel> dataList = new ArrayList<>();
-        GetLocationParamItemModel locationItems = new GetLocationParamItemModel();
+        dataList = new ArrayList<>();
+        GetLocationParamItemModel locationItems = new GetLocationParamItemModel(companyId);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
         recyclerView.setLayoutManager(new LinearLayoutManager(CheckoutActivity.this));
@@ -137,9 +138,9 @@ public class CheckoutActivity extends BaseActivity {
                         CheckinItemModel checkinItems = new CheckinItemModel(status_id, String.valueOf(locationId));
                         Common.showProgressDialog(CheckoutActivity.this, "Checking...");
                         if (mode == CHECK_IN) {
-                            handleCheckInLocation(assetId, checkinItems);
+                            handleCheckInLocation(assetId, checkinItems); // Check-in
                         } else {
-                            handleTransferLocation(assetId, checkinItems);
+                            handleTransferLocation(assetId, checkinItems); // Transfer
                         }
                     }
                 }
@@ -285,10 +286,15 @@ public class CheckoutActivity extends BaseActivity {
             startActivity(intent);
             finish();
             return true;
-        } else if (keyCode == KEYCODE_SCAN || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
-            Common.setHardScanButtonPressed();
-            return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onScanDataReceived(String qrContent) {
+        if (qrContent != null) {
+            dataList.get(0).setValue(qrContent);
+            adapter.notifyItemChanged(0);
+        }
     }
 }
