@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -23,10 +22,10 @@ import androidx.core.content.ContextCompat;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.activity.LoginActivity;
 import com.example.nidecsnipeit.activity.MyApplication;
-import com.example.nidecsnipeit.model.AlertDialogCallback;
-import com.example.nidecsnipeit.model.CategoryFieldModel;
-import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.AlertDialogCallback;
+import com.example.nidecsnipeit.network.model.CategoryFieldModel;
+import com.example.nidecsnipeit.network.model.SnackbarCallback;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -42,10 +41,20 @@ import java.util.Locale;
 
 public class Common {
     public static boolean isHardScanButtonPressed = false;
-    public static void setHardScanButtonPressed(boolean isPressed) {
-        Log.d("Common", "setHardScanButtonPressed: " + isPressed); // Log tên Activity
-        isHardScanButtonPressed = isPressed;
+    public static final int KEYCODE_SCAN = 10036;
+
+    private static final Handler handler = new Handler();
+
+    public static void setHardScanButtonPressed() {
+        isHardScanButtonPressed = true;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isHardScanButtonPressed = false;
+            }
+        }, 2000); // 1000 milliseconds = 1 seconds
     }
+
     public static int convertDpToPixel(int dp, Context context) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -166,30 +175,29 @@ public class Common {
     }
 
     public static List<BasicItemModel> convertArrayJsonToListIdName(JSONArray jsonArray) throws JSONException {
-        List<BasicItemModel> myList = new ArrayList<>();
+        List<BasicItemModel> listdata = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = null;
             jsonObject = jsonArray.getJSONObject(i);
             BasicItemModel myObject = new BasicItemModel(jsonObject.getString("id"), jsonObject.getString("name"));
-            myList.add(myObject);
+            listdata.add(myObject);
 
         }
 
-        return myList;
+        return listdata;
     }
 
     public static List<CategoryFieldModel> convertArrayJsonCategoryField(JSONArray jsonArray) throws JSONException {
-        List<CategoryFieldModel> myList = new ArrayList<>();
+        List<CategoryFieldModel> listdata = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = null;
             jsonObject = jsonArray.getJSONObject(i);
             CategoryFieldModel myObject = new CategoryFieldModel(jsonObject.getString("name"), jsonObject.getString("db_column"), jsonObject.getInt("is_displayed"));
-            myList.add(myObject);
+            listdata.add(myObject);
         }
-
-        return myList;
+        return listdata;
     }
 
     public static void focusCursorToEnd(EditText editText) {
@@ -215,7 +223,6 @@ public class Common {
         } else {
             return null;
         }
-
     }
 
     public static String convertDateToString(Date currentDate) {

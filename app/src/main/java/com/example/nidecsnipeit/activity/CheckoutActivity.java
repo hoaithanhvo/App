@@ -1,5 +1,7 @@
 package com.example.nidecsnipeit.activity;
 
+import static com.example.nidecsnipeit.utility.Common.KEYCODE_SCAN;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,16 +13,15 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CustomItemAdapter;
-import com.example.nidecsnipeit.model.CheckinItemModel;
-import com.example.nidecsnipeit.model.CheckoutItemModel;
-import com.example.nidecsnipeit.model.GetLocationParamItemModel;
-import com.example.nidecsnipeit.model.ListItemModel;
-import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.CheckinItemModel;
+import com.example.nidecsnipeit.network.model.CheckoutItemModel;
+import com.example.nidecsnipeit.network.model.GetLocationParamItemModel;
+import com.example.nidecsnipeit.network.model.ListItemModel;
+import com.example.nidecsnipeit.network.model.SnackbarCallback;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
@@ -39,8 +40,8 @@ public class CheckoutActivity extends BaseActivity {
     public static final int CHECK_IN = 1;
     public static final int CHECK_OUT = 2;
     public static final int TRANSFER = 3;
+    public static final int AUDIT = 4;
     private CustomItemAdapter adapter;
-    List<ListItemModel> dataList;
     private View rootView;
     private NetworkManager apiServices;
     private int mode;
@@ -57,9 +58,8 @@ public class CheckoutActivity extends BaseActivity {
         Intent intent = getIntent();
         mode = intent.getIntExtra("CHECKOUT_MODE", CHECK_OUT);
         int assetId = intent.getIntExtra("ASSET_ID", 0);
-        String companyId = intent.getStringExtra("COMPANY_ID");
         String assetName = intent.getStringExtra("ASSET_NAME");
-
+        String companyId = intent.getStringExtra("COMPANY_ID");
         Button checkoutBtn = findViewById(R.id.checkout_btn);
         // setup title for checkout mode
         if (mode == CHECK_OUT) {
@@ -68,12 +68,17 @@ public class CheckoutActivity extends BaseActivity {
         } else if (mode == CHECK_IN) {
             setupActionBar("Check-in");
             checkoutBtn.setText(R.string.check_in);
-        } else {
+        }else if (mode == AUDIT) {
+            setupActionBar("Check-in");
+            checkoutBtn.setText("AUDIT");
+        }
+        else {
             setupActionBar("Transfer location");
             checkoutBtn.setText(R.string.transfer);
         }
 
-        dataList = new ArrayList<>();
+        List<ListItemModel> dataList = new ArrayList<>();
+
         GetLocationParamItemModel locationItems = new GetLocationParamItemModel(companyId);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_checkout);
@@ -138,9 +143,9 @@ public class CheckoutActivity extends BaseActivity {
                         CheckinItemModel checkinItems = new CheckinItemModel(status_id, String.valueOf(locationId));
                         Common.showProgressDialog(CheckoutActivity.this, "Checking...");
                         if (mode == CHECK_IN) {
-                            handleCheckInLocation(assetId, checkinItems); // Check-in
+                            handleCheckInLocation(assetId, checkinItems);
                         } else {
-                            handleTransferLocation(assetId, checkinItems); // Transfer
+                            handleTransferLocation(assetId, checkinItems);
                         }
                     }
                 }
@@ -286,15 +291,18 @@ public class CheckoutActivity extends BaseActivity {
             startActivity(intent);
             finish();
             return true;
+        } else if (keyCode == KEYCODE_SCAN || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
+            Common.setHardScanButtonPressed();
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public void onScanDataReceived(String qrContent) {
-        if (qrContent != null) {
-            dataList.get(0).setValue(qrContent);
-            adapter.notifyItemChanged(0);
-        }
-    }
+//    @Override
+//    public void onScanDataReceived(String qrContent) {
+//        if (qrContent != null) {
+//            dataList.get(0).setValue(qrContent);
+//            adapter.notifyItemChanged(0);
+//        }
+//    }
 }

@@ -2,6 +2,15 @@ package com.example.nidecsnipeit.activity;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.example.nidecsnipeit.R;
 
 public class MyApplication extends Application {
 
@@ -30,14 +39,13 @@ public class MyApplication extends Application {
     // load server information from local storage
     private void loadDataFromPreferences() {
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        String urlServer = preferences.getString(URL_SERVER, "https://develop.snipeitapp.com");
+        String urlServer = preferences.getString(URL_SERVER, "http://10.2341.1.97:3000");
         String apiKey = preferences.getString(API_KEY_SERVER, null);
         String idApiKey = preferences.getString(ID_API_KEY_SERVER, null);
         boolean isFirstRun = preferences.getBoolean(IS_FIRST_RUN, true);
         String userFullName = preferences.getString(USER_FULL_NAME, "");
         boolean isAdmin = preferences.getBoolean(IS_ADMIN, false);
         String displayedFields = preferences.getString(DISPLAYED_FIELDS, "");
-
         this.currentUrlServer = urlServer;
         this.currentApiKeyServer = apiKey;
         this.currentIdApiKeyServer = idApiKey;
@@ -123,4 +131,6 @@ public class MyApplication extends Application {
         this.isAdmin = false;
         this.displayedFieldsJsonString = "";
     }
+
+
 }

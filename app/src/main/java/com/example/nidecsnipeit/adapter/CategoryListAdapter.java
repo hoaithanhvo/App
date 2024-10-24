@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.activity.SetupFieldActivity;
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 
 import java.util.List;
 

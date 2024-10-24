@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CategoryListAdapter;
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;

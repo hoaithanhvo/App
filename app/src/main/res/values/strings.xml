@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">Nidec Assets Manager</string>
-    <string name="version_app">7/2024</string>
+    <string name="version_app">5/2024</string>
     <string name="action_back">Back</string>
     <string name="check_in">CHECK-IN</string>
     <string name="check_out">CHECKOUT</string>
     <string name="maintenance">MAINTENANCE</string>
+    <string name="auditRFID">Audit RFID</string>
     <string name="button_text">Button Text</string>
     <string name="nidec_logo">Nidec logo</string>
     <string name="button_3">Button 3</string>
@@ -46,7 +47,7 @@
     <string name="custom_fields">Custom fields</string>
     <string name="appearance_configuration">Appearance Configuration</string>
     <string name="custom_field_guide">Select a category to customize the allowed display fields</string>
-    <string name="transfer">Transfer</string>
+    <string name="transfer">TRANSFER</string>
     <string name="enter_password">Enter your password</string>
     <string name="enter_username">Enter your username</string>
     <string name="select_fields_to_allow_display">Select fields to allow display</string>
@@ -55,12 +56,26 @@
     <string name="remove_all_text">Remove all text</string>
     <string name="audit">AUDIT</string>
     <string name="inventory_number">Inventory Number</string>
-    <string name="asset_name">Asset Name</string>
-    <string name="label_status">Label Status</string>
-    <string name="location">Location</string>
+    <string name="asset_name">Asset name</string>
     <string name="asset_no">Asset No</string>
-    <string name="cost_center">Cost Center</string>
-    <string name="not_use">Not use</string>
+    <string name="department">Department</string>
+    <string name="_snipeit_cost_center_29">Cost Center</string>
+    <string name="label_status">Label Status</string>
+    <string name="asset_status">Asset Status</string>
+    <string name="location">Location</string>
+    <string name="good">Good</string>
+    <string name="blur">Blur</string>
     <string name="using">Using</string>
+    <string name="no_use">No Use</string>
     <string name="confirm">Confirm</string>
+    <string name="clear">Clear</string>
+    <string name="back">Back</string>
+    <string name="import_asset">IMPORT ASSET</string>
+    <string name="input_scan">Input Scan</string>
+
+    <string-array name="asset_status_array">
+        <item>A: Available to use</item>
+        <item>B: Available to use after repairing</item>
+        <item>C: Unable to use or out-of-date</item>
+    </string-array>
 </resources>

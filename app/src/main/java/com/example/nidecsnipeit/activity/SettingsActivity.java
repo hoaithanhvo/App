@@ -12,13 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.nidecsnipeit.R;
-import com.example.nidecsnipeit.model.AlertDialogCallback;
+import com.example.nidecsnipeit.network.model.AlertDialogCallback;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SettingsActivity extends BaseActivity {

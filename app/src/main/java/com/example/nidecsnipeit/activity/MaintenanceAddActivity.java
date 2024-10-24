@@ -12,11 +12,11 @@ import android.widget.DatePicker;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CustomItemAdapter;
-import com.example.nidecsnipeit.model.AlertDialogCallback;
-import com.example.nidecsnipeit.model.ListItemModel;
-import com.example.nidecsnipeit.model.MaintenanceItemModel;
-import com.example.nidecsnipeit.model.SnackbarCallback;
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.AlertDialogCallback;
+import com.example.nidecsnipeit.network.model.ListItemModel;
+import com.example.nidecsnipeit.network.model.MaintenanceItemModel;
+import com.example.nidecsnipeit.network.model.SnackbarCallback;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
@@ -36,7 +36,6 @@ import java.util.Objects;
 
 public class MaintenanceAddActivity extends BaseActivity {
     private CustomItemAdapter adapter;
-    List<ListItemModel> dataList;
     private boolean isNewMaintenance;
     private View rootView;
     @SuppressLint("SetTextI18n")
@@ -50,6 +49,17 @@ public class MaintenanceAddActivity extends BaseActivity {
 
         MyApplication MyApp = (MyApplication) getApplication();
         NetworkManager apiServices = NetworkManager.getInstance(this);
+
+        List<BasicItemModel> maintenanceTypes = new ArrayList<>(); // {"Maintenance", "Repair", "PAT Test", "Upgrade", "Hardware Support", "Software Support"};
+        maintenanceTypes.add(new BasicItemModel("0", "Maintenance"));
+        maintenanceTypes.add(new BasicItemModel("1", "Repair"));
+        maintenanceTypes.add(new BasicItemModel("2", "PAT Test"));
+        maintenanceTypes.add(new BasicItemModel("3", "Upgrade"));
+        maintenanceTypes.add(new BasicItemModel("4", "Hardware Support"));
+        maintenanceTypes.add(new BasicItemModel("5", "Software Support"));
+
+        List<ListItemModel> dataList = new ArrayList<>();
+
         // Get detail data
         Intent intent = getIntent();
         int asset_id = intent.getIntExtra("ASSET_ID", 0);
@@ -75,40 +85,28 @@ public class MaintenanceAddActivity extends BaseActivity {
             isNewMaintenance = true;
         }
 
-        List<BasicItemModel> maintenanceTypes = new ArrayList<>(); // {"Maintenance", "Repair", "PAT Test", "Upgrade", "Hardware Support", "Software Support"};
-        maintenanceTypes.add(new BasicItemModel("0", "Maintenance"));
-        maintenanceTypes.add(new BasicItemModel("1", "Repair"));
-        maintenanceTypes.add(new BasicItemModel("2", "PAT Test"));
-        maintenanceTypes.add(new BasicItemModel("3", "Upgrade"));
-        maintenanceTypes.add(new BasicItemModel("4", "Hardware Support"));
-        maintenanceTypes.add(new BasicItemModel("5", "Software Support"));
-
-        dataList = new ArrayList<>();
-        if (maintenanceInfo != null) {
-            // UPDATE event
-            dataList.add(new ListItemModel("Maintenance type", maintenanceInfo.getAssetMaintenanceType(), ListItemModel.Mode.DROPDOWN, maintenanceTypes));
-            dataList.add(new ListItemModel("Supplier", maintenanceInfo.getSupplierName(), ListItemModel.Mode.DROPDOWN, new ArrayList<>()));
-            dataList.add(new ListItemModel("Title", maintenanceInfo.getTitle(), ListItemModel.Mode.EDIT_TEXT));
-        } else {
-            // NEW event
-            dataList.add(new ListItemModel("Maintenance type", "", ListItemModel.Mode.DROPDOWN, maintenanceTypes));
-            dataList.add(new ListItemModel("Supplier", "", ListItemModel.Mode.DROPDOWN, new ArrayList<>()));
-            dataList.add(new ListItemModel("Title", "", ListItemModel.Mode.EDIT_TEXT));
-        }
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_maintenance_add);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MaintenanceAddActivity.this));
-        adapter = new CustomItemAdapter(MaintenanceAddActivity.this, dataList, recyclerView);
-        recyclerView.setAdapter(adapter);
-
         apiServices.getSupplierList(new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 try {
                     List<BasicItemModel> supplierList = Common.convertArrayJsonToListIdName(object.getJSONArray("rows"));
+                    if (maintenanceInfo != null) {
+                        // UPDATE event
+                        dataList.add(new ListItemModel("Maintenance type", maintenanceInfo.getAssetMaintenanceType(), ListItemModel.Mode.DROPDOWN, maintenanceTypes));
+                        dataList.add(new ListItemModel("Supplier", maintenanceInfo.getSupplierName(), ListItemModel.Mode.DROPDOWN, supplierList));
+                        dataList.add(new ListItemModel("Title", maintenanceInfo.getTitle(), ListItemModel.Mode.EDIT_TEXT));
+                    } else {
+                        // NEW event
+                        dataList.add(new ListItemModel("Maintenance type", "", ListItemModel.Mode.DROPDOWN, maintenanceTypes));
+                        dataList.add(new ListItemModel("Supplier", "", ListItemModel.Mode.DROPDOWN, supplierList));
+                        dataList.add(new ListItemModel("Title", "", ListItemModel.Mode.EDIT_TEXT));
+                    }
+
                     // map item list to view
-                    dataList.get(1).setDropdownItems(supplierList);
-                    adapter.notifyItemChanged(1);
+                    RecyclerView recyclerView = findViewById(R.id.recycler_maintenance_add);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(MaintenanceAddActivity.this));
+                    adapter = new CustomItemAdapter(MaintenanceAddActivity.this, dataList, recyclerView);
+                    recyclerView.setAdapter(adapter);
                     Common.hideProgressDialog();
                 } catch (JSONException e) {
                     Common.hideProgressDialog();
@@ -126,8 +124,6 @@ public class MaintenanceAddActivity extends BaseActivity {
         maintenanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.hideKeyboard(MaintenanceAddActivity.this, rootView);
-
                 Map<String, String> valuesMap = adapter.getAllValuesByTitle();
                 int year = datePicker.getYear();
                 int month = datePicker.getMonth();
@@ -272,16 +268,6 @@ public class MaintenanceAddActivity extends BaseActivity {
         if (scannedValue != null) {
             // Update dropdown selection following position
             adapter.updateDropdownSelection(adapter.getCurrentPosition(), scannedValue);
-        }
-    }
-
-    @Override
-    public void onScanDataReceived(String qrContent) {
-        if (qrContent != null) {
-            // Set content to EditText
-            dataList.get(2).setValue(qrContent);
-            adapter.notifyItemChanged(2);
-            Common.hideKeyboard(MaintenanceAddActivity.this, rootView);
         }
     }
 

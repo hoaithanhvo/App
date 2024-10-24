@@ -6,21 +6,34 @@ import com.android.volley.*;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nidecsnipeit.activity.MyApplication;
-import com.example.nidecsnipeit.model.CheckinItemModel;
-import com.example.nidecsnipeit.model.CheckoutItemModel;
-import com.example.nidecsnipeit.model.GetLocationParamItemModel;
-import com.example.nidecsnipeit.model.GetMaintenanceParamItemModel;
-import com.example.nidecsnipeit.model.GetManufacturerParamItemModel;
-import com.example.nidecsnipeit.model.GetModelParamItemModel;
-import com.example.nidecsnipeit.model.LoginItemModel;
-import com.example.nidecsnipeit.model.MaintenanceItemModel;
-import com.example.nidecsnipeit.model.UpdateDisplayedFieldModel;
+import com.example.nidecsnipeit.network.model.AuditModel;
+import com.example.nidecsnipeit.network.model.CheckinItemModel;
+import com.example.nidecsnipeit.network.model.CheckoutItemModel;
+import com.example.nidecsnipeit.network.model.GetLocationParamItemModel;
+import com.example.nidecsnipeit.network.model.GetMaintenanceParamItemModel;
+import com.example.nidecsnipeit.network.model.GetManufacturerParamItemModel;
+import com.example.nidecsnipeit.network.model.GetModelParamItemModel;
+import com.example.nidecsnipeit.network.model.ImportAssetModel;
+import com.example.nidecsnipeit.network.model.LoginItemModel;
+import com.example.nidecsnipeit.network.model.MaintenanceItemModel;
+import com.example.nidecsnipeit.network.model.UpdateDisplayedFieldModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkManager {
 
@@ -29,7 +42,11 @@ public class NetworkManager {
 
     private final String URL;
     private final String ACCESS_TOKEN;
-    public RequestQueue requestQueue;
+    public static RequestQueue requestQueue;
+    //Thanh 2k and
+    private int limit = 2000;
+    private static Retrofit retrofit = null;
+
 
     private NetworkManager(Context context) {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
@@ -63,12 +80,13 @@ public class NetworkManager {
 
     /**
      * Login with username and password
+     *
      * @param loginItem
      * @param listener
      * @param errorListener
      */
     public void login(LoginItemModel loginItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/account/personal-access-tokens/create-from-username-password";
+        String url = URL + "/account/personal-access-tokens/create-from-username-password";
         this.postAPI(url, Request.Method.POST, loginItem, listener, errorListener);
     }
 
@@ -78,12 +96,13 @@ public class NetworkManager {
 
     /**
      * Logout
+     *
      * @param tokenId
      * @param listener
      * @param errorListener
      */
     public void logout(String tokenId, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/account/personal-access-tokens/mobile/" + tokenId;
+        String url = URL + "/account/personal-access-tokens/mobile/" + tokenId;
         this.postAPI(url, Request.Method.DELETE, null, listener, errorListener);
     }
 
@@ -93,12 +112,13 @@ public class NetworkManager {
 
     /**
      * Check connection
+     *
      * @param token
      * @param listener
      * @param errorListener
      */
     public void checkConnection(String token, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/users/me";
+        String url = URL + "/users/me";
         this.getAPI(url, Request.Method.GET, null, token, listener, errorListener);
     }
 
@@ -108,58 +128,74 @@ public class NetworkManager {
 
     /**
      * Transfer asset item
+     *
      * @param assetID
      * @param listener
      * @param errorListener
      */
     public void transferItem(int assetID, CheckinItemModel transferItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/hardware/" + assetID + "/transfer";
+        String url = URL + "/hardware/" + assetID + "/transfer";
         this.postAPI(url, Request.Method.POST, transferItem, listener, errorListener);
     }
 
     /**
      * Check in asset item
+     *
      * @param assetID
      * @param listener
      * @param errorListener
      */
     public void checkinItem(int assetID, CheckinItemModel checkinItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/hardware/" + assetID + "/checkin";
+        String url = URL + "/hardware/" + assetID + "/checkin";
         this.postAPI(url, Request.Method.POST, checkinItem, listener, errorListener);
     }
 
     /**
      * Checkout asset item
+     *
      * @param assetID
      * @param checkoutItem
      * @param listener
      * @param errorListener
      */
     public void checkoutItem(int assetID, CheckoutItemModel checkoutItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/hardware/" + assetID + "/checkout";
+        String url = URL + "/hardware/" + assetID + "/checkout";
         this.postAPI(url, Request.Method.POST, checkoutItem, listener, errorListener);
     }
+
+    // =============================================
+    // ======= AUDIT ========================
+    // =============================================
+    public void createAudit(AuditModel auditmodelItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        String url = URL + "/hardware/audit";
+        this.postAPI(url, Request.Method.POST, auditmodelItem, listener, errorListener);
+    }
+//    public void createAudiOffline(List<AuditModel> auditmodelItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+//        String url = URL + "/hardware/auditListObject";
+//        Type auditModelListType = new TypeToken<List<AuditModel>>() {}.getType();
+//        this.postAPIV1(url, Request.Method.POST, auditmodelItem,auditModelListType, listener, errorListener);
+//    }
 
     // =============================================
     // ======= MAINTENANCES ========================
     // =============================================
     public void getMaintenanceList(GetMaintenanceParamItemModel paramItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/maintenances/";
+        String url = URL + "/maintenances/";
         this.getAPI(url, Request.Method.GET, paramItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void updateMaintenanceItem(int maintenanceID, MaintenanceItemModel maintenanceItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/maintenances/" + maintenanceID;
+        String url = URL + "/maintenances/" + maintenanceID;
         this.postAPI(url, Request.Method.PUT, maintenanceItem, listener, errorListener);
     }
 
     public void createMaintenanceItem(MaintenanceItemModel maintenanceItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/maintenances/create";
+        String url = URL + "/maintenances/create";
         this.postAPI(url, Request.Method.POST, maintenanceItem, listener, errorListener);
     }
 
     public void deleteMaintenanceItem(int maintenanceID, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/maintenances/" + maintenanceID;
+        String url = URL + "/maintenances/" + maintenanceID;
         this.postAPI(url, Request.Method.DELETE, null, listener, errorListener);
     }
 
@@ -167,71 +203,156 @@ public class NetworkManager {
     // ======= Supplements ========================
     // =============================================
     public void getItemRequestByAssetTag(String assetTag, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/hardware/bytag/" + assetTag;
+        String url = URL + "/hardware/bytag/" + assetTag;
         if (assetTag.contains("/hardware/")) {
             String[] parts = assetTag.split("/hardware/");
-            url = URL +  "/hardware/" + parts[parts.length - 1];
+            url = URL + "/hardware/" + parts[parts.length - 1];
         }
         this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getLocationsList(GetLocationParamItemModel locationParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/locations/list";
+        String url = URL + "/locations/list";
         this.getAPI(url, Request.Method.GET, locationParamItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getManufacturerList(GetManufacturerParamItemModel manufacturerParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/manufacturers";
+        String url = URL + "/manufacturers";
         this.getAPI(url, Request.Method.GET, manufacturerParamItem, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getSupplierList(final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/suppliers";
+        String url = URL + "/suppliers";
         this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getCategoryList(final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/categories";
-        this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
+        String url = URL + "/categories?limit=200";
+        this.getAPI(url, Request.Method.GET, null , ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getFieldsByCategoryId(String id, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/categories/fields/byid/" + id;
+        String url = URL + "/categories/fields/byid/" + id;
         this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void updateDisplayedFieldByCategoryId(UpdateDisplayedFieldModel object, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/categories/fields/update";
+        String url = URL + "/categories/fields/update";
         this.postAPI(url, Request.Method.POST, object, listener, errorListener);
     }
 
     public void getFieldsAllCategory(final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/categories/fields/all";
+        String url = URL + "/categories/fields/all";
         this.getAPI(url, Request.Method.GET, null, ACCESS_TOKEN, listener, errorListener);
     }
 
     public void getModelList(GetModelParamItemModel modelParamItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        String url = URL +  "/models";
+        String url = URL + "/models";
         this.getAPI(url, Request.Method.GET, modelParamItem, ACCESS_TOKEN, listener, errorListener);
     }
+
+
+    //Thanh2K add api get all audit
+    public void getUnAudit(GetModelParamItemModel modelParamItem,final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
+        String url = URL + "/hardware/unAudit";
+        this.getAPI(url,Request.Method.GET,modelParamItem,ACCESS_TOKEN,listener,errorListener);
+    }
+
+    public void postAuditObject(List<AuditModel> auditAllModel,final NetworkResponseListener<JSONObject> listener, final  NetworkResponseErrorListener errorListener){
+        String url = URL + "/hardware/auditListObject";
+        Type auditModelListType = new TypeToken<List<AuditModel>>() {}.getType();
+        this.postAPIObject(url,Request.Method.POST,auditAllModel,auditModelListType,listener,errorListener);
+    }
+
+    //Thanh2k 10/10/2024 add api import asset to AMS
+    public  void postAssetObject(ImportAssetModel importAssetModels, final NetworkResponseListener<JSONObject> listener, final  NetworkResponseErrorListener errorListener){
+        String url = URL + "/hardware/createNewAssets";
+        this.postAPI(url,Request.Method.POST,importAssetModels,listener,errorListener);
+    }
+
+    //Thanh2k 15/10/2024 add api get all manufacturers
+
+    public void getCategoryAll(final NetworkResponseListener<JSONObject> listener , final  NetworkResponseErrorListener errorListener){
+        String url = URL + "/categories/fields/getAll";
+        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+    }
+
+    public void getManafactoryAll(int id ,final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+        String url = URL + "/manufacturers/getById?id=" + id;
+        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+    }
+
+    public void getCatalogAll(int id, final  NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+        String url = URL  + "/catalogs/getByManufacturer?manufacturer_id=" + id;
+        this.getAPI(url, Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+    }
+
+    public void getVarrials(int id , final NetworkResponseListener<JSONObject> listener, final  NetworkResponseErrorListener errorListener){
+        String url = URL + "/varrials/getAll?catalog_id=" + id;
+        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+    }
+
+
 
     // =============================================
     // ======= Generic method ======================
     // =============================================
+//    public <T> void postAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+//        Gson gson = new Gson();
+//        String jsonString = gson.toJson(myObject);
+//
+//        Map<String, String> params = new HashMap<String, String>();
+//        JSONObject jsonObject = null;
+//        if (myObject != null) {
+//            Field[] fields = myObject.getClass().getDeclaredFields();
+//            for (Field field : fields) {
+//                try {
+//                    field.setAccessible(true);
+//                    Object value = field.get(myObject);
+//                    if (value != null) {
+//                        params.put(field.getName(), String.valueOf(field.get(myObject)));
+//                    }
+//                    params.put(field.getName(), String.valueOf(field.get(myObject)));
+//                } catch (IllegalAccessException ignored) {
+//                }
+//            }
+//            jsonObject = new JSONObject(params);
+//        }
+//
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                listener.onResult(response);
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                errorListener.onErrorResult(error);
+//            }
+//        }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> headerMap = new HashMap<String, String>();
+//                headerMap.put("Content-Type", "application/json");
+//                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
+//                return headerMap;
+//            }
+//        };
+//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
+//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//        requestQueue.add(jsonObjectRequest);
+//    }
     public <T> void postAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        Map<String, String> params = new HashMap<String, String>();
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(myObject);
+
+        // Sử dụng JSONObject từ chuỗi JSON thay vì thủ công lấy các trường
         JSONObject jsonObject = null;
-        if (myObject != null) {
-            Field[] fields = myObject.getClass().getDeclaredFields();
-
-            for (Field field: fields) {
-                try {
-                    params.put(field.getName(), String.valueOf(field.get(myObject)));
-                } catch (IllegalAccessException ignored) {
-
-                }
-            }
-            jsonObject = new JSONObject(params);
+        try {
+            jsonObject = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
@@ -244,20 +365,61 @@ public class NetworkManager {
             public void onErrorResponse(VolleyError error) {
                 errorListener.onErrorResult(error);
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headerMap = new HashMap<String, String>();
+                Map<String, String> headerMap = new HashMap<>();
                 headerMap.put("Content-Type", "application/json");
                 headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
                 return headerMap;
             }
         };
+
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         requestQueue.add(jsonObjectRequest);
+    }
+    public <T> void postAPIObject(String Url, int httpMethod, List<T> myObjectList, Type type, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
+        JSONArray jsonArray = null;
+        JSONObject jsonObject = new JSONObject();
+        if (myObjectList != null) {
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(myObjectList, type);
+            try {
+                jsonArray = new JSONArray(jsonString);
+                jsonObject.put("data",jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                listener.onResult(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorListener.onErrorResult(error);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headerMap = new HashMap<>();
+                headerMap.put("Content-Type", "application/json");
+                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
+                return headerMap;
+            }
+        };
+
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        requestQueue.add(jsonArrayRequest);
     }
     public <T> void getAPI(String Url, int httpMethod, T myObject, String apiToken, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         if (myObject != null) {
@@ -274,7 +436,7 @@ public class NetworkManager {
             public void onErrorResponse(VolleyError error) {
                 errorListener.onErrorResult(error);
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headerMap = new HashMap<String, String>();
@@ -289,16 +451,15 @@ public class NetworkManager {
 
         requestQueue.add(jsonObjectRequest);
     }
-    private <T> String getQueryParams(T myObject)
-    {
+    private <T> String getQueryParams(T myObject) {
         StringBuilder queryParams = new StringBuilder("?");
         Field[] fields = myObject.getClass().getDeclaredFields();
 
-        for (Field field: fields) {
+        for (Field field : fields) {
             try {
+                field.setAccessible(true);
                 queryParams.append(field.getName()).append("=").append(String.valueOf(field.get(myObject))).append("&");
             } catch (IllegalAccessException ignored) {
-
             }
         }
         return queryParams.substring(0, queryParams.length() - 1);

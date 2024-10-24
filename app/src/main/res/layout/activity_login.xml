@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/logo_view"
@@ -11,48 +11,49 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="UseCompoundDrawables">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="160dp"
             android:layout_gravity="center"
             android:contentDescription="@string/nidec_logo"
             android:src="@drawable/logo_nidec" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-40dp"
             android:layout_gravity="center"
+            android:layout_marginTop="-40dp"
+            android:text="@string/assets_management"
             android:textColor="@color/button_dark"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/assets_management"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-10dp"
-        android:layout_marginHorizontal="@dimen/margin_screen"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/logo_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="@dimen/margin_screen"
+        android:layout_marginTop="-10dp"
+        android:text="@string/login"
+        android:textAllCaps="true"
         android:textColor="@color/button_dark"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:textAllCaps="true"
-        android:text="@string/login"/>
+        android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/username_edit_text_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_marginHorizontal="@dimen/margin_screen"
-        android:layout_marginTop="32dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/enter_username"
-        app:startIconDrawable="@drawable/ic_user"
         android:layout_below="@+id/login_title"
-        >
+        android:layout_marginHorizontal="@dimen/margin_screen"
+        android:layout_marginTop="32dp"
+        android:hint="@string/enter_username"
+        app:startIconDrawable="@drawable/ic_user">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username_edit_text"
@@ -67,16 +68,16 @@
         android:id="@+id/password_edit_text_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/username_edit_text_layout"
         android:layout_marginTop="@dimen/margin_screen"
-        android:paddingHorizontal="@dimen/margin_screen"
-        android:layout_below="@+id/username_edit_text_layout">
+        android:paddingHorizontal="@dimen/margin_screen">
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_password"
-            app:startIconDrawable="@drawable/ic_lock"
-            >
+            app:startIconDrawable="@drawable/ic_lock">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_edit_text"
@@ -91,14 +92,14 @@
             android:id="@+id/show_password_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/margin_screen"
-            android:layout_alignParentEnd="true"
-            android:translationY="4dp"
-            android:src="@drawable/ic_unhide"
             android:background="@null"
             android:contentDescription="@string/show_password"
-            android:visibility="gone"/>
+            android:src="@drawable/ic_unhide"
+            android:translationY="4dp"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <Button
@@ -106,22 +107,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/password_edit_text_layout"
-        android:paddingVertical="@dimen/margin_screen"
-        android:layout_marginTop="32dp"
         android:layout_marginHorizontal="@dimen/margin_screen"
+        android:layout_marginTop="10dp"
         android:backgroundTint="@color/secondary"
-        android:textColor="@color/white"
-        android:text="@string/login"/>
+        android:paddingVertical="@dimen/margin_screen"
+        android:text="@string/login"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/configure_server_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/login_button"
-        android:paddingVertical="@dimen/margin_screen"
         android:layout_marginHorizontal="@dimen/margin_screen"
         android:backgroundTint="@color/secondary"
-        android:textColor="@color/white"
-        android:text="@string/configure_server"/>
+        android:paddingVertical="@dimen/margin_screen"
+        android:text="@string/configure_server"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:layout_marginHorizontal="@dimen/margin_screen"
+        android:layout_marginTop="60dp"
+        android:backgroundTint="@color/secondary"
+        android:paddingVertical="@dimen/margin_screen"
+        android:text="Upload Version 10-2024 v3"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

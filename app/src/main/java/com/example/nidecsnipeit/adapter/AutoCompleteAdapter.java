@@ -11,45 +11,36 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 import com.example.nidecsnipeit.utility.Common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements Filterable {
     private final Context context;
     private final int textViewResourceId;
-    private List<BasicItemModel> mFilteredList;
+    private List<BasicItemModel> mList;
     private final List<BasicItemModel> mListAll;
     public AutoCompleteAdapter(Context context, int textViewResourceId,
                                List<BasicItemModel> mList) {
         super(context, textViewResourceId, mList);
         this.context = context;
         this.textViewResourceId = textViewResourceId;
-        this.mFilteredList = new ArrayList<>(mList);
+        this.mList = new ArrayList<>(mList);
         this.mListAll = new ArrayList<>();
         this.mListAll.addAll(mList);
     }
 
-    public interface OnSingleResultListener {
-        void onSingleResult(BasicItemModel item);
-    }
-
-    private OnSingleResultListener mOnSingleResultListener;
-
-    public void setOnSingleResultListener(OnSingleResultListener listener) {
-        this.mOnSingleResultListener = listener;
-    }
-
     @Override
     public BasicItemModel getItem(int position) {
-        return mFilteredList.get(position);
+        return mList.get(position);
     }
 
     @Override
     public int getCount() {
-        return mFilteredList.size();
+        return mList.size();
     }
 
     @NonNull
@@ -62,7 +53,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
         }
 
         TextView textView = view.findViewById(android.R.id.text1);
-        BasicItemModel item = mFilteredList.get(position);
+        BasicItemModel item = mList.get(position);
         if (textView != null && item != null) {
             textView.setText(item.getName());
         }
@@ -80,18 +71,9 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             if (results != null && results.count > 0) {
-                mFilteredList = (List<BasicItemModel>) results.values;
-
-                if (results.count == 1) { // only 1 result
-                    BasicItemModel singleItem = mFilteredList.get(0);
-
-                    if (mOnSingleResultListener != null && Common.isHardScanButtonPressed && singleItem.getName().equals(constraint.toString())) {
-                        mOnSingleResultListener.onSingleResult(singleItem);
-                    }
-                }
-
                 clear();
-                addAll(mFilteredList);
+                mList = (List<BasicItemModel>) results.values;
+                addAll(mList);
                 notifyDataSetChanged();
             } else {
                 notifyDataSetInvalidated();
@@ -102,6 +84,13 @@ public class AutoCompleteAdapter extends ArrayAdapter<BasicItemModel> implements
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
             List<BasicItemModel> filteredList = new ArrayList<>();
+
+            if (Common.isHardScanButtonPressed) {
+                // if the hard scan button is pressed, return default value
+                filterResults.values = Collections.emptyList();
+                filterResults.count = 0;
+                return filterResults;
+            }
 
             if (constraint != null) {
                 String filterPattern = constraint.toString().toLowerCase().trim();

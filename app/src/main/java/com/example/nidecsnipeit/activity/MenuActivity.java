@@ -2,6 +2,7 @@ package com.example.nidecsnipeit.activity;
 
 import static com.example.nidecsnipeit.activity.SearchActivity.PERMISSION_REQUEST_CAMERA;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
@@ -9,11 +10,13 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.nidecsnipeit.R;
@@ -28,16 +31,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class MenuActivity extends BaseActivity {
+public class MenuActivity extends AppCompatActivity  {
     private View rootView;
     private EditText inputSearch;
+    private LinearLayout checkOutBtn , checkInBtn,maintenanceBtn,settingBtn,auditBtn,auditRFID,importAssetBtn,transferBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         MyApplication MyApp = (MyApplication) getApplication();
         if (MyApp.getDisplayedFieldsJsonString().equals("")) {
             Common.tokenInvalid(this);
         }
-
         if (MyApp.isFirstRun()) {
             // if app first run, redirect to login screen
             Intent loginIntent = new Intent(this, LoginActivity.class);
@@ -47,30 +50,30 @@ public class MenuActivity extends BaseActivity {
             Intent serviceIntent = new Intent(this, TokenValidationService.class);
             startService(serviceIntent);
         }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         rootView = findViewById(android.R.id.content);
-
         // Get button
-        Button transferBtn = findViewById(R.id.transfer_btn);
-        Button checkInBtn = findViewById(R.id.checkin_btn);
-        Button checkOutBtn = findViewById(R.id.checkout_btn);
-        Button maintenanceBtn = findViewById(R.id.maintenance_btn);
-        Button settingBtn = findViewById(R.id.setting_btn);
-
-        // OnClickListener for button
+        transferBtn = findViewById(R.id.transfer_btn);
+        checkOutBtn = findViewById(R.id.checkout_btn);
+        checkInBtn = findViewById(R.id.checkin_btn);
+        maintenanceBtn = findViewById(R.id.maintenance_btn);
+        settingBtn = findViewById(R.id.setting_btn);
+        auditBtn = findViewById(R.id.audit_btn);
+        auditRFID = findViewById(R.id.auditRFID);
+        importAssetBtn = findViewById(R.id.importAsset_btn);
+        inputSearch = findViewById(R.id.input_search);
+        ImageButton searchButton = findViewById(R.id.search_img_btn);
+        ImageButton removeTextButton = findViewById(R.id.remove_text);
+        ImageButton qrScannerBtn = findViewById(R.id.qr_scanner_btn);
         transferBtn.setOnClickListener(createButtonClickListener(DetailActivity.TRANSFER_MODE));
         checkInBtn.setOnClickListener(createButtonClickListener(DetailActivity.CHECK_IN_MODE));
         checkOutBtn.setOnClickListener(createButtonClickListener(DetailActivity.CHECK_OUT_MODE));
         maintenanceBtn.setOnClickListener(createButtonClickListener(DetailActivity.MAINTENANCE_MODE));
         settingBtn.setOnClickListener(createButtonClickListener(DetailActivity.SETTING_MODE));
-
-        // get reference EditText and Button
-        inputSearch = findViewById(R.id.input_search);
-        ImageButton searchButton = findViewById(R.id.search_img_btn);
-        ImageButton removeTextButton = findViewById(R.id.remove_text);
-        ImageButton qrScannerBtn = findViewById(R.id.qr_scanner_btn);
+        auditBtn.setOnClickListener(createButtonClickListener((DetailActivity.AUDIT_MODE)));
+        auditRFID.setOnClickListener(createButtonClickListener((DetailActivity.AUDIT_RFID_MODE)));
+        importAssetBtn.setOnClickListener(createButtonClickListener(DetailActivity.IMPORT_ASSET_MODE));
 
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,28 +98,39 @@ public class MenuActivity extends BaseActivity {
                 }
             }
         });
-
         // Set up remove text button
         removeTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputSearch.setText("");
-                Common.focusCursorToEnd(inputSearch);
+                if (Common.isHardScanButtonPressed) {
+                    String assetTag = inputSearch.getText().toString();
+                    Common.hideKeyboard(MenuActivity.this, v);
+                    Common.focusCursorToEnd(inputSearch);
+                    redirectToDetailScreen(assetTag);
+                } else {
+                    inputSearch.setText("");
+                    Common.focusCursorToEnd(inputSearch);
+                }
             }
         });
-
         // Set up QR scanner button
         qrScannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MenuActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+                if (Common.isHardScanButtonPressed) {
+                    String assetTag = inputSearch.getText().toString();
+                    Common.hideKeyboard(MenuActivity.this, v);
+                    Common.focusCursorToEnd(inputSearch);
+                    redirectToDetailScreen(assetTag);
                 } else {
-                    QRScannerHelper.initiateScan(MenuActivity.this);
+                    if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MenuActivity.this, new String[]{android.Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+                    } else {
+                        QRScannerHelper.initiateScan(MenuActivity.this);
+                    }
                 }
             }
         });
-
         // handle search button on keyboard
         inputSearch.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -129,7 +143,6 @@ public class MenuActivity extends BaseActivity {
             }
             return false;
         });
-
         // handle search button click event
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +155,6 @@ public class MenuActivity extends BaseActivity {
             }
         });
     }
-
     private View.OnClickListener createButtonClickListener(final Integer mode) {
         return new View.OnClickListener() {
             @Override
@@ -151,25 +163,33 @@ public class MenuActivity extends BaseActivity {
             }
         };
     }
-
     private void handleButtonClick(Integer mode) {
-        Intent intent;
-        if (mode == DetailActivity.SETTING_MODE) {
-            intent = new Intent(this, SettingsActivity.class);
+        if (Common.isHardScanButtonPressed) {
+            String assetTag = inputSearch.getText().toString();
+            Common.hideKeyboard(MenuActivity.this, rootView);
+            Common.focusCursorToEnd(inputSearch);
+            redirectToDetailScreen(assetTag);
         } else {
-            intent = new Intent(this, SearchActivity.class);
-            intent.putExtra("mode", mode);
+            Intent intent;
+            if (mode == DetailActivity.SETTING_MODE) {
+                intent = new Intent(this, SettingsActivity.class);
+            } else if(mode == DetailActivity.AUDIT_RFID_MODE){
+                intent = new Intent(this,RFID_Activity.class);
+            } else if (mode == DetailActivity.IMPORT_ASSET_MODE) {
+                intent = new Intent(this, Import_AssetActivity.class);
+            } else {
+                intent = new Intent(this, SearchActivity.class);
+                intent.putExtra("mode", mode);
+            }
+            startActivity(intent);
         }
-        startActivity(intent);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String qrContent = QRScannerHelper.processScanResult(requestCode, resultCode, data);
         if (qrContent != null) {
             // Set content to EditText
             inputSearch.setText(qrContent);
-
             // Redirect to Detail screen if QR scan is successful
             redirectToDetailScreen(qrContent);
         } else {
@@ -179,7 +199,6 @@ public class MenuActivity extends BaseActivity {
         // focus to edit text
         Common.focusCursorToEnd(inputSearch);
     }
-
     public void redirectToDetailScreen(String qrResult) {
         NetworkManager apiServices = NetworkManager.getInstance(MenuActivity.this);
         if (qrResult.trim().isEmpty()) {
@@ -223,16 +242,20 @@ public class MenuActivity extends BaseActivity {
             }
         });
     }
-
     @Override
-    public void onScanDataReceived(String qrContent) {
-        if (qrContent != null) {
-            // Set content to EditText
-            inputSearch.setText(qrContent);
-            Common.hideKeyboard(MenuActivity.this, rootView);
-            Common.focusCursorToEnd(inputSearch);
-            redirectToDetailScreen(qrContent);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        int KEYCODE_SCAN = 10036;
+        EditText editText = findViewById(R.id.input_search);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            return true;
+        } else if (keyCode == KEYCODE_SCAN || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
+            Common.focusCursorToEnd(editText);
+            Common.setHardScanButtonPressed();
+            return true;
         }
+        return super.onKeyDown(keyCode, event);
     }
-
 }
+
+

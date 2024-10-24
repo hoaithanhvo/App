@@ -8,11 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 
 import java.util.List;
 
-public class CustomSpinnerAdapter extends ArrayAdapter<BasicItemModel> {
+public class CustomSpinnerAdapter extends ArrayAdapter<BasicItemModel>  {
 
     private final LayoutInflater inflater;
     private final List<BasicItemModel> items;

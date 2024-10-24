@@ -23,8 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.R;
-import com.example.nidecsnipeit.model.ListItemModel;
-import com.example.nidecsnipeit.model.BasicItemModel;
+import com.example.nidecsnipeit.network.model.ListItemModel;
+import com.example.nidecsnipeit.network.model.BasicItemModel;
 import com.example.nidecsnipeit.utility.Common;
 import com.example.nidecsnipeit.utility.FullNameConvert;
 import com.example.nidecsnipeit.utility.QRScannerHelper;
@@ -166,11 +166,6 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                     }
                 });
 
-                autoCompleteAdapter.setOnSingleResultListener(item -> {
-                    currentItem.setId(item.getId());
-                    holder.autoCompleteTextView.dismissDropDown(); // hide dropdown
-                });
-
                 holder.autoCompleteTextView.setVisibility(View.VISIBLE);
                 if (position == 0) {
                     holder.autoCompleteTextView.requestFocus();
@@ -181,8 +176,11 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                     holder.qrScannerView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            setCurrentPosition(holder.getAdapterPosition());
-                            QRScannerHelper.initiateScan((Activity) v.getContext());
+                            if (Common.isHardScanButtonPressed) {
+                            } else {
+                                setCurrentPosition(holder.getAdapterPosition());
+                                QRScannerHelper.initiateScan((Activity) v.getContext());
+                            }
                         }
                     });
                 }

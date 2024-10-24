@@ -10,8 +10,8 @@ import android.widget.Button;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.CategoryFieldAdapter;
-import com.example.nidecsnipeit.model.CategoryFieldModel;
-import com.example.nidecsnipeit.model.UpdateDisplayedFieldModel;
+import com.example.nidecsnipeit.network.model.CategoryFieldModel;
+import com.example.nidecsnipeit.network.model.UpdateDisplayedFieldModel;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;

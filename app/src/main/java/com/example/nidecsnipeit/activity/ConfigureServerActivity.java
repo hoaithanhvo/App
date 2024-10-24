@@ -1,29 +1,14 @@
 package com.example.nidecsnipeit.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import com.example.nidecsnipeit.R;
-import com.example.nidecsnipeit.model.SnackbarCallback;
+import com.example.nidecsnipeit.network.model.SnackbarCallback;
 import com.example.nidecsnipeit.network.NetworkManager;
-import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
-import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ConfigureServerActivity extends BaseActivity {
     private View view;
