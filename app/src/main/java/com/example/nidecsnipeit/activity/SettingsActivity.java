@@ -20,6 +20,8 @@ import com.example.nidecsnipeit.utility.Common;
 
 import org.json.JSONObject;
 
+import java.util.Set;
+
 public class SettingsActivity extends BaseActivity {
 
     @Override
@@ -43,7 +45,7 @@ public class SettingsActivity extends BaseActivity {
 
         Button logoutButton = findViewById(R.id.logout_button);
         LinearLayout customFieldsButton = findViewById(R.id.custom_field);
-
+        LinearLayout custom_dateAudit = findViewById(R.id.custom_dateAudit);
         // handle logic to logout
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +82,13 @@ public class SettingsActivity extends BaseActivity {
 
             }
         });
-
+        custom_dateAudit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this,CustomDateAuditActivity.class);
+                startActivity(intent);
+            }
+        });
         // redirect to CustomFields screen
         customFieldsButton.setOnClickListener(new View.OnClickListener() {
             @Override

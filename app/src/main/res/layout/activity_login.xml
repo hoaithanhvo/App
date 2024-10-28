@@ -126,7 +126,7 @@
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/download"
+        android:id="@+id/bntdownload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/login_button"
@@ -134,7 +134,7 @@
         android:layout_marginTop="60dp"
         android:backgroundTint="@color/secondary"
         android:paddingVertical="@dimen/margin_screen"
-        android:text="Upload Version 10-2024 v3"
+        android:text="Upload Version 10-2024 v4"
         android:textColor="@color/white" />
 
 </RelativeLayout>

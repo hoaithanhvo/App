@@ -17,6 +17,7 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,23 +40,20 @@ import org.json.JSONObject;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText usernameEditText;
     private EditText passwordEditText;
     private ImageButton showPasswordButton;
-
-
-    //    private String filepath = "http://10.234.1.48:5000/fsdownload/gl0WU7pta/NIDEC_AMS082024V5.apk";
-    private String filepath = "http://10.234.1.35:8080/B600044912/APK_ANDROID_WAREHOUSE/raw/master/APK_WAREHOUSE/mcs_android.apk";
-
+    private String filepath = "http://10.234.1.97:3000/api/v1/application/downloadApp";
     private URL url = null;
     private String fileName;
     private String filePath;
     private long downloadID;
-
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,36 +68,35 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onPositiveButtonClick() {
                 }
+
                 @Override
                 public void onNegativeButtonClick() {
                 }
             });
         }
-
         usernameEditText = findViewById(R.id.username_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         showPasswordButton = findViewById(R.id.show_password_button);
 
-
-
         passwordEditText.addTextChangedListener(new TextWatcher() {
-                                                    @Override
-                                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                                                    }
-                                                    @Override
-                                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                                    }
-                                                    @Override
-                                                    public void afterTextChanged(Editable s) {
-                                                        // disable showPasswordButton if passwordEditText is Empty
-                                                        if (s.toString().trim().isEmpty()) {
-                                                            showPasswordButton.setVisibility(View.GONE);
-                                                        } else {
-                                                            showPasswordButton.setVisibility(View.VISIBLE);
-                                                        }
-                                                    }
-                                                }
-        );
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // disable showPasswordButton if passwordEditText is Empty
+                if (s.toString().trim().isEmpty()) {
+                    showPasswordButton.setVisibility(View.GONE);
+                } else {
+                    showPasswordButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         // show or hide password
         showPasswordButton.setOnClickListener(new View.OnClickListener() {
@@ -108,11 +105,9 @@ public class LoginActivity extends AppCompatActivity {
                 togglePasswordVisibility();
             }
         });
-
-
         Button buttonLogin = findViewById(R.id.login_button);
         Button buttonServerSetting = findViewById(R.id.configure_server_button);
-        Button buttonDownload = findViewById(R.id.download);
+        Button buttonDownload = findViewById(R.id.bntdownload);
         buttonServerSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,6 +201,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 downloadFileFromUrl(filepath);
+//                deleteAllDownloadAppFiles();
             }
         });
         try {
@@ -232,6 +228,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void downloadFileFromUrl(String url) {
+        deleteAllDownloadAppFiles();
         clearApplicationCache(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đang tải xuống...");
@@ -242,29 +239,18 @@ public class LoginActivity extends AppCompatActivity {
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         dir.mkdirs();
         Uri downloadLocation = Uri.fromFile(new File(dir, fileName));
-
-        // Start the download
-        DownloadManager.Request request = new DownloadManager.Request(uri)
-                .setTitle(fileName)
-                .setDescription("Downloading APK...")
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setVisibleInDownloadsUi(true)
-                .setDestinationUri(downloadLocation)
-                .setMimeType("application/vnd.android.package-archive");  // Ensure APK MIME type is set
-
+        DownloadManager.Request request = new DownloadManager.Request(uri).setTitle(fileName).setDescription("Downloading APK...").setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI).setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED).setVisibleInDownloadsUi(true).setDestinationUri(downloadLocation).setMimeType("application/vnd.android.package-archive");
         request.allowScanningByMediaScanner();
-        downloadID = downloadManager.enqueue(request); // Save the download ID
-
-        // Register BroadcastReceiver to listen for when the download completes
+        downloadID = downloadManager.enqueue(request);
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
+
     @Override
     protected void onDestroy() {
-        // Hủy đăng ký BroadcastReceiver khi Activity bị hủy
-        unregisterReceiver(onDownloadComplete);
+        //unregisterReceiver(onDownloadComplete);
         super.onDestroy();
     }
+
     private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -273,6 +259,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Lấy URI của file từ DownloadManager
                 Uri fileUri = getUriFromDownloadManager(context, id);
                 if (fileUri != null) {
+                    Common.hideProgressDialog();
                     Toast.makeText(context, "Download Completee", Toast.LENGTH_SHORT).show();
                     accessDownloadDirectory();
                 } else {
@@ -281,6 +268,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     };
+
     private Uri getUriFromDownloadManager(Context context, long downloadId) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(downloadId));
@@ -295,23 +283,22 @@ public class LoginActivity extends AppCompatActivity {
         }
         return null;
     }
+
     public void accessDownloadDirectory() {
-        // Get the Download directory
         File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        // Check if the directory exists
         try {
-            File apkFile = new File(downloadDir, fileName);
-            if (apkFile.exists()) {
-                Toast.makeText(this, "APK file found: " + apkFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+            File[] files = downloadDir.listFiles((dir, name) -> name.equals(fileName));
+            if (files != null && files.length > 0) {
+                Arrays.sort(files, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
+                File latestApkFile = files[0];
+                Toast.makeText(this, "APK file found: " + latestApkFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    //Uri apkUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", apkFile);
-                    Uri apkUri = FileProvider.getUriForFile(this,
-                            BuildConfig.APPLICATION_ID+ ".provider", apkFile);
+                    Uri apkUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", latestApkFile);
                     intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 } else {
-                    Uri apkUri = Uri.fromFile(apkFile);
+                    Uri apkUri = Uri.fromFile(latestApkFile);
                     intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 }
@@ -324,6 +311,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Error opening APK file: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
     public void clearApplicationCache(Context context) {
         try {
             File dir = context.getCacheDir();
@@ -334,6 +322,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
@@ -348,6 +337,29 @@ public class LoginActivity extends AppCompatActivity {
             return dir.delete();
         } else {
             return false;
+        }
+    }
+
+    private void deleteAllDownloadAppFiles() {
+        File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        if (downloadDir.exists() && downloadDir.isDirectory()) {
+            File[] files = downloadDir.listFiles((dir, name) -> name.startsWith("downloadApp"));
+
+            if (files != null) {
+                for (File file : files) {
+                    boolean deleted = file.delete();
+                    if (deleted) {
+                        Log.d("DeleteFile", "Deleted file: " + file.getAbsolutePath());
+                    } else {
+                        Log.d("DeleteFile", "Failed to delete file: " + file.getAbsolutePath());
+                    }
+                }
+            } else {
+                Log.d("DeleteFile", "No files found with the specified prefix.");
+            }
+        } else {
+            Log.d("DeleteFile", "Download directory does not exist.");
         }
     }
 }
