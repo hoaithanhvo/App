@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.nidecsnipeit.activity.LoginActivity;
 import com.example.nidecsnipeit.activity.MyApplication;
 import com.example.nidecsnipeit.network.model.AuditModel;
 import com.example.nidecsnipeit.network.model.CheckinItemModel;
@@ -292,57 +294,14 @@ public class NetworkManager {
         this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
     }
 
-
+    public void getVersion(final NetworkResponseListener<String> listener,final NetworkResponseErrorListener errorListener){
+        String url = URL + "/application/getVersionApp";
+        this.getAPIString(url,Request.Method.GET,null,listener,errorListener);
+    }
 
     // =============================================
     // ======= Generic method ======================
     // =============================================
-//    public <T> void postAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-//        Gson gson = new Gson();
-//        String jsonString = gson.toJson(myObject);
-//
-//        Map<String, String> params = new HashMap<String, String>();
-//        JSONObject jsonObject = null;
-//        if (myObject != null) {
-//            Field[] fields = myObject.getClass().getDeclaredFields();
-//            for (Field field : fields) {
-//                try {
-//                    field.setAccessible(true);
-//                    Object value = field.get(myObject);
-//                    if (value != null) {
-//                        params.put(field.getName(), String.valueOf(field.get(myObject)));
-//                    }
-//                    params.put(field.getName(), String.valueOf(field.get(myObject)));
-//                } catch (IllegalAccessException ignored) {
-//                }
-//            }
-//            jsonObject = new JSONObject(params);
-//        }
-//
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                listener.onResult(response);
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                errorListener.onErrorResult(error);
-//            }
-//        }) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> headerMap = new HashMap<String, String>();
-//                headerMap.put("Content-Type", "application/json");
-//                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
-//                return headerMap;
-//            }
-//        };
-//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
-//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//        requestQueue.add(jsonObjectRequest);
-//    }
     public <T> void postAPI(String Url, int httpMethod, T myObject, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         Gson gson = new Gson();
         String jsonString = gson.toJson(myObject);
@@ -380,6 +339,7 @@ public class NetworkManager {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
     }
+
     public <T> void postAPIObject(String Url, int httpMethod, List<T> myObjectList, Type type, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         JSONArray jsonArray = null;
         JSONObject jsonObject = new JSONObject();
@@ -388,7 +348,7 @@ public class NetworkManager {
             String jsonString = gson.toJson(myObjectList, type);
             try {
                 jsonArray = new JSONArray(jsonString);
-                jsonObject.put("data",jsonArray);
+                jsonObject.put("data", jsonArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -421,6 +381,7 @@ public class NetworkManager {
 
         requestQueue.add(jsonArrayRequest);
     }
+
     public <T> void getAPI(String Url, int httpMethod, T myObject, String apiToken, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         if (myObject != null) {
             Url += this.getQueryParams(myObject);
@@ -451,6 +412,7 @@ public class NetworkManager {
 
         requestQueue.add(jsonObjectRequest);
     }
+
     private <T> String getQueryParams(T myObject) {
         StringBuilder queryParams = new StringBuilder("?");
         Field[] fields = myObject.getClass().getDeclaredFields();
@@ -464,4 +426,80 @@ public class NetworkManager {
         }
         return queryParams.substring(0, queryParams.length() - 1);
     }
+
+    public void getAPK(final NetworkResponseListener<byte[]> listener){
+        String url = URL + "/application/downloadApp";
+        this.getAPKFile(url,Request.Method.GET,null,listener,null);
+    }
+
+    public <T> void getAPKFile(String url, int httpMethod, T myObject, final NetworkResponseListener<byte[]> listener, final NetworkResponseErrorListener errorListener) {
+        // Tạo một request để trả về mảng byte thay vì JSONObject
+        InputStreamVolleyRequest byteRequest = new InputStreamVolleyRequest(httpMethod, url, new Response.Listener<byte[]>() {
+            @Override
+            public void onResponse(byte[] response) {
+                listener.onResult(response); // Trả về kết quả dạng byte[]
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (errorListener != null) {
+                    errorListener.onErrorResult(error);
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                // Không cần xác thực, không cần thêm header
+                return new HashMap<>();
+            }
+        };
+
+        // Cài đặt RetryPolicy
+        byteRequest.setRetryPolicy(new DefaultRetryPolicy(60000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // Thêm request vào requestQueue
+        requestQueue.add(byteRequest);
+    }
+
+
+    public <T> void getAPIString(String Url, int httpMethod, T myObject, final NetworkResponseListener<String> listener, final NetworkResponseErrorListener errorListener) {
+        if (myObject != null) {
+            Url += this.getQueryParams(myObject);
+        }
+
+        // Tạo StringRequest để nhận chuỗi từ API
+        StringRequest stringRequest = new StringRequest(httpMethod, Url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        listener.onResult(response); // Trả về chuỗi từ API
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        errorListener.onErrorResult(error);
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headerMap = new HashMap<>();
+                headerMap.put("Content-Type", "application/json");
+                // Nếu cần, bỏ dòng dưới nếu không dùng xác thực
+                // headerMap.put("Authorization", "Bearer " + apiToken);
+                return headerMap;
+            }
+        };
+
+        // Đặt RetryPolicy cho StringRequest
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(60000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // Thêm request vào hàng đợi
+        requestQueue.add(stringRequest);
+    }
+
 }

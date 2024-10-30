@@ -50,7 +50,7 @@ public class MyApplication extends Application {
     // load server information from local storage
     private void loadDataFromPreferences() {
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        String urlServer = preferences.getString(URL_SERVER, "http://10.2341.1.97:3000");
+        String urlServer = preferences.getString(URL_SERVER, "http://10.234.1.97:3000");
         String apiKey = preferences.getString(API_KEY_SERVER, null);
         String idApiKey = preferences.getString(ID_API_KEY_SERVER, null);
         boolean isFirstRun = preferences.getBoolean(IS_FIRST_RUN, true);
