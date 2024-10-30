@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFFFFF"/>
+
+    <!-- Đặt viền -->
+    <stroke
+        android:width="2dp"
+        android:color="#00a65a"/> <!-- Đặt màu cho viền, ở đây là màu đỏ -->
+
+    <!-- Đặt bán kính góc nếu muốn bo góc -->
+    <corners android:radius="5dp"/>
+</shape>
