@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LinearLayoutCustomStyle">
+        <!-- Thiết lập padding -->
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+
+        <!-- Thiết lập margin -->
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+
+        <!-- Thiết lập orientation mặc định -->
+        <item name="android:orientation">vertical</item>
+        <!-- Thiết lập background nếu cần -->
+    </style>
+</resources>
