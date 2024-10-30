@@ -1,14 +1,21 @@
 package com.example.nidecsnipeit.activity;
 
+import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -17,10 +24,12 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nidecsnipeit.R;
@@ -37,70 +46,60 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
-
     private TextInputEditText usernameEditText;
     private EditText passwordEditText;
     private ImageButton showPasswordButton;
-
-
-    //    private String filepath = "http://10.234.1.48:5000/fsdownload/gl0WU7pta/NIDEC_AMS082024V5.apk";
-    private String filepath = "http://10.234.1.35:8080/B600044912/APK_ANDROID_WAREHOUSE/raw/master/APK_WAREHOUSE/mcs_android.apk";
-
-    private URL url = null;
-    private String fileName;
-    private String filePath;
-    private long downloadID;
-
-    private ProgressDialog progressDialog;
+    private NetworkManager apiServices;
+    private TextView txtVersion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         MyApplication MyApp = (MyApplication) getApplication();
-        filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/";
         Intent intent = getIntent();
         boolean loginAgain = intent.getBooleanExtra("TOKEN_EXPIRED", false);
-
+        apiServices = NetworkManager.getInstance(this);
         if (loginAgain) {
             Common.showCustomAlertDialog(this, null, "Your session has expired. Please log in again.", false, new AlertDialogCallback() {
                 @Override
                 public void onPositiveButtonClick() {
                 }
+
                 @Override
                 public void onNegativeButtonClick() {
                 }
             });
         }
-
         usernameEditText = findViewById(R.id.username_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         showPasswordButton = findViewById(R.id.show_password_button);
-
-
-
+        txtVersion = findViewById(R.id.txtVersion);
         passwordEditText.addTextChangedListener(new TextWatcher() {
-                                                    @Override
-                                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                                                    }
-                                                    @Override
-                                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                                    }
-                                                    @Override
-                                                    public void afterTextChanged(Editable s) {
-                                                        // disable showPasswordButton if passwordEditText is Empty
-                                                        if (s.toString().trim().isEmpty()) {
-                                                            showPasswordButton.setVisibility(View.GONE);
-                                                        } else {
-                                                            showPasswordButton.setVisibility(View.VISIBLE);
-                                                        }
-                                                    }
-                                                }
-        );
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // disable showPasswordButton if passwordEditText is Empty
+                if (s.toString().trim().isEmpty()) {
+                    showPasswordButton.setVisibility(View.GONE);
+                } else {
+                    showPasswordButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         // show or hide password
         showPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,11 +107,9 @@ public class LoginActivity extends AppCompatActivity {
                 togglePasswordVisibility();
             }
         });
-
-
         Button buttonLogin = findViewById(R.id.login_button);
         Button buttonServerSetting = findViewById(R.id.configure_server_button);
-        Button buttonDownload = findViewById(R.id.download);
+//        Button buttonDownload = findViewById(R.id.bntdownload);
         buttonServerSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // reset instance network
                 NetworkManager.resetInstance();
-                NetworkManager apiServices = NetworkManager.getInstance(LoginActivity.this);
+
                 String userName = usernameEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
                 LoginItemModel loginItem = new LoginItemModel(userName, password);
@@ -201,113 +198,40 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-        buttonDownload.setOnClickListener(new View.OnClickListener() {
+        checkVersionApp();
+    }
+    public void UpdateVersion()
+    {
+        apiServices.getAPK(new NetworkResponseListener<byte[]>() {
             @Override
-            public void onClick(View v) {
-                downloadFileFromUrl(filepath);
+            public void onResult(byte[] object) {
+                File apkFile = saveAPKFile(object);
+                installApk(apkFile);
             }
         });
-        try {
-            url = new URL(filepath);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        fileName = url.getPath();
-        fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
-    }
-
-    private void togglePasswordVisibility() {
-        if (passwordEditText.getInputType() != InputType.TYPE_CLASS_TEXT) {
-            // show password
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-            showPasswordButton.setImageResource(R.drawable.ic_hide);
-        } else {
-            // hide password
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            showPasswordButton.setImageResource(R.drawable.ic_unhide);
-        }
-
-        passwordEditText.setSelection(passwordEditText.getText().length());
-    }
-
-    private void downloadFileFromUrl(String url) {
-        clearApplicationCache(this);
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Đang tải xuống...");
-        progressDialog.setCancelable(false); // Không cho phép hủy bỏ
-        progressDialog.show();
-        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse(url);
-        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        dir.mkdirs();
-        Uri downloadLocation = Uri.fromFile(new File(dir, fileName));
-
-        // Start the download
-        DownloadManager.Request request = new DownloadManager.Request(uri)
-                .setTitle(fileName)
-                .setDescription("Downloading APK...")
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setVisibleInDownloadsUi(true)
-                .setDestinationUri(downloadLocation)
-                .setMimeType("application/vnd.android.package-archive");  // Ensure APK MIME type is set
-
-        request.allowScanningByMediaScanner();
-        downloadID = downloadManager.enqueue(request); // Save the download ID
-
-        // Register BroadcastReceiver to listen for when the download completes
-        registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
     @Override
     protected void onDestroy() {
-        // Hủy đăng ký BroadcastReceiver khi Activity bị hủy
-        unregisterReceiver(onDownloadComplete);
         super.onDestroy();
     }
-    private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (downloadID == id) {
-                // Lấy URI của file từ DownloadManager
-                Uri fileUri = getUriFromDownloadManager(context, id);
-                if (fileUri != null) {
-                    Toast.makeText(context, "Download Completee", Toast.LENGTH_SHORT).show();
-                    accessDownloadDirectory();
-                } else {
-                    Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
-                }
-            }
+
+    private File saveAPKFile(byte[] apkData) {
+        File apkFile = new File(getExternalFilesDir(null), "downloaded_app.apk");
+        try (FileOutputStream fos = new FileOutputStream(apkFile)) {
+            fos.write(apkData);
+            Common.hideProgressDialog();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    };
-    private Uri getUriFromDownloadManager(Context context, long downloadId) {
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(downloadId));
-        if (cursor != null && cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
-            if (columnIndex != -1) {
-                String fileUriString = cursor.getString(columnIndex);
-                cursor.close();
-                return Uri.parse(fileUriString);
-            }
-            cursor.close();
-        }
-        return null;
+        return apkFile;
     }
-    public void accessDownloadDirectory() {
-        // Get the Download directory
-        File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        // Check if the directory exists
+
+    private void installApk(File apkFile) {
         try {
-            File apkFile = new File(downloadDir, fileName);
             if (apkFile.exists()) {
-                Toast.makeText(this, "APK file found: " + apkFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    //Uri apkUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", apkFile);
-                    Uri apkUri = FileProvider.getUriForFile(this,
-                            BuildConfig.APPLICATION_ID+ ".provider", apkFile);
+                    Uri apkUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", apkFile);
                     intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 } else {
@@ -320,34 +244,47 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "APK file not found", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             Toast.makeText(this, "Error opening APK file: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-    public void clearApplicationCache(Context context) {
-        try {
-            File dir = context.getCacheDir();
-            if (dir != null && dir.isDirectory()) {
-                deleteDir(dir);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+    private void togglePasswordVisibility() {
+        if (passwordEditText.getInputType() != InputType.TYPE_CLASS_TEXT) {
+            // show password
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+            showPasswordButton.setImageResource(R.drawable.ic_hide);
+        } else {
+            // hide password
+            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            showPasswordButton.setImageResource(R.drawable.ic_unhide);
         }
+        passwordEditText.setSelection(passwordEditText.getText().length());
     }
-    private boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (String child : children) {
-                boolean success = deleteDir(new File(dir, child));
-                if (!success) {
-                    return false;
+
+    private void checkVersionApp(){
+        apiServices.getVersion(new NetworkResponseListener<String>() {
+            @Override
+            public void onResult(String object) {
+                PackageInfo packageInfo = null;
+                try {
+                    packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    if (!object.contains(packageInfo.versionName.trim())){
+                        Common.showProgressDialog(LoginActivity.this,"Đang tải file cập nhật vui lòng đợi...");
+                        UpdateVersion();
+                        packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    };
+                    txtVersion.setText(packageInfo.versionName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
             }
-            return dir.delete();
-        } else if (dir != null && dir.isFile()) {
-            return dir.delete();
-        } else {
-            return false;
-        }
+
+        }, new NetworkResponseErrorListener() {
+            @Override
+            public void onErrorResult(Exception error) {
+                Toast.makeText(LoginActivity.this,"Lỗi:" +error.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

@@ -78,4 +78,5 @@
         <item>B: Available to use after repairing</item>
         <item>C: Unable to use or out-of-date</item>
     </string-array>
+    <string name="custom_dateAudit">Custom Date Audit</string>
 </resources>

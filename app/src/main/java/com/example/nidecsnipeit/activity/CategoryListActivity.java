@@ -31,9 +31,9 @@ public class CategoryListActivity extends BaseActivity {
 
         NetworkManager apiServices = (NetworkManager) NetworkManager.getInstance(CategoryListActivity.this);
 
-        List<BasicItemModel> itemList = new ArrayList<>();
-        itemList.add(new BasicItemModel("1", "Item 1"));
-        itemList.add(new BasicItemModel("2", "Item 2"));
+//        List<BasicItemModel> itemList = new ArrayList<>();
+//        itemList.add(new BasicItemModel("1", "Item 1"));
+//        itemList.add(new BasicItemModel("2", "Item 2"));
         // Thêm các item khác vào itemList
         Common.showProgressDialog(this, "Loading...");
         apiServices.getCategoryList(new NetworkResponseListener<JSONObject>() {

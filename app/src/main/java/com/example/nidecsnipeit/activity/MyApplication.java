@@ -30,6 +30,17 @@ public class MyApplication extends Application {
     private final String IS_ADMIN = "IS_ADMIN";
     private final String DISPLAYED_FIELDS = "DISPLAYED_FIELDS";
 
+    public String getSTART_AUDIT() {
+        return START_AUDIT;
+    }
+
+    public String getEND_AUDIT() {
+        return END_AUDIT;
+    }
+
+    private String START_AUDIT = "START_AUDIT";
+    private  String END_AUDIT = "END_AUDIT";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -39,13 +50,15 @@ public class MyApplication extends Application {
     // load server information from local storage
     private void loadDataFromPreferences() {
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        String urlServer = preferences.getString(URL_SERVER, "http://10.2341.1.97:3000");
+        String urlServer = preferences.getString(URL_SERVER, "http://10.234.1.97:3000");
         String apiKey = preferences.getString(API_KEY_SERVER, null);
         String idApiKey = preferences.getString(ID_API_KEY_SERVER, null);
         boolean isFirstRun = preferences.getBoolean(IS_FIRST_RUN, true);
         String userFullName = preferences.getString(USER_FULL_NAME, "");
         boolean isAdmin = preferences.getBoolean(IS_ADMIN, false);
         String displayedFields = preferences.getString(DISPLAYED_FIELDS, "");
+        String start_audit_date = preferences.getString("START_AUDIT","");
+        String end_audit_date = preferences.getString("END_AUDIT","");
         this.currentUrlServer = urlServer;
         this.currentApiKeyServer = apiKey;
         this.currentIdApiKeyServer = idApiKey;
@@ -53,6 +66,8 @@ public class MyApplication extends Application {
         this.userFullName = userFullName;
         this.isAdmin = isAdmin;
         this.displayedFieldsJsonString = displayedFields;
+        this.START_AUDIT = start_audit_date;
+        this.END_AUDIT=end_audit_date;
     }
 
     public String getUserFullName() {
@@ -104,6 +119,8 @@ public class MyApplication extends Application {
         editor.putBoolean(IS_FIRST_RUN, false);
         editor.putString(USER_FULL_NAME, userFullName);
         editor.putBoolean(IS_ADMIN, isAdmin);
+        editor.putString(START_AUDIT,"2024-08-10 23:59:59");
+        editor.putString(END_AUDIT,"2024-12-10 23:59:59");
         editor.apply();
         this.currentIdApiKeyServer = newIdApiKey;
         this.currentApiKeyServer = newApiKey;
@@ -131,6 +148,4 @@ public class MyApplication extends Application {
         this.isAdmin = false;
         this.displayedFieldsJsonString = "";
     }
-
-
 }
