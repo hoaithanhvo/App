@@ -13,7 +13,6 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -179,7 +178,7 @@ public class MenuActivity extends AppCompatActivity  {
             } else if (mode == DetailActivity.IMPORT_ASSET_MODE) {
                 intent = new Intent(this, Import_AssetActivity.class);
             }else if (mode == DetailActivity.PRODUCT_DELIVERY) {
-                intent = new Intent(this, Product_Delivery_Activity.class);
+                intent = new Intent(this, ProductDeliveryActivity.class);
             }
             else {
                 intent = new Intent(this, SearchActivity.class);

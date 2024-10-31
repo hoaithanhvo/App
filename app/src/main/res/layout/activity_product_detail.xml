@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activity.Product_DetailActivity">
+    tools:context=".activity.ProductDetailActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcyProductDetails"

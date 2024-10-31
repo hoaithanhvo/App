@@ -4,10 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,9 +20,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class Product_Delivery_Activity extends BaseActivity {
+public class ProductDeliveryActivity extends BaseActivity {
     private NetworkManager apiServices;
     private RecyclerView rcyProductDelivery;
     private ProductDeliveryAdapter adapter;
@@ -66,10 +61,10 @@ public class Product_Delivery_Activity extends BaseActivity {
                     }
                     adapter = new ProductDeliveryAdapter(productList);
                     rcyProductDelivery.setAdapter(adapter);
-                    rcyProductDelivery.setLayoutManager(new LinearLayoutManager(Product_Delivery_Activity.this));
+                    rcyProductDelivery.setLayoutManager(new LinearLayoutManager(ProductDeliveryActivity.this));
                     adapter.setOnItemClickListener(product -> {
                         // Xử lý khi item được click, ví dụ, chuyển sang màn hình chi tiết
-                        Intent intent = new Intent(Product_Delivery_Activity.this, Product_DetailActivity.class);
+                        Intent intent = new Intent(ProductDeliveryActivity.this, ProductDetailActivity.class);
                         JSONArray itemsRequest = product.getItems_request();
                         String jsonString = itemsRequest.toString();
                         intent.putExtra("ITEM_DATA", jsonString);  // ProductDeliveryModel cần Serializable hoặc Parcelable

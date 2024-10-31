@@ -1,50 +1,52 @@
 package com.example.nidecsnipeit.network.model;
 
 public class ProductDetailsModel {
-    private int AssetID;
-    private String AssetTag;
-    private String Serial;
-    private String Name;
-    private String CreatedAt;
+    private String Category;
+    private String Manufactory;
+    private String Catalog;
+    private String Varrial;
 
-    public int getAssetID() {
-        return AssetID;
+    public String getVarrial() {
+        return Varrial;
     }
 
-    public void setAssetID(int assetID) {
-        AssetID = assetID;
+    public void setVarrial(String varrial) {
+        Varrial = varrial;
     }
 
-    public String getAssetTag() {
-        return AssetTag;
+    private String Created;
+    private String Status;
+
+    public String getCategory() {
+        return Category;
     }
 
-    public void setAssetTag(String assetTag) {
-        AssetTag = assetTag;
+    public void setCategory(String category) {
+        Category = category;
     }
 
-    public String getSerial() {
-        return Serial;
+    public String getManufactory() {
+        return Manufactory;
     }
 
-    public void setSerial(String serial) {
-        Serial = serial;
+    public void setManufactory(String manufactory) {
+        Manufactory = manufactory;
     }
 
-    public String getName() {
-        return Name;
+    public String getCatalog() {
+        return Catalog;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setCatalog(String catalog) {
+        Catalog = catalog;
     }
 
-    public String getCreatedAt() {
-        return CreatedAt;
+    public String getCreated() {
+        return Created;
     }
 
-    public void setCreatedAt(String createdAt) {
-        CreatedAt = createdAt;
+    public void setCreated(String created) {
+        Created = created;
     }
 
     public String getStatus() {
@@ -54,9 +56,6 @@ public class ProductDetailsModel {
     public void setStatus(String status) {
         Status = status;
     }
-
-    private String Status;
-
 
     public ProductDetailsModel() {
     }

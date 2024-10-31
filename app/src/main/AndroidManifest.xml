@@ -36,10 +36,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.Product_DetailActivity"
+            android:name=".activity.ProductDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.Product_Delivery_Activity"
+            android:name=".activity.ProductDeliveryActivity"
             android:exported="false" />
         <activity
             android:name=".activity.CustomDateAuditActivity"

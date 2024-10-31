@@ -3,6 +3,7 @@ package com.example.nidecsnipeit.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,12 +13,18 @@ import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.network.model.ProductDeliveryModel;
 import com.example.nidecsnipeit.network.model.ProductDetailsModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsAdapter.ProduectDetailsViewHolder>  {
     private List<ProductDetailsModel> listDetails ;
+    private ProductDetailsAdapter.OnItemClickListener onItemClickListener;
 
+    public interface OnItemClickListener {
+        void onItemClick(ProductDetailsModel product);
+    }
+    public void setOnItemClickListener(ProductDetailsAdapter.OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
     public ProductDetailsAdapter(List<ProductDetailsModel> productDetailsModels){
         this.listDetails = productDetailsModels;
     }
@@ -25,21 +32,24 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
     @NonNull
     @Override
     public ProduectDetailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.itemproductdetails,parent,false);
+        View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request,parent,false);
         return new ProduectDetailsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProduectDetailsViewHolder holder, int position) {
         ProductDetailsModel productDetails = listDetails.get(position);
-        holder.txtAssetID.setText(String.valueOf(productDetails.getAssetID()));
-        holder.txtAssetTag.setText(productDetails.getAssetTag());
-        holder.txtSerial.setText(productDetails.getSerial());
-        holder.txtName.setText(productDetails.getName());
-        holder.txtCreatedDate.setText(productDetails.getCreatedAt());
+        holder.txtCategory.setText(String.valueOf(productDetails.getCategory()));
+        holder.txtManufacture.setText(productDetails.getManufactory());
+        holder.txtCatalog.setText(productDetails.getCatalog());
+        holder.txtVarrial.setText(productDetails.getVarrial());
+        holder.txtCreated.setText(productDetails.getCreated());
         holder.txtStatus.setText(productDetails.getStatus());
-
-
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(productDetails);
+            }
+        });
     }
 
     @Override
@@ -49,16 +59,16 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
 
     class ProduectDetailsViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView txtAssetID,txtAssetTag,txtSerial,txtName,txtCreatedDate,txtStatus;
+        private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus;
 
 
         public ProduectDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtAssetID = itemView.findViewById(R.id.txtAssetID);
-            txtAssetTag = itemView.findViewById(R.id.txtAssetTag);
-            txtSerial = itemView.findViewById(R.id.txtSerial);
-            txtName = itemView.findViewById(R.id.txtName);
-            txtCreatedDate = itemView.findViewById(R.id.txtCreatedDate);
+            txtCategory = itemView.findViewById(R.id.txtCategory);
+            txtManufacture = itemView.findViewById(R.id.txtManufacture);
+            txtCatalog = itemView.findViewById(R.id.txtCatalog);
+            txtVarrial = itemView.findViewById(R.id.txtVarrial);
+            txtCreated = itemView.findViewById(R.id.txtCreated);
             txtStatus = itemView.findViewById(R.id.txtStatus);
         }
     }
