@@ -72,6 +72,8 @@
     <string name="back">Back</string>
     <string name="import_asset">IMPORT ASSET</string>
     <string name="input_scan">Input Scan</string>
+    <string name="product_delivery">PRODUCT_DELIVERY</string>
+
 
     <string-array name="asset_status_array">
         <item>A: Available to use</item>

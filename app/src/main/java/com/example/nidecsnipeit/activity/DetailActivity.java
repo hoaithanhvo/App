@@ -35,6 +35,7 @@ public class DetailActivity extends BaseActivity {
     public static final int AUDIT_OFFLINE_MODE = 7;
     public static final int AUDIT_RFID_MODE = 8;
     public static final int IMPORT_ASSET_MODE = 9;
+    public static final int PRODUCT_DELIVERY = 10;
 
 
     CustomItemAdapter adapter;

@@ -60,10 +60,8 @@ public class AuditRFIDAdapter extends RecyclerView.Adapter<AuditRFIDAdapter.Audi
         // Thêm item mới vào đầu danh sách
         listitemRFID.add(0, item);
         itemTextColors.add(0, color);  // Thêm màu tương ứng
-
         notifyItemInserted(0);
     }
-
     public void setItemColor(int position, int color) {
         if (position >= 0 && position < itemTextColors.size()) {
             itemTextColors.set(position, color);

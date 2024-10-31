@@ -34,7 +34,7 @@ import org.json.JSONObject;
 public class MenuActivity extends AppCompatActivity  {
     private View rootView;
     private EditText inputSearch;
-    private LinearLayout checkOutBtn , checkInBtn,maintenanceBtn,settingBtn,auditBtn,auditRFID,importAssetBtn,transferBtn;
+    private LinearLayout checkOutBtn , checkInBtn,maintenanceBtn,settingBtn,auditBtn,auditRFID,importAssetBtn,transferBtn,productDeliveryBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         MyApplication MyApp = (MyApplication) getApplication();
@@ -63,6 +63,7 @@ public class MenuActivity extends AppCompatActivity  {
         auditRFID = findViewById(R.id.auditRFID);
         importAssetBtn = findViewById(R.id.importAsset_btn);
         inputSearch = findViewById(R.id.input_search);
+        productDeliveryBtn = findViewById(R.id.product_delivery_btn);
         ImageButton searchButton = findViewById(R.id.search_img_btn);
         ImageButton removeTextButton = findViewById(R.id.remove_text);
         ImageButton qrScannerBtn = findViewById(R.id.qr_scanner_btn);
@@ -74,7 +75,7 @@ public class MenuActivity extends AppCompatActivity  {
         auditBtn.setOnClickListener(createButtonClickListener((DetailActivity.AUDIT_MODE)));
         auditRFID.setOnClickListener(createButtonClickListener((DetailActivity.AUDIT_RFID_MODE)));
         importAssetBtn.setOnClickListener(createButtonClickListener(DetailActivity.IMPORT_ASSET_MODE));
-
+        productDeliveryBtn.setOnClickListener(createButtonClickListener(DetailActivity.PRODUCT_DELIVERY));
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -177,7 +178,10 @@ public class MenuActivity extends AppCompatActivity  {
                 intent = new Intent(this,RFID_Activity.class);
             } else if (mode == DetailActivity.IMPORT_ASSET_MODE) {
                 intent = new Intent(this, Import_AssetActivity.class);
-            } else {
+            }else if (mode == DetailActivity.PRODUCT_DELIVERY) {
+                intent = new Intent(this, Product_Delivery_Activity.class);
+            }
+            else {
                 intent = new Intent(this, SearchActivity.class);
                 intent.putExtra("mode", mode);
             }

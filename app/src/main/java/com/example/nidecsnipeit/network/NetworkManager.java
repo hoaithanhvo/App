@@ -299,6 +299,12 @@ public class NetworkManager {
         this.getAPIString(url,Request.Method.GET,null,listener,errorListener);
     }
 
+
+    public void getProductDelivery(final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
+        String url = URL + "/requestAsset/getAll?requestable=true";
+        this.getAPI(url,Request.Method.GET,null ,ACCESS_TOKEN,listener,errorListener);
+    }
+
     // =============================================
     // ======= Generic method ======================
     // =============================================
@@ -462,7 +468,6 @@ public class NetworkManager {
         // Thêm request vào requestQueue
         requestQueue.add(byteRequest);
     }
-
 
     public <T> void getAPIString(String Url, int httpMethod, T myObject, final NetworkResponseListener<String> listener, final NetworkResponseErrorListener errorListener) {
         if (myObject != null) {
