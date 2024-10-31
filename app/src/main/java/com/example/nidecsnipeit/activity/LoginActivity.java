@@ -208,6 +208,11 @@ public class LoginActivity extends AppCompatActivity {
                 File apkFile = saveAPKFile(object);
                 installApk(apkFile);
             }
+        }, new NetworkResponseErrorListener() {
+            @Override
+            public void onErrorResult(Exception error) {
+                Toast.makeText(LoginActivity.this,"Call API fail: "+error.getMessage(),Toast.LENGTH_LONG).show();
+            }
         });
     }
     @Override

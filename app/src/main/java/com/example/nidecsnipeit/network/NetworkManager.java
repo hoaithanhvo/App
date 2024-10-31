@@ -433,17 +433,17 @@ public class NetworkManager {
         return queryParams.substring(0, queryParams.length() - 1);
     }
 
-    public void getAPK(final NetworkResponseListener<byte[]> listener){
+    public void getAPK(final NetworkResponseListener<byte[]> listener, final  NetworkResponseErrorListener errorListener){
         String url = URL + "/application/downloadApp";
-        this.getAPKFile(url,Request.Method.GET,null,listener,null);
+        this.getAPKFile(url,Request.Method.GET,null,listener,errorListener);
     }
 
     public <T> void getAPKFile(String url, int httpMethod, T myObject, final NetworkResponseListener<byte[]> listener, final NetworkResponseErrorListener errorListener) {
         // Tạo một request để trả về mảng byte thay vì JSONObject
-        InputStreamVolleyRequest byteRequest = new InputStreamVolleyRequest(httpMethod, url, new Response.Listener<byte[]>() {
+        final  InputStreamVolleyRequest byteRequest = new InputStreamVolleyRequest(httpMethod, url, new Response.Listener<byte[]>() {
             @Override
             public void onResponse(byte[] response) {
-                listener.onResult(response); // Trả về kết quả dạng byte[]
+                listener.onResult(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -464,7 +464,6 @@ public class NetworkManager {
         byteRequest.setRetryPolicy(new DefaultRetryPolicy(60000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         // Thêm request vào requestQueue
         requestQueue.add(byteRequest);
     }
@@ -478,8 +477,14 @@ public class NetworkManager {
         StringRequest stringRequest = new StringRequest(httpMethod, Url,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String response) {
-                        listener.onResult(response); // Trả về chuỗi từ API
+                    public void onResponse(String response)
+                    {
+                        listener.onResult(response);
+                       if(response.startsWith("<!DOCTYPE html>")){
+                           errorListener.onErrorResult(new Exception("Received HTML instead of JSON. Possible API error or redirect."));
+                       } else {
+                           listener.onResult(response);
+                       }
                     }
                 },
                 new Response.ErrorListener() {
@@ -492,19 +497,14 @@ public class NetworkManager {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headerMap = new HashMap<>();
                 headerMap.put("Content-Type", "application/json");
-                // Nếu cần, bỏ dòng dưới nếu không dùng xác thực
-                // headerMap.put("Authorization", "Bearer " + apiToken);
                 return headerMap;
             }
         };
-
         // Đặt RetryPolicy cho StringRequest
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(60000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         // Thêm request vào hàng đợi
         requestQueue.add(stringRequest);
     }
-
 }
