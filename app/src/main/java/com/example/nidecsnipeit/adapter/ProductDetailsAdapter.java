@@ -1,9 +1,12 @@
 package com.example.nidecsnipeit.adapter;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +48,14 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         holder.txtVarrial.setText(productDetails.getVarrial());
         holder.txtCreated.setText(productDetails.getCreated());
         holder.txtStatus.setText(productDetails.getStatus());
+        holder.txtTotal.setText(productDetails.getTotal());
+        LinearLayout itemBox = holder.itemView.findViewById(R.id.ItemBox);
+
+        if ("Ready".equals(productDetails.getStatus())) {
+            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+        } else {
+            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));
+        }
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(productDetails);
@@ -59,7 +70,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
 
     class ProduectDetailsViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus;
+        private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus,txtTotal;
 
 
         public ProduectDetailsViewHolder(@NonNull View itemView) {
@@ -70,6 +81,8 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
             txtVarrial = itemView.findViewById(R.id.txtVarrial);
             txtCreated = itemView.findViewById(R.id.txtCreated);
             txtStatus = itemView.findViewById(R.id.txtStatus);
+            txtTotal = itemView.findViewById(R.id.txtTotal);
+
         }
     }
 }

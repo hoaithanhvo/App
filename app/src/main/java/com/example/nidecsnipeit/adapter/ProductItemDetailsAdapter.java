@@ -46,10 +46,10 @@ public class ProductItemDetailsAdapter extends RecyclerView.Adapter<ProductItemD
         private TextView txtAssetID,txtAssetTag,txtSerial,txtName;
         public ProductItemDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemView.findViewById(R.id.txtAssetID);
-            itemView.findViewById(R.id.txtAssetTag);
-            itemView.findViewById(R.id.txtSerial);
-            itemView.findViewById(R.id.txtName);
+            txtAssetID = itemView.findViewById(R.id.txtAssetID);
+            txtAssetTag= itemView.findViewById(R.id.txtAssetTag);
+            txtSerial= itemView.findViewById(R.id.txtSerial);
+            txtName =itemView.findViewById(R.id.txtName);
         }
     }
 }

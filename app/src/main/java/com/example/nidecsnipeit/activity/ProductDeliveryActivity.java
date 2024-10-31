@@ -2,6 +2,7 @@ package com.example.nidecsnipeit.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.network.model.ProductDeliveryModel;
+import com.example.nidecsnipeit.utility.Common;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,10 +41,12 @@ public class ProductDeliveryActivity extends BaseActivity {
     }
     private void GetDataProductDelivery()
     {
+        Common.showProgressDialog(this,"Đang tải vui lòng đợi...");
         apiServices.getProductDelivery(new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 try {
+                    Common.hideProgressDialog();
                     JSONArray rows  = object.getJSONArray("rows");
                     productList= new ArrayList<>();
                     for(int i =0;i<rows.length();i++){
@@ -77,7 +81,7 @@ public class ProductDeliveryActivity extends BaseActivity {
         }, new NetworkResponseErrorListener() {
             @Override
             public void onErrorResult(Exception error) {
-
+                Toast.makeText(ProductDeliveryActivity.this,"Lỗi:" +error.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }

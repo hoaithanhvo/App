@@ -38,42 +38,77 @@ public class ProductDetailActivity extends BaseActivity {
                 JSONObject item = items_request.getJSONObject(i);
                 JSONObject Created_at = item.getJSONObject("created_at");
                 String formatted = Created_at.getString("formatted");
-                JSONObject category = item.getJSONObject("category");
-                String nameCategory="";
-                for(int j = 0 ; j< category.length();j++){
-                    nameCategory = category.getString("name");
+                String nameCategory = "";
+                String nameManufacturer = "";
+                String nameVarrial = "";
+                String nameCatalog = "";
+                String nameStatus = "";
+
+
+                String total = item.getString("total");
+                JSONObject category = item.optJSONObject("category");
+                if (category == null) {
+                    nameCategory = "null";
+                } else {
+                    for(int j = 0 ; j< category.length();j++){
+                        nameCategory = category.getString("name");
+                    }
                 }
-                String manufacturer = item.getString("manufacturer");
-                String catalog = item.getString("catalog");
-                String varrial = item.getString("varrial");
-                //String total = item.getString("total");
+                JSONObject manufacturer = item.optJSONObject("manufacturer");
+                if (manufacturer == null) {
+                    nameManufacturer = "null";
+                } else {
+                    for(int j = 0 ; j< manufacturer.length();j++){
+                        nameManufacturer = manufacturer.getString("name");
+                    }
+                }
+
+                JSONObject varrial = item.optJSONObject("varrial");
+                if (varrial == null) {
+                    nameVarrial = "null";
+                } else {
+                    for(int j = 0 ; j< varrial.length();j++){
+                        nameVarrial = varrial.getString("name");
+                    }
+                }
+
+                JSONObject catalog = item.optJSONObject("catalog");
+                if (catalog == null) {
+                    nameCatalog = "null";
+                } else {
+                    for(int j = 0 ; j< catalog.length();j++){
+                        nameCatalog = catalog.getString("name");
+                    }
+                }
+
+                JSONObject status = item.getJSONObject("status");
+                for (int j=0;j<status.length();j++){
+                    nameStatus = status.getString("name");
+                }
+
+                JSONArray item_request_details = item.getJSONArray("item_request_details");
                 itemProduct.setCreated(formatted);
-                itemProduct.setCatalog(nameCategory);
-                itemProduct.setManufactory(manufacturer);
-                itemProduct.setVarrial(varrial);
-                itemProduct.setCatalog(catalog);
-
-//                JSONArray item_request_details = item.getJSONArray("item_request_details");
-//                for(int j = 0;j<item_request_details.length();j++){
-//                    JSONObject item_request_details_item = item_request_details.getJSONObject(j);
-//
-//                    JSONObject asset = item_request_details_item.getJSONObject("asset");
-//                    itemProduct.setAssetID(asset.getInt("id"));
-//                    itemProduct.setAssetTag(asset.getString("asset_tag"));
-//                    itemProduct.setSerial(asset.getString("serial"));
-//                    itemProduct.setName(asset.getString("name"));
-//                    itemProduct.setCreatedAt(formatted);
-//                    listProductDetails.add(itemProduct);
-//                }
-                adapter = new ProductDetailsAdapter(listProductDetails);
-                rcyProductDetails.setAdapter(adapter);
-                rcyProductDetails.setLayoutManager(new LinearLayoutManager(ProductDetailActivity.this));
+                itemProduct.setCategory(nameCategory);
+                itemProduct.setManufactory(nameManufacturer);
+                itemProduct.setVarrial(nameVarrial);
+                itemProduct.setCatalog(nameCatalog);
+                itemProduct.setStatus(nameStatus);
+                itemProduct.setTotal(total);
+                itemProduct.setItem_request_details(item_request_details);
+                listProductDetails.add(itemProduct);
             }
-
+            adapter = new ProductDetailsAdapter(listProductDetails);
+            rcyProductDetails.setAdapter(adapter);
+            rcyProductDetails.setLayoutManager(new LinearLayoutManager(ProductDetailActivity.this));
+            adapter.setOnItemClickListener(product -> {
+                Intent intentItem = new Intent(ProductDetailActivity.this, ProductItemDetailsActivity.class);
+                JSONArray itemsRequest = product.getItem_request_details();
+                String itemsRequestString = itemsRequest.toString();
+                intentItem.putExtra("ITEM_DETAIL_DATA", itemsRequestString);
+                startActivity(intentItem);
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
     }
 }
