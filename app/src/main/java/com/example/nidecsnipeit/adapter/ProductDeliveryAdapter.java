@@ -58,7 +58,6 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
         public TextView txtProductID , txtUserID,txtCreateAt,txtNote;
         public ProductDelivyViewHolder(@NonNull View itemView) {
             super(itemView);
-
             txtProductID = itemView.findViewById(R.id.txtProductID);
             txtNote=itemView.findViewById(R.id.txtNote);
             txtCreateAt=itemView.findViewById(R.id.txtCreateAt);

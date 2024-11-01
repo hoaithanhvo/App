@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".activity.Import_AssetActivity">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,13 +90,18 @@
                 android:textColor="@color/primary"
                 android:textSize="16dp"
                 android:textStyle="bold" />
-
-            <MultiAutoCompleteTextView
+            <AutoCompleteTextView
+                android:hint="Search for items"
                 android:id="@+id/autoVarials"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="MultiAutoCompleteTextView" />
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                />
+<!--            <MultiAutoCompleteTextView-->
+<!--                android:id="@+id/autoVarials"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:hint="MultiAutoCompleteTextView" />-->
         </LinearLayout>
     </LinearLayout>
     <RelativeLayout

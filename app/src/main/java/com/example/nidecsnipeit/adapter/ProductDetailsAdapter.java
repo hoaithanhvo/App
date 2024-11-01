@@ -47,14 +47,14 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         holder.txtCatalog.setText(productDetails.getCatalog());
         holder.txtVarrial.setText(productDetails.getVarrial());
         holder.txtCreated.setText(productDetails.getCreated());
-        holder.txtStatus.setText(productDetails.getStatus());
+        holder.txtStatus.setText(productDetails.getStatusMap().get("name"));
         holder.txtTotal.setText(productDetails.getTotal());
         LinearLayout itemBox = holder.itemView.findViewById(R.id.ItemBox);
 
-        if ("Ready".equals(productDetails.getStatus())) {
-            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+        if ("Ready".equals(productDetails.getStatusMap().get("name"))) {
+            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
         } else {
-            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));
+            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
         }
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
@@ -69,10 +69,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
     }
 
     class ProduectDetailsViewHolder extends RecyclerView.ViewHolder{
-
         private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus,txtTotal;
-
-
         public ProduectDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             txtCategory = itemView.findViewById(R.id.txtCategory);
@@ -82,7 +79,6 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
             txtCreated = itemView.findViewById(R.id.txtCreated);
             txtStatus = itemView.findViewById(R.id.txtStatus);
             txtTotal = itemView.findViewById(R.id.txtTotal);
-
         }
     }
 }

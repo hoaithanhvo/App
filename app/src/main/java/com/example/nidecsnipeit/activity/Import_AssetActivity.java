@@ -64,8 +64,8 @@ public class Import_AssetActivity extends BaseActivity {
     private Map<String,Integer> varrialsMap = new HashMap<>();
     private  int selectedCategoryId;
     private  int selectedManufactoryId;
-    private AutoCompleteTextView autoCategory,autoManufactures,autoCatalog;
-    private MultiAutoCompleteTextView autoVarials;
+    private AutoCompleteTextView autoCategory,autoManufactures,autoCatalog,autoVarials;
+    //private MultiAutoCompleteTextView autoVarials;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -297,7 +297,7 @@ public class Import_AssetActivity extends BaseActivity {
                 listVarrials.add(name);
                 varrialsMap.put(name,id);
             }
-            setupMuilteCompleteAdapter(autoVarials, listVarrials);
+            setupAutoCompleteAdapter(autoVarials, listVarrials);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

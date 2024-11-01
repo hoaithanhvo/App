@@ -14,51 +14,49 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <RelativeLayout
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/border_recyclerview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_screen">
+<!--        <RelativeLayout-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:background="@drawable/border_recyclerview"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="@dimen/margin_screen">-->
 
-            <EditText
-                android:id="@+id/input_scan"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:autofillHints="false"
-                android:hint="@string/input_scan"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:paddingEnd="48dp"
-                android:textSize="@dimen/text_size"
-                tools:ignore="RtlSymmetry" />
-            <ImageView
-                android:id="@+id/scan_img_btn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/img_download1" />
-        </RelativeLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleListDataScan"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/border_recyclerview" >
+<!--            <EditText-->
+<!--                android:id="@+id/input_scan"-->
+<!--                android:layout_width="350dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:autofillHints="false"-->
+<!--                android:hint="@string/input_scan"-->
+<!--                android:imeOptions="actionSearch"-->
+<!--                android:inputType="text"-->
+<!--                android:maxLines="1"-->
+<!--                android:minHeight="48dp"-->
+<!--                android:paddingEnd="48dp"-->
+<!--                android:textSize="@dimen/text_size"-->
+<!--                tools:ignore="RtlSymmetry" />-->
+<!--            <ImageView-->
+<!--                android:id="@+id/scan_img_btn"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:src="@drawable/img_download1" />-->
+<!--        </RelativeLayout>-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/recycleListDataScan"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:layout_marginRight="5dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="@drawable/border_recyclerview" >-->
 
-        </androidx.recyclerview.widget.RecyclerView>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
+<!--        </androidx.recyclerview.widget.RecyclerView>-->
+<!--    <Button-->
+<!--        android:id="@+id/button"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Button" />-->
 </LinearLayout>
 

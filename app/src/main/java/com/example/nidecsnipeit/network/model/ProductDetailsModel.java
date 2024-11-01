@@ -1,13 +1,31 @@
 package com.example.nidecsnipeit.network.model;
 
+import android.graphics.Color;
+
 import org.json.JSONArray;
+
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductDetailsModel {
     private String Category;
     private String Manufactory;
     private String Catalog;
     private String Varrial;
+
+    public Map<String, String> getStatusMap() {
+        return statusMap;
+    }
+
+    public void setStatusMap(String nameStatus, String colorStatus) {
+        // Thiết lập giá trị vào map
+        statusMap.put("name", nameStatus);
+        statusMap.put("color", colorStatus);
+    }
+
     private String Total;
+    Map<String, String> statusMap = new HashMap<>();
 
     public JSONArray getItem_request_details() {
         return item_request_details;
@@ -36,7 +54,6 @@ public class ProductDetailsModel {
     }
 
     private String Created;
-    private String Status;
 
     public String getCategory() {
         return Category;
@@ -68,14 +85,6 @@ public class ProductDetailsModel {
 
     public void setCreated(String created) {
         Created = created;
-    }
-
-    public String getStatus() {
-        return Status;
-    }
-
-    public void setStatus(String status) {
-        Status = status;
     }
 
     public ProductDetailsModel() {

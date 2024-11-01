@@ -2,6 +2,10 @@ package com.example.nidecsnipeit.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +32,9 @@ public class ProductDeliveryActivity extends BaseActivity {
     private RecyclerView rcyProductDelivery;
     private ProductDeliveryAdapter adapter;
     private List<ProductDeliveryModel> productList;
+    private List<ProductDeliveryModel> filteredList;
+    private TextView txtTotal;
+    private EditText txtSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +42,22 @@ public class ProductDeliveryActivity extends BaseActivity {
         setContentView(R.layout.activity_product_delivery);
         apiServices = NetworkManager.getInstance(this);
         rcyProductDelivery = findViewById(R.id.rcyProductDelivery);
+        txtSearch = findViewById(R.id.txtSearch);
+        txtTotal = findViewById(R.id.txtTotal);
         setupActionBar("Product Delivery");
         GetDataProductDelivery();
+        txtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
     }
     private void GetDataProductDelivery()
@@ -63,11 +84,12 @@ public class ProductDeliveryActivity extends BaseActivity {
                         productItem.setItems_request(items_request);
                         productList.add(productItem);
                     }
-                    adapter = new ProductDeliveryAdapter(productList);
+                    txtTotal.setText(String.valueOf(productList.size()));
+                    filteredList = new ArrayList<>(productList);
+                    adapter = new ProductDeliveryAdapter(filteredList);
                     rcyProductDelivery.setAdapter(adapter);
                     rcyProductDelivery.setLayoutManager(new LinearLayoutManager(ProductDeliveryActivity.this));
                     adapter.setOnItemClickListener(product -> {
-                        // Xử lý khi item được click, ví dụ, chuyển sang màn hình chi tiết
                         Intent intent = new Intent(ProductDeliveryActivity.this, ProductDetailActivity.class);
                         JSONArray itemsRequest = product.getItems_request();
                         String jsonString = itemsRequest.toString();
@@ -84,5 +106,19 @@ public class ProductDeliveryActivity extends BaseActivity {
                 Toast.makeText(ProductDeliveryActivity.this,"Lỗi:" +error.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void filter(String text) {
+        filteredList.clear();
+        if (text.isEmpty()) {
+            filteredList.addAll(productList);
+        } else {
+            for (ProductDeliveryModel item : productList) {
+                if (item.getProductID().toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(item);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 }
