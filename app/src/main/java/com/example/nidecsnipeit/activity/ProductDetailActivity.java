@@ -67,7 +67,6 @@ public class ProductDetailActivity extends BaseActivity {
     private void loadDataAdapter(String jsonString){
         try {
             JSONArray items_request = new JSONArray(jsonString);
-
             for(int i = 0;i<items_request.length();i++){
                 ProductDetailsModel itemProduct = new ProductDetailsModel();
                 JSONObject item = items_request.getJSONObject(i);

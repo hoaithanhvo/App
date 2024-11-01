@@ -6,12 +6,14 @@
         <LinearLayout
             android:textColor="@android:color/white"
             android:id="@+id/ItemBox"
+            android:backgroundTint="@color/secondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/boder_button"
             style="@style/LinearLayoutCustomStyle"
             android:orientation="horizontal">
             <LinearLayout
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -20,7 +22,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
+                    android:textColor="@color/white"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
                     android:textStyle="bold"
@@ -38,11 +41,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
+                    android:textColor="@color/white"
+
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
                     android:textStyle="bold"
-                    android:text="Manufacture: "/>
+                    android:text="Manufact: "/>
                 <TextView
                     android:id="@+id/txtManufacture"
                     android:layout_width="match_parent"
@@ -56,10 +61,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
                     android:textStyle="bold"
+                    android:textColor="@color/white"
+
                     android:text="Catalog: " />
                 <TextView
                     android:id="@+id/txtCatalog"
@@ -74,7 +81,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
                     android:textStyle="bold"
@@ -90,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"
                     android:textSize="15dp"
                     android:textStyle="bold"
@@ -101,41 +110,103 @@
                     android:layout_height="wrap_content"
                     android:text="" />
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:text="Status: " />
-                <TextView
-                    android:id="@+id/txtStatus"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:text="Total: " />
-                <TextView
-                    android:id="@+id/txtTotal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="" />
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="15dp"
+                            android:textStyle="bold"
+                            android:text="Status: " />
+                        <TextView
+                            android:id="@+id/txtStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:gravity="end"
+                            android:textColor="@color/white"
+
+                            android:text="Total: "
+                            android:textSize="15dp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_gravity="end"
+                            android:gravity="end"
+                            android:id="@+id/txtTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" />
+                    </LinearLayout>
+                </LinearLayout>
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:orientation="horizontal">-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="70dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:text="Status: " />-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/txtStatus"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="" />-->
+<!--                    </LinearLayout>-->
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="horizontal">-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="end"-->
+<!--                            android:gravity="end"-->
+<!--                            android:text="Total: "-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:textStyle="bold" />-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/txtTotal"-->
+<!--                            android:layout_gravity="end"-->
+<!--                            android:gravity="end"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="0" />-->
+<!--                    </LinearLayout>-->
+<!--                </LinearLayout>-->
+
         </LinearLayout>
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="end"

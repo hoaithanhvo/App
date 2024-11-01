@@ -1,5 +1,6 @@
 package com.example.nidecsnipeit.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,10 @@ public class ProductItemDetailsAdapter extends RecyclerView.Adapter<ProductItemD
         holder.txtSerial.setText(productItemDetailsModel.getSerial());
         holder.txtName.setText(productItemDetailsModel.getName());
         holder.txtAssetTag.setText(productItemDetailsModel.getAssetTag());
+        holder.txtAssetID.setTextColor(Color.BLACK);
+        holder.txtSerial.setTextColor(Color.BLACK);
+        holder.txtName.setTextColor(Color.BLACK);
+        holder.txtAssetTag.setTextColor(Color.BLACK);
     }
 
     @Override

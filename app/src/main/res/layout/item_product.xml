@@ -18,6 +18,7 @@
                android:layout_height="wrap_content"
                android:orientation="horizontal">
                <TextView
+                   android:textColor="@color/black"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:textSize="15dp"
@@ -38,6 +39,7 @@
                <TextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
+                   android:textColor="@color/black"
                    android:textSize="15dp"
                    android:textStyle="bold"
                    android:text="UserID :"/>
@@ -57,6 +59,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:textSize="15dp"
+                   android:textColor="@color/black"
                    android:textStyle="bold"
                    android:text="Ngày tạo:" />
                <TextView
@@ -75,6 +78,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:textSize="15dp"
+                   android:textColor="@color/black"
                    android:textStyle="bold"
                    android:text="Note:" />
                <TextView

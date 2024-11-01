@@ -159,7 +159,7 @@ public class Import_AssetActivity extends BaseActivity {
     }
     private void  initial(){
         input_scan = findViewById(R.id.input_scan);
-        //scan_img_btn = findViewById(R.id.scan_img_btn);
+        scan_img_btn = findViewById(R.id.scan_img_btn);
         recycleListDataScan = findViewById(R.id.recycleListDataScan);
         autoCategory = findViewById(R.id.autoCategory);
         autoManufactures = findViewById(R.id.autoManufactures);

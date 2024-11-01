@@ -49,20 +49,20 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         holder.txtCreated.setText(productDetails.getCreated());
         holder.txtStatus.setText(productDetails.getStatusMap().get("name"));
         holder.txtTotal.setText(productDetails.getTotal());
-        LinearLayout itemBox = holder.itemView.findViewById(R.id.ItemBox);
-
-        if ("Ready".equals(productDetails.getStatusMap().get("name"))) {
-            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
-        } else {
-            itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
-        }
+        holder.itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(productDetails);
             }
         });
+        holder.txtCategory.setTextColor(Color.WHITE);
+        holder.txtManufacture.setTextColor(Color.WHITE);
+        holder.txtCatalog.setTextColor(Color.WHITE);
+        holder.txtVarrial.setTextColor(Color.WHITE);
+        holder.txtCreated.setTextColor(Color.WHITE);
+        holder.txtStatus.setTextColor(Color.WHITE);
+        holder.txtTotal.setTextColor(Color.WHITE);
     }
-
     @Override
     public int getItemCount() {
         return listDetails.size();
@@ -70,6 +70,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
 
     class ProduectDetailsViewHolder extends RecyclerView.ViewHolder{
         private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus,txtTotal;
+        private LinearLayout itemBox;
         public ProduectDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             txtCategory = itemView.findViewById(R.id.txtCategory);
@@ -79,6 +80,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
             txtCreated = itemView.findViewById(R.id.txtCreated);
             txtStatus = itemView.findViewById(R.id.txtStatus);
             txtTotal = itemView.findViewById(R.id.txtTotal);
+            itemBox = itemView.findViewById(R.id.ItemBox);
         }
     }
 }
