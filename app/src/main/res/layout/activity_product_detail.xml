@@ -27,7 +27,7 @@
                 android:textColor="@color/secondary"
                 android:textStyle="bold"
                 android:textSize="15dp"
-                android:text="Total: "/>
+                android:text="@string/total"/>
             <TextView
                 android:textColor="@color/secondary"
                 android:textStyle="bold"

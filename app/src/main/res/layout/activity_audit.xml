@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Nhập để tìm kiếm" />
+            android:hint="@string/input_text" />
     </LinearLayout>
 
     <View
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Asset Status"
+            android:text="@string/asset_status"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:layout_marginLeft="10dp"
@@ -148,14 +148,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
-                    android:text="Good" />
+                    android:text="@string/good" />
 
                 <RadioButton
                     android:id="@+id/rdoLabelNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="No Use" />
+                    android:text="@string/no_use" />
             </RadioGroup>
         </LinearLayout>
 
@@ -180,6 +180,6 @@
             android:layout_weight="1"
             android:backgroundTint="@color/secondary"
             android:textColor="@color/white"
-            android:text="Audit"/>
+            android:text="@string/confirm_audit"/>
     </LinearLayout>
 </LinearLayout>

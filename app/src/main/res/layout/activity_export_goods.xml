@@ -67,7 +67,7 @@
             android:id="@+id/btnExportGoods"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Export" />
+            android:text="@string/export_goods" />
         <Button
             android:textColor="@color/black"
             android:backgroundTint="@color/secondary"
@@ -75,7 +75,7 @@
             android:id="@+id/btnHangorver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Confirm" />
+            android:text="@string/confirm_goods" />
     </LinearLayout>
 
 </LinearLayout>
