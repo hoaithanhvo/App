@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Nidec Assets Manager234</string>
+    <string name="app_name">Nidec Assets Manager</string>
     <string name="version_app">5/2024</string>
     <string name="action_back">Back</string>
     <string name="check_in">CHECK-IN</string>
@@ -72,7 +73,6 @@
     <string name="import_asset">IMPORT ASSET</string>
     <string name="input_scan">Input Scan</string>
     <string name="product_delivery">PRODUCT DELIVERY</string>
-
 
     <string-array name="asset_status_array">
         <item>A: Available to use</item>

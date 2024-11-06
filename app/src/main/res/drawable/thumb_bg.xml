@@ -1,0 +1,18 @@
+<!-- thumb_bg.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Khi Switch bật (checked) -->
+    <item android:state_checked="true">
+        <shape android:shape="oval">
+            <solid android:color="#4ea832"/> <!-- Màu xanh khi bật -->
+            <size android:width="30dp" android:height="30dp"/>
+        </shape>
+    </item>
+
+    <!-- Khi Switch tắt (unchecked) -->
+    <item android:state_checked="false">
+        <shape android:shape="oval">
+            <solid android:color="#c73c20"/> <!-- Màu xám khi tắt -->
+            <size android:width="30dp" android:height="30dp"/>
+        </shape>
+    </item>
+</selector>

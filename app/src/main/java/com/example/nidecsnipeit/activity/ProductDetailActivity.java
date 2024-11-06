@@ -6,8 +6,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.lifecycle.viewmodel.InitializerViewModelFactoryKt;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,25 +44,31 @@ public class ProductDetailActivity extends BaseActivity {
         txtTotal = findViewById(R.id.txtTotal);
         txtSearch=findViewById(R.id.txtSearch);
         setupActionBar("Product Details");
-        Intent intent = getIntent();
-        String jsonString = intent.getStringExtra("ITEM_DATA");
-        loadDataAdapter(jsonString);
-        txtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        try{
+            Intent intent = getIntent();
+            String jsonString = intent.getStringExtra("ITEM_DATA");
+            loadDataAdapter(jsonString);
+            txtSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                fillter(s.toString());
-            }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    fillter(s.toString());
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                @Override
+                public void afterTextChanged(Editable s) {
 
-            }
-        });
+                }
+            });
+        }
+        catch(Exception error){
+            Toast.makeText(ProductDetailActivity.this,error.getMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
 
     }
 
@@ -70,6 +78,7 @@ public class ProductDetailActivity extends BaseActivity {
             for(int i = 0;i<items_request.length();i++){
                 ProductDetailsModel itemProduct = new ProductDetailsModel();
                 JSONObject item = items_request.getJSONObject(i);
+                ProductDetailsModel.item_request_id = item.getInt("id");
                 JSONObject Created_at = item.getJSONObject("created_at");
                 String formatted = Created_at.getString("formatted");
                 String nameCategory = "";

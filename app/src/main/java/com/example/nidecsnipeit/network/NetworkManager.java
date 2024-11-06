@@ -305,6 +305,16 @@ public class NetworkManager {
         this.getAPI(url,Request.Method.GET,null ,ACCESS_TOKEN,listener,errorListener);
     }
 
+
+
+    public void patchProductDevivery(int id , final NetworkResponseListener<JSONObject> listener , final NetworkResponseErrorListener errorListener ){
+        String url = URL + "/requestAsset/successItemRequest?items_request_id=" + id;
+        this.postAPI(url, Request.Method.PATCH,null,listener,errorListener);
+    }
+    public void patchCheckoutItemRequest(int id, final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
+        String url = URL + "/requestAsset/checkedoutItemRequest?items_request_id=" + id;
+        this.postAPI(url,Request.Method.PATCH,null,listener,errorListener);
+    }
     // =============================================
     // ======= Generic method ======================
     // =============================================

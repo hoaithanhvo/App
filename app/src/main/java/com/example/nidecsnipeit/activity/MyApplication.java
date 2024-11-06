@@ -1,7 +1,11 @@
 package com.example.nidecsnipeit.activity;
 
+
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +15,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nidecsnipeit.R;
+
+import java.util.Locale;
 
 public class MyApplication extends Application {
 
@@ -30,6 +36,9 @@ public class MyApplication extends Application {
     private final String IS_ADMIN = "IS_ADMIN";
     private final String DISPLAYED_FIELDS = "DISPLAYED_FIELDS";
 
+//    private static final String PREF_NAME = "LanguagePrefs";
+    private static final String LANGUAGE_KEY = "selected_language";
+
     public String getSTART_AUDIT() {
         return START_AUDIT;
     }
@@ -45,8 +54,44 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         loadDataFromPreferences();
+        String languageCode = getLanguageFromPreferences(this);
+        if (languageCode.isEmpty()) {
+            // Nếu không có ngôn ngữ trong SharedPreferences, thiết lập mặc định là Tiếng Việt
+            saveLanguageToPreferences(this, "vi");
+            languageCode = "vi";
+        }
+        applyLanguage(this, languageCode);
+
+    }
+    private String getLanguageFromPreferences(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(LANGUAGE_KEY, "vi"); // Default is Vietnamese if nothing is saved
     }
 
+    private void saveLanguageToPreferences(Context context, String languageCode) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(LANGUAGE_KEY, languageCode);
+        editor.apply();
+    }
+
+    private void applyLanguage(Context context, String languageCode) {
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
+
+        // Cập nhật Configuration với ngôn ngữ mới
+        Configuration configuration = new Configuration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            configuration.setLocale(locale);
+            context.createConfigurationContext(configuration);
+        } else {
+            configuration.locale = locale;
+        }
+
+        // Cập nhật tài nguyên (resources) của ứng dụng
+        context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+
+    }
     // load server information from local storage
     private void loadDataFromPreferences() {
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -69,7 +114,6 @@ public class MyApplication extends Application {
         this.START_AUDIT = start_audit_date;
         this.END_AUDIT=end_audit_date;
     }
-
     public String getUserFullName() {
         return this.userFullName;
     }
@@ -148,4 +192,6 @@ public class MyApplication extends Application {
         this.isAdmin = false;
         this.displayedFieldsJsonString = "";
     }
+
+
 }

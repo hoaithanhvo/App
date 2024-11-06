@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuditRFIDAdapter extends RecyclerView.Adapter<AuditRFIDAdapter.AuditRFIDViewHolder> {
-    private List<String> listitemRFID;
+    public List<String> listitemRFID;
     private List<Integer> itemTextColors;
 
     public AuditRFIDAdapter(List<String> listitemRFID) {

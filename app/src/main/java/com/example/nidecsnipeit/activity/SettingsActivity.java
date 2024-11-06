@@ -1,15 +1,21 @@
 package com.example.nidecsnipeit.activity;
 
-import androidx.annotation.NonNull;
-
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.network.model.AlertDialogCallback;
@@ -20,13 +26,17 @@ import com.example.nidecsnipeit.utility.Common;
 
 import org.json.JSONObject;
 
-import java.util.Set;
+import java.util.Locale;
 
 public class SettingsActivity extends BaseActivity {
-
+    private static final String PREF_NAME = "LanguagePrefs";
+    private static final String LANGUAGE_KEY = "selected_language";
+    private Button bnt_changelanguage;
+    private SwitchCompat langSwitch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String language = getSharedPreferences("app_prefs", MODE_PRIVATE).getString("language", "en");
         setContentView(R.layout.activity_settings);
         setupActionBar("Settings");
         MyApplication MyApp = (MyApplication) getApplication();
@@ -46,6 +56,8 @@ public class SettingsActivity extends BaseActivity {
         Button logoutButton = findViewById(R.id.logout_button);
         LinearLayout customFieldsButton = findViewById(R.id.custom_field);
         LinearLayout custom_dateAudit = findViewById(R.id.custom_dateAudit);
+
+
         // handle logic to logout
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +101,6 @@ public class SettingsActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-        // redirect to CustomFields screen
         customFieldsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,23 +108,54 @@ public class SettingsActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+
+        bnt_changelanguage = findViewById(R.id.bnt_changelanguage);
+        bnt_changelanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyLanguage();
+            }
+        });
+
+    }
+    private void applyLanguage() {
+        final String language[] = {"English","VietNam"};
+        AlertDialog.Builder  mBuilder = new AlertDialog.Builder(this);
+        mBuilder.setTitle("Change");
+        mBuilder.setSingleChoiceItems(language, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which==0){
+                    lan("");
+                    recreate();
+
+                }else {
+                    lan("vi");
+                    recreate();
+                }
+            }
+        });
+        mBuilder.create();
+        mBuilder.show();
+    }
+    private void lan(String s){
+        Locale locale = new Locale(s);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale=locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    private void saveLanguageToPreferences(String languageCode) {
+//        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putString(LANGUAGE_KEY, languageCode);
+//        editor.apply();
+//    }
+//
+//    private String getLanguageFromPreferences() {
+//        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+//        return preferences.getString(LANGUAGE_KEY, "");  // Default to English ("" = English)
+//    }
 }

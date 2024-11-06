@@ -13,7 +13,7 @@ public class ProductDetailsModel {
     private String Manufactory;
     private String Catalog;
     private String Varrial;
-
+    public static int item_request_id;
     public Map<String, String> getStatusMap() {
         return statusMap;
     }

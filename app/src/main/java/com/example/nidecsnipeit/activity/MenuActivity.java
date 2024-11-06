@@ -2,7 +2,6 @@ package com.example.nidecsnipeit.activity;
 
 import static com.example.nidecsnipeit.activity.SearchActivity.PERMISSION_REQUEST_CAMERA;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
@@ -30,7 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class MenuActivity extends AppCompatActivity  {
+public class MenuActivity extends BaseActivity  {
     private View rootView;
     private EditText inputSearch;
     private LinearLayout checkOutBtn , checkInBtn,maintenanceBtn,settingBtn,auditBtn,auditRFID,importAssetBtn,transferBtn,productDeliveryBtn;

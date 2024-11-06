@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quản lý Tài sản Nidec</string>
+    <string name="version_app">5/2024</string>
+    <string name="action_back">Quay lại</string>
+    <string name="check_in">CHECK-IN</string>
+    <string name="check_out">CHECKOUT</string>
+    <string name="maintenance">BẢO TRÌ</string>
+    <string name="auditRFID">Kiểm tra RFID</string>
+    <string name="button_text">Văn bản nút</string>
+    <string name="nidec_logo">Logo Nidec</string>
+    <string name="qr_scanner">Máy quét QR</string>
+    <string name="read_a_barcode">Đọc mã vạch</string>
+    <string name="asset_tag">Mã tài sản</string>
+    <string name="search">TÌM KIẾM</string>
+    <string name="device_information">Thông tin thiết bị</string>
+    <string name="submit">Gửi</string>
+    <string name="add_new_maintenance">Thêm bảo trì mới</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="delete">Xóa</string>
+    <string name="no_maintenances_for_this_asset">Không có bảo trì cho tài sản này</string>
+    <string name="text_icon_for_common_field">Biểu tượng văn bản cho trường thông dụng</string>
+    <string name="assets_management">QUẢN LÝ TÀI SẢN</string>
+    <string name="setting">CÀI ĐẶT</string>
+    <string name="snipe_it_server_address">Địa chỉ máy chủ Snipe-IT</string>
+    <string name="configure_server">Cấu hình máy chủ</string>
+    <string name="server_sample">http://192.168.0.190:4402</string>
+    <string name="information">Thông tin</string>
+    <string name="application_version">Phiên bản ứng dụng</string>
+    <string name="snipeit_server_address">Địa chỉ máy chủ SnipeIT</string>
+    <string name="server_address">Địa chỉ máy chủ</string>
+    <string name="set_server_eg">Cài đặt địa chỉ máy chủ của bạn ví dụ: https://develop.snipeitapp.com</string>
+    <string name="write_your_api_key_here">Nhập khóa API của bạn ở đây</string>
+    <string name="api_key">Khóa API</string>
+    <string name="configure_app">CẤU HÌNH ỨNG DỤNG</string>
+    <string name="default_configuration_demo">CẤU HÌNH MẶC ĐỊNH (DEMO)</string>
+    <string name="use_an_alternative_method">Sử dụng phương pháp thay thế</string>
+    <string name="or">HOẶC</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="login">Đăng nhập</string>
+    <string name="password">Mật khẩu</string>
+    <string name="username">Tên người dùng</string>
+    <string name="hide_unhide_password">Ẩn/Hiện mật khẩu</string>
+    <string name="show_password">Hiển thị mật khẩu</string>
+    <string name="checkout">Thanh toán</string>
+    <string name="customized_fields_based_on_category">Các trường tùy chỉnh theo danh mục</string>
+    <string name="custom_fields">Các trường tùy chỉnh</string>
+    <string name="appearance_configuration">Cấu hình giao diện</string>
+    <string name="custom_field_guide">Chọn một danh mục để tùy chỉnh các trường hiển thị được phép</string>
+    <string name="transfer">CHUYỂN NHƯỢNG</string>
+    <string name="enter_password">Nhập mật khẩu của bạn</string>
+    <string name="enter_username">Nhập tên người dùng của bạn</string>
+    <string name="select_fields_to_allow_display">Chọn các trường để hiển thị</string>
+    <string name="save">Lưu</string>
+    <string name="server_url">URL máy chủ</string>
+    <string name="remove_all_text">Xóa tất cả văn bản</string>
+    <string name="audit">KIỂM TRA</string>
+    <string name="inventory_number">Số hiệu tài sản</string>
+    <string name="asset_name">Tên tài sản</string>
+    <string name="asset_no">Số tài sản</string>
+    <string name="department">Phòng ban</string>
+    <string name="_snipeit_cost_center_29">Trung tâm chi phí</string>
+    <string name="label_status">Trạng thái nhãn</string>
+    <string name="asset_status">Trạng thái tài sản</string>
+    <string name="location">Vị trí</string>
+    <string name="good">Tốt</string>
+    <string name="blur">Mờ</string>
+    <string name="using">Đang sử dụng</string>
+    <string name="no_use">Không sử dụng</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="clear">Xóa</string>
+    <string name="back">Quay lại</string>
+    <string name="import_asset">NHẬP TÀI SẢN</string>
+    <string name="input_scan">Nhập quét</string>
+    <string name="product_delivery">GIAO HÀNG SẢN PHẨM</string>
+
+    <string-array name="asset_status_array">
+        <item>A: Sẵn sàng sử dụng</item>
+        <item>B: Sẵn sàng sử dụng sau khi sửa chữa</item>
+        <item>C: Không thể sử dụng hoặc hết hạn</item>
+    </string-array>
+    <string name="custom_dateAudit">Kiểm tra ngày tùy chỉnh</string>
+</resources>
