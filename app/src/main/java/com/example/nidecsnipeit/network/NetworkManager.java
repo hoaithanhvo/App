@@ -45,10 +45,6 @@ public class NetworkManager {
     private final String URL;
     private final String ACCESS_TOKEN;
     public static RequestQueue requestQueue;
-    //Thanh 2k and
-    private int limit = 2000;
-    private static Retrofit retrofit = null;
-
 
     private NetworkManager(Context context) {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());

@@ -43,6 +43,7 @@ import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
+import com.example.nidecsnipeit.utility.LocaleHelper;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.BuildConfig;
 
@@ -57,7 +58,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     private TextInputEditText usernameEditText;
     private EditText passwordEditText;
     private ImageButton showPasswordButton;
@@ -65,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView txtVersion;
     private ImageButton bnt_changelanguage;
     private SharedPreferences preferences;
+    private LocaleHelper localeHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         boolean loginAgain = intent.getBooleanExtra("TOKEN_EXPIRED", false);
         apiServices = NetworkManager.getInstance(this);
+        localeHelper = LocaleHelper.getInstance(this);
         if (loginAgain) {
             Common.showCustomAlertDialog(this, null, "Your session has expired. Please log in again.", false, new AlertDialogCallback() {
                 @Override
@@ -207,11 +210,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        checkVersionApp();
+        //checkVersionApp();
         bnt_changelanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applyLanguage();
+                localeHelper.applyLanguage(LoginActivity.this);
             }
         });
         updateLanguageButton();
@@ -308,56 +311,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,"Lỗi:" +error.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
-    }
-    private String flagRes="";
-    private void applyLanguage() {
-        final String language[] = {"English","VietNam"};
-        AlertDialog.Builder  mBuilder = new AlertDialog.Builder(this);
-        mBuilder.setTitle("Change");
-        int selectedLanguageIndex = preferences.getInt("SelectedLanguageIndex", -1);
-        mBuilder.setSingleChoiceItems(language, selectedLanguageIndex, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String languageCode ="";
-                if(which==0){
-                    languageCode ="";
-                    flagRes = "img_flag_uk";
-                }else {
-                    languageCode ="vi";
-                    flagRes = "img_flag_vi";
-                }
-                lan(languageCode);
-                saveLanguageToPreferences(languageCode,which,flagRes);
-                recreate();
-//                restartApp();
-
-            }
-        });
-        mBuilder.create();
-        mBuilder.show();
-
-    }
-    private void lan(String s){
-        Locale locale = new Locale(s);
-        Locale.setDefault(locale);
-        Configuration configuration = new Configuration();
-        configuration.locale=locale;
-        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
-    }
-
-    private void restartApp() {
-        Intent intent1 = new Intent(this, MenuActivity.class);  // MainActivity hoặc Activity chính của bạn
-        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  // Đảm bảo các Activity cũ bị xóa
-        startActivity(intent1);
-        finish();
-    }
-    private void saveLanguageToPreferences(String languageCode,int index,String flagImage) {
-        SharedPreferences preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("LanguagePrefs", languageCode);
-        editor.putInt("SelectedLanguageIndex", index);
-        editor.putString("SelectFlagImage",flagImage);
-        editor.apply();
     }
     private void updateLanguageButton() {
         String selectedFlag = preferences.getString("SelectFlagImage", "img_flag_uk");

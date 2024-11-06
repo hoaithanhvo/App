@@ -24,6 +24,7 @@ import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
+import com.example.nidecsnipeit.utility.LocaleHelper;
 
 import org.json.JSONObject;
 
@@ -37,6 +38,7 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        LocaleHelper localeHelper = LocaleHelper.getInstance(this);
         setupActionBar("Settings");
         MyApplication MyApp = (MyApplication) getApplication();
         NetworkManager apiServices = NetworkManager.getInstance(this);
@@ -59,6 +61,7 @@ public class SettingsActivity extends BaseActivity {
         preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
 
         // handle logic to logout
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,59 +116,11 @@ public class SettingsActivity extends BaseActivity {
         bnt_changelanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applyLanguage();
+                localeHelper.applyLanguage(SettingsActivity.this);
             }
         });
-        updateLanguageButton();
+       updateLanguageButton();
 
-    }
-    private String flagRes="";
-    private void applyLanguage() {
-        final String language[] = {"English","VietNam"};
-        AlertDialog.Builder  mBuilder = new AlertDialog.Builder(this);
-        mBuilder.setTitle("Change");
-        int selectedLanguageIndex = preferences.getInt("SelectedLanguageIndex", -1);
-        mBuilder.setSingleChoiceItems(language, selectedLanguageIndex, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String languageCode ="";
-                if(which==0){
-                    languageCode ="";
-                    flagRes = "img_flag_uk";
-                }else {
-                    languageCode ="vi";
-                    flagRes = "img_flag_vi";
-                }
-                lan(languageCode);
-                saveLanguageToPreferences(languageCode,which,flagRes);
-                restartApp();
-
-            }
-        });
-        mBuilder.create();
-        mBuilder.show();
-    }
-    private void lan(String s){
-        Locale locale = new Locale(s);
-        Locale.setDefault(locale);
-        Configuration configuration = new Configuration();
-        configuration.locale=locale;
-        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
-    }
-
-    private void restartApp() {
-        Intent intent1 = new Intent(this, MenuActivity.class);  // MainActivity hoặc Activity chính của bạn
-        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  // Đảm bảo các Activity cũ bị xóa
-        startActivity(intent1);
-        finish();
-    }
-    private void saveLanguageToPreferences(String languageCode,int index,String flagImage) {
-        SharedPreferences preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("LanguagePrefs", languageCode);
-        editor.putInt("SelectedLanguageIndex", index);
-        editor.putString("SelectFlagImage",flagImage);
-        editor.apply();
     }
 
     private void updateLanguageButton() {
