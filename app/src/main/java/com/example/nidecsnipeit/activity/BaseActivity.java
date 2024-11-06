@@ -1,5 +1,8 @@
 package com.example.nidecsnipeit.activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -10,6 +13,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nidecsnipeit.R;
+
+import java.util.Locale;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -50,4 +55,29 @@ public class BaseActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(updateResources(newBase));
+    }
+
+    // Phương thức cập nhật ngôn ngữ cho Context
+    private Context updateResources(Context context) {
+      String languageCodeq = getLanguageFromPreferences(context);
+      Locale locale = new Locale(languageCodeq);
+      Locale.setDefault(locale);
+
+        Configuration configuration = context.getResources().getConfiguration();
+        configuration.setLocale(locale);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return context.createConfigurationContext(configuration);
+        } else {
+            context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+            return context;
+        }
+    }
+    private String getLanguageFromPreferences(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        return preferences.getString("LanguagePrefs", "");  // Default to English if not set
+    }
 }

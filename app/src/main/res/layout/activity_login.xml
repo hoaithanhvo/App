@@ -5,12 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/logo_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="UseCompoundDrawables">
+        <LinearLayout
+            android:paddingLeft="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/boder_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/bnt_changelanguage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:paddingVertical="@dimen/margin_screen"
+                android:src="@drawable/img_flag_uk"
+                />
+            <TextView
+                android:id="@+id/txt_nameRegion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/name_region"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -20,15 +47,17 @@
             android:src="@drawable/logo_nidec" />
 
         <TextView
+            android:paddingTop="100dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="-40dp"
             android:text="@string/assets_management"
             android:textColor="@color/button_dark"
             android:textSize="20sp"
             android:textStyle="bold" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/login_title"

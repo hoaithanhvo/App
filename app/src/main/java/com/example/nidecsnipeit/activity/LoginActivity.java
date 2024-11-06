@@ -8,14 +8,18 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -51,6 +55,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class LoginActivity extends AppCompatActivity {
     private TextInputEditText usernameEditText;
@@ -58,6 +63,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton showPasswordButton;
     private NetworkManager apiServices;
     private TextView txtVersion;
+    private ImageButton bnt_changelanguage;
+    private SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +88,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.password_edit_text);
         showPasswordButton = findViewById(R.id.show_password_button);
         txtVersion = findViewById(R.id.txtVersion);
+        bnt_changelanguage = findViewById(R.id.bnt_changelanguage);
+        preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -199,6 +208,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         checkVersionApp();
+        bnt_changelanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyLanguage();
+            }
+        });
+        updateLanguageButton();
+
     }
     public void UpdateVersion()
     {
@@ -291,5 +308,60 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,"Lỗi:" +error.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
+    }
+    private String flagRes="";
+    private void applyLanguage() {
+        final String language[] = {"English","VietNam"};
+        AlertDialog.Builder  mBuilder = new AlertDialog.Builder(this);
+        mBuilder.setTitle("Change");
+        int selectedLanguageIndex = preferences.getInt("SelectedLanguageIndex", -1);
+        mBuilder.setSingleChoiceItems(language, selectedLanguageIndex, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String languageCode ="";
+                if(which==0){
+                    languageCode ="";
+                    flagRes = "img_flag_uk";
+                }else {
+                    languageCode ="vi";
+                    flagRes = "img_flag_vi";
+                }
+                lan(languageCode);
+                saveLanguageToPreferences(languageCode,which,flagRes);
+                recreate();
+//                restartApp();
+
+            }
+        });
+        mBuilder.create();
+        mBuilder.show();
+
+    }
+    private void lan(String s){
+        Locale locale = new Locale(s);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale=locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+    }
+
+    private void restartApp() {
+        Intent intent1 = new Intent(this, MenuActivity.class);  // MainActivity hoặc Activity chính của bạn
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  // Đảm bảo các Activity cũ bị xóa
+        startActivity(intent1);
+        finish();
+    }
+    private void saveLanguageToPreferences(String languageCode,int index,String flagImage) {
+        SharedPreferences preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("LanguagePrefs", languageCode);
+        editor.putInt("SelectedLanguageIndex", index);
+        editor.putString("SelectFlagImage",flagImage);
+        editor.apply();
+    }
+    private void updateLanguageButton() {
+        String selectedFlag = preferences.getString("SelectFlagImage", "img_flag_uk");
+        int flagDrawableId = getResources().getIdentifier(selectedFlag, "drawable", getPackageName());
+        bnt_changelanguage.setImageResource(flagDrawableId);  // Cập nhật cờ mới cho ImageButton
     }
 }

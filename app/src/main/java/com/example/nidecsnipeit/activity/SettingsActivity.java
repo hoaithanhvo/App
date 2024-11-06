@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,14 +30,12 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 public class SettingsActivity extends BaseActivity {
-    private static final String PREF_NAME = "LanguagePrefs";
-    private static final String LANGUAGE_KEY = "selected_language";
-    private Button bnt_changelanguage;
+    private ImageButton bnt_changelanguage;
     private SwitchCompat langSwitch;
+    private SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String language = getSharedPreferences("app_prefs", MODE_PRIVATE).getString("language", "en");
         setContentView(R.layout.activity_settings);
         setupActionBar("Settings");
         MyApplication MyApp = (MyApplication) getApplication();
@@ -56,7 +55,8 @@ public class SettingsActivity extends BaseActivity {
         Button logoutButton = findViewById(R.id.logout_button);
         LinearLayout customFieldsButton = findViewById(R.id.custom_field);
         LinearLayout custom_dateAudit = findViewById(R.id.custom_dateAudit);
-
+        bnt_changelanguage = findViewById(R.id.bnt_changelanguage);
+        preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
 
         // handle logic to logout
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -110,30 +110,36 @@ public class SettingsActivity extends BaseActivity {
         });
 
 
-        bnt_changelanguage = findViewById(R.id.bnt_changelanguage);
         bnt_changelanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 applyLanguage();
             }
         });
+        updateLanguageButton();
 
     }
+    private String flagRes="";
     private void applyLanguage() {
         final String language[] = {"English","VietNam"};
         AlertDialog.Builder  mBuilder = new AlertDialog.Builder(this);
         mBuilder.setTitle("Change");
-        mBuilder.setSingleChoiceItems(language, -1, new DialogInterface.OnClickListener() {
+        int selectedLanguageIndex = preferences.getInt("SelectedLanguageIndex", -1);
+        mBuilder.setSingleChoiceItems(language, selectedLanguageIndex, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String languageCode ="";
                 if(which==0){
-                    lan("");
-                    recreate();
-
+                    languageCode ="";
+                    flagRes = "img_flag_uk";
                 }else {
-                    lan("vi");
-                    recreate();
+                    languageCode ="vi";
+                    flagRes = "img_flag_vi";
                 }
+                lan(languageCode);
+                saveLanguageToPreferences(languageCode,which,flagRes);
+                restartApp();
+
             }
         });
         mBuilder.create();
@@ -147,15 +153,24 @@ public class SettingsActivity extends BaseActivity {
         getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
     }
 
-//    private void saveLanguageToPreferences(String languageCode) {
-//        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putString(LANGUAGE_KEY, languageCode);
-//        editor.apply();
-//    }
-//
-//    private String getLanguageFromPreferences() {
-//        SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-//        return preferences.getString(LANGUAGE_KEY, "");  // Default to English ("" = English)
-//    }
+    private void restartApp() {
+        Intent intent1 = new Intent(this, MenuActivity.class);  // MainActivity hoặc Activity chính của bạn
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  // Đảm bảo các Activity cũ bị xóa
+        startActivity(intent1);
+        finish();
+    }
+    private void saveLanguageToPreferences(String languageCode,int index,String flagImage) {
+        SharedPreferences preferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("LanguagePrefs", languageCode);
+        editor.putInt("SelectedLanguageIndex", index);
+        editor.putString("SelectFlagImage",flagImage);
+        editor.apply();
+    }
+
+    private void updateLanguageButton() {
+        String selectedFlag = preferences.getString("SelectFlagImage", "img_flag_uk");
+        int flagDrawableId = getResources().getIdentifier(selectedFlag, "drawable", getPackageName());
+        bnt_changelanguage.setImageResource(flagDrawableId);  // Cập nhật cờ mới cho ImageButton
+    }
 }

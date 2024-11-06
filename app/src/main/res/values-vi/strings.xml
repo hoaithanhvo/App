@@ -3,10 +3,10 @@
     <string name="app_name">Quản lý Tài sản Nidec</string>
     <string name="version_app">5/2024</string>
     <string name="action_back">Quay lại</string>
-    <string name="check_in">CHECK-IN</string>
-    <string name="check_out">CHECKOUT</string>
+    <string name="check_in">KIỂM VÀO</string>
+    <string name="check_out">KIỂM RA</string>
     <string name="maintenance">BẢO TRÌ</string>
-    <string name="auditRFID">Kiểm tra RFID</string>
+    <string name="auditRFID">KIỂM KÊ RFID</string>
     <string name="button_text">Văn bản nút</string>
     <string name="nidec_logo">Logo Nidec</string>
     <string name="qr_scanner">Máy quét QR</string>
@@ -47,14 +47,14 @@
     <string name="custom_fields">Các trường tùy chỉnh</string>
     <string name="appearance_configuration">Cấu hình giao diện</string>
     <string name="custom_field_guide">Chọn một danh mục để tùy chỉnh các trường hiển thị được phép</string>
-    <string name="transfer">CHUYỂN NHƯỢNG</string>
+    <string name="transfer">CHUYỂN ĐỔI</string>
     <string name="enter_password">Nhập mật khẩu của bạn</string>
     <string name="enter_username">Nhập tên người dùng của bạn</string>
     <string name="select_fields_to_allow_display">Chọn các trường để hiển thị</string>
     <string name="save">Lưu</string>
     <string name="server_url">URL máy chủ</string>
     <string name="remove_all_text">Xóa tất cả văn bản</string>
-    <string name="audit">KIỂM TRA</string>
+    <string name="audit">KIỂM KÊ</string>
     <string name="inventory_number">Số hiệu tài sản</string>
     <string name="asset_name">Tên tài sản</string>
     <string name="asset_no">Số tài sản</string>
@@ -72,12 +72,13 @@
     <string name="back">Quay lại</string>
     <string name="import_asset">NHẬP TÀI SẢN</string>
     <string name="input_scan">Nhập quét</string>
-    <string name="product_delivery">GIAO HÀNG SẢN PHẨM</string>
+    <string name="product_delivery">BÀN GIAO THẾT BỊ</string>
+    <string name="name_region">VI</string>
 
     <string-array name="asset_status_array">
         <item>A: Sẵn sàng sử dụng</item>
         <item>B: Sẵn sàng sử dụng sau khi sửa chữa</item>
         <item>C: Không thể sử dụng hoặc hết hạn</item>
     </string-array>
-    <string name="custom_dateAudit">Kiểm tra ngày tùy chỉnh</string>
+    <string name="custom_dateAudit">Chỉnh sửa kì kiểm kê</string>
 </resources>
