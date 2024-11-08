@@ -87,7 +87,9 @@
     <string name="create_date">Ngày tạo</string>
     <string name="note">Ghi chú</string>
     <string name="status">Trạng thái</string>
-
+    <string name="all_asset">Tất cả tài sản</string>
+    <string name="compare">Tài sản tồn tại</string>
+    <string name="rfid_scan">Quét RFID</string>
     <string-array name="asset_status_array">
         <item>A: Sẵn sàng sử dụng</item>
         <item>B: Sẵn sàng sử dụng sau khi sửa chữa</item>

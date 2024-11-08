@@ -42,9 +42,9 @@ public class LocaleHelper extends BaseActivity {
         return instance;
     }
     public void applyLanguage(Context context) {
-        final String language[] = {"English","VietNam"};
+        final String language[] = {"English","VietNam","Japan"};
         AlertDialog.Builder  mBuilder = new AlertDialog.Builder(context);
-        mBuilder.setTitle("Change");
+        mBuilder.setTitle("Change Language");
 
         int selectedLanguageIndex = preferences.getInt("SelectedLanguageIndex", -1);
         mBuilder.setSingleChoiceItems(language, selectedLanguageIndex, new DialogInterface.OnClickListener() {
@@ -54,9 +54,12 @@ public class LocaleHelper extends BaseActivity {
                 if(which==0){
                     languageCode ="";
                     flagRes = "img_flag_uk";
-                }else {
+                }else if(which==1){
                     languageCode ="vi";
                     flagRes = "img_flag_vi";
+                }else if(which==2){
+                    languageCode ="ja";
+                    flagRes = "img_flag_ja";
                 }
                 lan(languageCode);
                 saveLanguageToPreferences(languageCode,which,flagRes);
@@ -68,7 +71,7 @@ public class LocaleHelper extends BaseActivity {
     }
 
     public void lan(String s) {
-        if (context != null) {  // Kiểm tra context có hợp lệ không
+        if (context != null) {
             Locale locale = new Locale(s);
             Locale.setDefault(locale);
             Configuration configuration = new Configuration();
@@ -94,13 +97,13 @@ public class LocaleHelper extends BaseActivity {
     private void restartApp(Context context) {
         if (context != null && context instanceof Activity) {
             if (context instanceof LoginActivity) {
-                ((LoginActivity) context).recreate(); // Tái tạo lại LoginActivity
+                ((LoginActivity) context).recreate();
             }
             else if(context instanceof SettingsActivity){
-                Intent intent1 = new Intent(context.getApplicationContext(), MenuActivity.class);  // MainActivity hoặc Activity chính của bạn
-                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  // Đảm bảo các Activity cũ bị xóa
-                context.startActivity(intent1);
-                ((Activity) context).finish();  // Gọi finish() từ Activity
+                Intent intentChangeLanguage = new Intent(context.getApplicationContext(), MenuActivity.class);
+                intentChangeLanguage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intentChangeLanguage);
+                ((Activity) context).finish();
             }
         } else {
             Log.e("LocaleHelper", "Context is either null or not an instance of Activity.");

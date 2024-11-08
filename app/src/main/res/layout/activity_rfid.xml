@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Asset Unaudit: "
+                android:text="@string/all_asset"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#00a65a"/>
@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RFID Audit: "
+                android:text="@string/compare"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#00a65a"/>
@@ -79,7 +79,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RFID Scan: "
+                android:text="@string/rfid_scan"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#00a65a"/>
