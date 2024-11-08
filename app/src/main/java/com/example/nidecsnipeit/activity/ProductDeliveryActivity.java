@@ -70,6 +70,8 @@ public class ProductDeliveryActivity extends BaseActivity {
                     Common.hideProgressDialog();
                     JSONArray rows  = object.getJSONArray("rows");
                     productList= new ArrayList<>();
+                    String nameStatus = "";
+                    String colorStatus = "";
                     for(int i =0;i<rows.length();i++){
                         ProductDeliveryModel productItem  = new ProductDeliveryModel();
                         JSONObject item = rows.getJSONObject(i);
@@ -80,6 +82,12 @@ public class ProductDeliveryActivity extends BaseActivity {
                         productItem.setUserID(user_request.getString("name"));
                         productItem.setCreateAt(formatted);
                         productItem.setProductID(id);
+                        JSONObject status = item.getJSONObject("status");
+                        for (int j=0;j<status.length();j++){
+                            nameStatus = status.getString("name");
+                            colorStatus=status.getString("color");
+                        }
+                        productItem.setStatusMap(nameStatus,colorStatus);
                         JSONArray items_request = item.getJSONArray("items_request");
                         productItem.setItems_request(items_request);
                         productList.add(productItem);

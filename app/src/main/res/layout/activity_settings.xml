@@ -89,7 +89,7 @@
                 android:id="@+id/dialog_language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Language"
+                android:text="@string/language"
                 android:textColor="@color/black"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"

@@ -14,12 +14,11 @@ public class ProductDetailsModel {
     private String Catalog;
     private String Varrial;
     public static int item_request_id;
+
     public Map<String, String> getStatusMap() {
         return statusMap;
     }
-
     public void setStatusMap(String nameStatus, String colorStatus) {
-        // Thiết lập giá trị vào map
         statusMap.put("name", nameStatus);
         statusMap.put("color", colorStatus);
     }

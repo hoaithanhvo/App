@@ -33,8 +33,6 @@ public class ProductDetailActivity extends BaseActivity {
     private EditText txtSearch;
     private List<ProductDetailsModel> listProductDetails = new ArrayList<>();
     private List<ProductDetailsModel> filteredList;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

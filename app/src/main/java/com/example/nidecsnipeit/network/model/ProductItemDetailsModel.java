@@ -1,10 +1,23 @@
 package com.example.nidecsnipeit.network.model;
 
+import java.util.HashMap;
+
 public class ProductItemDetailsModel {
 
     private String AssetID;
     private String AssetTag;
     private String Serial;
+
+    public HashMap<String, String> getStatusMap() {
+        return statusMap;
+    }
+
+    public void setStatusMap(String nameStatus, String colorStatus) {
+        this.statusMap = statusMap;
+    }
+
+    private HashMap<String,String> statusMap = new HashMap<>();
+
 
     public String getName() {
         return Name;

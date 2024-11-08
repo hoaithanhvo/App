@@ -96,4 +96,5 @@
         <item>C: Không thể sử dụng hoặc hết hạn</item>
     </string-array>
     <string name="custom_dateAudit">Chỉnh sửa kì kiểm kê</string>
+    <string name="language">Ngôn ngữ</string>
 </resources>

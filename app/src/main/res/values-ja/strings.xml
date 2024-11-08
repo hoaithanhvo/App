@@ -96,4 +96,5 @@
         <item>C: 使用不可または期限切れ</item>
     </string-array>
     <string name="custom_dateAudit">カスタム監査日</string>
+    <string name="language">言語</string>
 </resources>

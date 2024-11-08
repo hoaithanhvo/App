@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductDeliveryModel implements Serializable {
     private String productID;
@@ -11,6 +13,16 @@ public class ProductDeliveryModel implements Serializable {
     private String createAt;
     private String note;
     private JSONArray items_request;
+
+    public Map<String, String> getStatusMap() {
+        return statusMap;
+    }
+    public void setStatusMap(String nameStatus, String colorStatus) {
+        statusMap.put("name", nameStatus);
+        statusMap.put("color", colorStatus);
+    }
+
+    private HashMap<String, String> statusMap = new HashMap<>();
     public ProductDeliveryModel(){
 
     }

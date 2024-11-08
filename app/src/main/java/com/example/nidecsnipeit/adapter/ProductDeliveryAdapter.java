@@ -1,10 +1,12 @@
 package com.example.nidecsnipeit.adapter;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -51,6 +53,7 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
         holder.txtUserID.setTextColor(Color.BLACK);
         holder.txtCreateAt.setTextColor(Color.BLACK);
         holder.txtNote.setTextColor(Color.BLACK);
+        holder.ItemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDelivery.getStatusMap().get("color"))));
     }
 
     @Override
@@ -60,12 +63,14 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
 
     class ProductDelivyViewHolder extends RecyclerView.ViewHolder{
         public TextView txtProductID , txtUserID,txtCreateAt,txtNote;
+        public LinearLayout ItemBox;
         public ProductDelivyViewHolder(@NonNull View itemView) {
             super(itemView);
             txtProductID = itemView.findViewById(R.id.txtProductID);
             txtNote=itemView.findViewById(R.id.txtNote);
             txtCreateAt=itemView.findViewById(R.id.txtCreateAt);
             txtUserID=itemView.findViewById(R.id.txtUserID);
+            ItemBox= itemView.findViewById(R.id.ItemBox);
         }
     }
 }
