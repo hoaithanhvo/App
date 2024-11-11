@@ -47,16 +47,18 @@ public class ProductItemDetailsActivity extends BaseActivity {
             for(int i=0;i<items_request.length();i++){
                 ProductItemDetailsModel productItemDetailsModel = new ProductItemDetailsModel();
                 JSONObject objectItem = items_request.getJSONObject(i);
-                JSONObject asset = objectItem.getJSONObject("asset");
-                for(int j = 0;j<asset.length();j++)
-                {
-                    productItemDetailsModel.setAssetID(String.valueOf(asset.getInt("id")));
-                    productItemDetailsModel.setAssetTag(asset.getString("asset_tag"));
-                    productItemDetailsModel.setSerial(asset.getString("serial"));
-                    productItemDetailsModel.setName(asset.getString("name"));
+                JSONObject asset = objectItem.optJSONObject("asset");
+                if(asset!= null){
+                    for(int j = 0;j<asset.length();j++)
+                    {
+                        productItemDetailsModel.setAssetID(String.valueOf(asset.getInt("id")));
+                        productItemDetailsModel.setAssetTag(asset.getString("asset_tag"));
+                        productItemDetailsModel.setSerial(asset.getString("serial"));
+                        productItemDetailsModel.setName(asset.getString("name"));
+                    }
+                    serialList.add(asset.getString("asset_tag"));
+                    productItemDetailsModelList.add(productItemDetailsModel);
                 }
-                serialList.add(asset.getString("asset_tag"));
-                productItemDetailsModelList.add(productItemDetailsModel);
             }
             adapter = new ProductItemDetailsAdapter(productItemDetailsModelList);
             rycProdoductItemDetails.setAdapter(adapter);

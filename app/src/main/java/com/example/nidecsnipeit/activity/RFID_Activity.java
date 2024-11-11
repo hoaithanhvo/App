@@ -355,7 +355,7 @@ public class RFID_Activity extends BaseActivity implements ScannerAcceptStatusLi
                     }
                     else{
                         //Common.hideProgressDialog();
-                       //loadingView.hide();
+                       loadingView.hide();
                     }
                 } catch (JSONException e) {
                     Toast.makeText(RFID_Activity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();

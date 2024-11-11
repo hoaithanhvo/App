@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,7 +54,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         holder.txtCreated.setText(productDetails.getCreated());
         holder.txtStatus.setText(productDetails.getStatusMap().get("name"));
         holder.txtTotal.setText(productDetails.getTotal());
-        holder.itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
+//        holder.itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(productDetails);
@@ -66,6 +67,8 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         holder.txtCreated.setTextColor(ContextCompat.getColor(context,R.color.primary));
         holder.txtStatus.setTextColor(ContextCompat.getColor(context,R.color.primary));
         holder.txtTotal.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.crd_status.setCardBackgroundColor(Color.parseColor(productDetails.getStatusMap().get("color")));
+        holder.txt_Status.setText(productDetails.getStatusMap().get("name"));
     }
     @Override
     public int getItemCount() {
@@ -73,8 +76,9 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
     }
 
     class ProduectDetailsViewHolder extends RecyclerView.ViewHolder{
-        private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus,txtTotal;
+        private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus,txtTotal,txt_Status;
         private LinearLayout itemBox;
+        private CardView crd_status;
         public ProduectDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             txtCategory = itemView.findViewById(R.id.txtCategory);
@@ -85,6 +89,8 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
             txtStatus = itemView.findViewById(R.id.txtStatus);
             txtTotal = itemView.findViewById(R.id.txtTotal);
             itemBox = itemView.findViewById(R.id.ItemBox);
+            txt_Status =itemView.findViewById(R.id.txt_Status);
+            crd_status = itemView.findViewById(R.id.crd_status);
         }
     }
 }

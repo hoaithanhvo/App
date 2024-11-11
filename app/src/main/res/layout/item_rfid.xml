@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:text="ItemRFID"
         android:textSize="15dp"
+        android:paddingLeft="5dp"
         android:textColor="@color/black"
         android:textStyle="bold"
         />

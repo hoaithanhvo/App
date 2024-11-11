@@ -12,6 +12,7 @@ import android.util.Log;
 import com.example.nidecsnipeit.activity.BaseActivity;
 import com.example.nidecsnipeit.activity.LoginActivity;
 import com.example.nidecsnipeit.activity.MenuActivity;
+import com.example.nidecsnipeit.activity.ProductDeliveryActivity;
 import com.example.nidecsnipeit.activity.SettingsActivity;
 import com.example.nidecsnipeit.network.NetworkManager;
 
@@ -100,7 +101,7 @@ public class LocaleHelper extends BaseActivity {
                 ((LoginActivity) context).recreate();
             }
             else if(context instanceof SettingsActivity){
-                Intent intentChangeLanguage = new Intent(context.getApplicationContext(), MenuActivity.class);
+                Intent intentChangeLanguage = new Intent(context.getApplicationContext(),MenuActivity.class);
                 intentChangeLanguage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intentChangeLanguage);
                 ((Activity) context).finish();
