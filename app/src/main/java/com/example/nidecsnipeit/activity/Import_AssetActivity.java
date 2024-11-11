@@ -258,7 +258,7 @@ public class Import_AssetActivity extends BaseActivity {
     private void loadCatalogs() {
         listCatalog.clear();
         catalogMap.clear();
-        apiServices.getCatalogAll(selectedManufactoryId, new NetworkResponseListener<JSONObject>() {
+        apiServices.getModelById(selectedManufactoryId, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 handleCatalogResponse(object);
@@ -334,7 +334,7 @@ public class Import_AssetActivity extends BaseActivity {
             JSONArray row = object.getJSONArray("rows");
             for (int i = 0; i < row.length(); i++) {
                 JSONObject item = row.getJSONObject(i);
-                String catalogName = item.optString("catalog_code", null);
+                String catalogName = item.optString("name", null);
                 int catalogId = item.optInt("id", -1);
                 if (catalogName != null && catalogId != -1) {
                     listCatalog.add(catalogName);

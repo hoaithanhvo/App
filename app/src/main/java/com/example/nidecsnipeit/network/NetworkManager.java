@@ -280,8 +280,12 @@ public class NetworkManager {
         this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
     }
 
-    public void getCatalogAll(int id, final  NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
-        String url = URL  + "/catalogs/getByManufacturer?manufacturer_id=" + id;
+//    public void getCatalogAll(int id, final  NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+//        String url = URL  + "/catalogs/getByManufacturer?manufacturer_id=" + id;
+//        this.getAPI(url, Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+//    }
+    public void getModelById(int id, final  NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+        String url = URL  + "/models?category_id=" + id;
         this.getAPI(url, Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
     }
 
