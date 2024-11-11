@@ -73,7 +73,7 @@ public class Import_AssetActivity extends BaseActivity {
         setContentView(R.layout.activity_import_asset);
         apiServices = NetworkManager.getInstance();
         scan_img_btn= findViewById(R.id.scan_img_btn);
-        setupActionBar("Import Asset");
+        setupActionBar(R.string.import_asset);
         initial();
         loadCategories();
         setupFocusChangeListeners();

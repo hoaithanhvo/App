@@ -21,22 +21,34 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActionBar(getString(R.string.app_name));
+        setupActionBar(R.string.app_name);
     }
 
     protected void onBackButtonPressed() {
         finish();
     }
 
-    protected void setupActionBar(String title) {
+//    protected void setupActionBar(String title) {
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.setTitle(title);
+//            // showing the back button in action bardd
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//        }
+//    }
+    protected void setupActionBar(int titleResId) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            // Lấy tiêu đề từ tài nguyên chuỗi theo ID
+            String title = getString(titleResId);
+
+            // Đặt tiêu đề cho ActionBar
             actionBar.setTitle(title);
-            // showing the back button in action bardd
+
+            // Hiển thị nút quay lại trong ActionBar
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

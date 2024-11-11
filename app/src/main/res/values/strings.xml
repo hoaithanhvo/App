@@ -96,5 +96,10 @@
     </string-array>
     <string name="custom_dateAudit">Custom Date Audit</string>
     <string name="language">Language</string>
-
+    <string name="toast_permissionUser">You do not have access to PremissionUser</string>
+    <string name="production_delivery">Production Delivery</string>
+    <string name="device_details">Device details</string>
+    <string name="maintenance_list">Maintenance list</string>
+    <string name="product_details">product_details</string>
+    <string name="product_item_details">Product Item Details</string>
 </resources>

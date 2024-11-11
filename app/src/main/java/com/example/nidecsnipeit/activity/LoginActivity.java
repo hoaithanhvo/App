@@ -44,11 +44,14 @@ import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.utility.Common;
 import com.example.nidecsnipeit.utility.LocaleHelper;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.BuildConfig;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,6 +60,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 public class LoginActivity extends BaseActivity {
     private TextInputEditText usernameEditText;
@@ -160,8 +164,15 @@ public class LoginActivity extends BaseActivity {
                                     String idToken = dataToken.getString("id");
                                     String userFullName = dataToken.getString("user_full_name");
                                     boolean isAdmin = dataToken.getBoolean("is_admin");
+                                    String permissionUser  = dataToken.getString("permissionUser");
+                                    JSONObject ObjectpermissionUser =  new JSONObject(permissionUser);
+                                    int assetView = 0;
+                                    for(int i = 0;i<ObjectpermissionUser.length();i++)
+                                    {
+                                        assetView = Integer.parseInt(ObjectpermissionUser.getString("assets.view"));
+                                    }
                                     // save token to local storage
-                                    MyApp.setLoginInfo(idToken, accessToken, userFullName, isAdmin);
+                                    MyApp.setLoginInfo(idToken, accessToken, userFullName, isAdmin,assetView);
 
                                     // load data setting
                                     NetworkManager apiServices = NetworkManager.getInstance(LoginActivity.this);

@@ -47,25 +47,25 @@ public class SearchActivity extends BaseActivity {
         searchMode = intent.getIntExtra("mode", DetailActivity.CHECK_IN_MODE);
         switch (searchMode) {
             case DetailActivity.TRANSFER_MODE:
-                setupActionBar("Transfer search");
+                setupActionBar(R.string.search);
                 break;
             case DetailActivity.CHECK_IN_MODE:
-                setupActionBar("Check-in search");
+                setupActionBar(R.string.search);
                 break;
             case DetailActivity.CHECK_OUT_MODE:
-                setupActionBar("Checkout search");
+                setupActionBar(R.string.search);
                 break;
             case DetailActivity.MAINTENANCE_MODE:
-                setupActionBar("Maintenance search");
+                setupActionBar(R.string.search);
                 break;
             case DetailActivity.AUDIT_MODE:
-                setupActionBar("Audit search");
+                setupActionBar(R.string.search);
                 break;
             case DetailActivity.AUDIT_OFFLINE_MODE:
-                setupActionBar("Audit-Offline search");
+                setupActionBar(R.string.search);
                 break;
             default:
-                setupActionBar("Search");
+                setupActionBar(R.string.search);
                 break;
         }
         // get reference EditText and Button

@@ -37,7 +37,7 @@ public class MaintenanceListActivity extends BaseActivity {
         setContentView(R.layout.activity_maintenance_list);
         View view = findViewById(android.R.id.content);
         // Set up action bar
-        setupActionBar("Maintenance list");
+        setupActionBar(R.string.maintenance_list);
 
         Intent intent = getIntent();
         int asset_id = intent.getIntExtra("ASSET_ID", 0);

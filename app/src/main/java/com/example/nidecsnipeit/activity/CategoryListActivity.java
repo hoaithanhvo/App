@@ -27,14 +27,8 @@ public class CategoryListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_list);
         View view = findViewById(android.R.id.content);
-        setupActionBar("Custom fields");
-
+        setupActionBar(R.string.custom_fields);
         NetworkManager apiServices = (NetworkManager) NetworkManager.getInstance(CategoryListActivity.this);
-
-//        List<BasicItemModel> itemList = new ArrayList<>();
-//        itemList.add(new BasicItemModel("1", "Item 1"));
-//        itemList.add(new BasicItemModel("2", "Item 2"));
-        // Thêm các item khác vào itemList
         Common.showProgressDialog(this, "Loading...");
         apiServices.getCategoryList(new NetworkResponseListener<JSONObject>() {
             @Override

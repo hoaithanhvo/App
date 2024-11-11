@@ -10,7 +10,6 @@
 
     <size android:height="1dp"/>
     <stroke
-
         android:width="3dp"
         android:color="#00a65a"/>
     <corners android:radius="8dp"/><!-- Đặt màu cho viền, ở đây là màu đỏ -->

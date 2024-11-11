@@ -41,7 +41,7 @@ public class ProductDetailActivity extends BaseActivity {
         rcyProductDetails = findViewById(R.id.rcyProductDetails);
         txtTotal = findViewById(R.id.txtTotal);
         txtSearch=findViewById(R.id.txtSearch);
-        setupActionBar("Product Details");
+        setupActionBar(R.string.product_details);
         try{
             Intent intent = getIntent();
             String jsonString = intent.getStringExtra("ITEM_DATA");
@@ -126,7 +126,6 @@ public class ProductDetailActivity extends BaseActivity {
                     nameStatus = status.getString("name");
                     colorStatus=status.getString("color");
                 }
-
                 JSONArray item_request_details = item.getJSONArray("item_request_details");
                 itemProduct.setCreated(formatted);
                 itemProduct.setCategory(nameCategory);
@@ -140,7 +139,7 @@ public class ProductDetailActivity extends BaseActivity {
             }
             txtTotal.setText(String.valueOf(listProductDetails.size()));
             filteredList = new ArrayList<>(listProductDetails);
-            adapter = new ProductDetailsAdapter(filteredList);
+            adapter = new ProductDetailsAdapter(filteredList,ProductDetailActivity.this);
             rcyProductDetails.setAdapter(adapter);
             rcyProductDetails.setLayoutManager(new LinearLayoutManager(ProductDetailActivity.this));
             adapter.setOnItemClickListener(product -> {

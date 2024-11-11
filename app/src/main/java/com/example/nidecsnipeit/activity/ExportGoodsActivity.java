@@ -48,7 +48,7 @@ public class ExportGoodsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setupActionBar("Export Goods");
+        setupActionBar(R.string.export_goods);
         setContentView(R.layout.activity_export_goods);
         scan_img_btn= findViewById(R.id.scan_img_btn);
         input_scan = findViewById(R.id.input_scan);

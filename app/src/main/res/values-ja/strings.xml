@@ -97,4 +97,10 @@
     </string-array>
     <string name="custom_dateAudit">カスタム監査日</string>
     <string name="language">言語</string>
+    <string name="toast_permissionUser">PremissionUser へのアクセス権がありません</string>
+    <string name="production_delivery">製品納入</string>
+    <string name="device_details">デバイスの詳細</string>
+    <string name="maintenance_list">メンテナンスリスト</string>
+    <string name="product_details">製品の詳細</string>
+    <string name="product_item_details">製品項目の詳細</string>
 </resources>

@@ -66,7 +66,7 @@ public class RFID_Activity extends BaseActivity implements ScannerAcceptStatusLi
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_rfid);
-        setupActionBar("Audit RFID");
+        setupActionBar(R.string.auditRFID);
         apiServices = NetworkManager.getInstance();
         bntScan = findViewById(R.id.bntScan);
         bntAudit = findViewById(R.id.bntAudit);

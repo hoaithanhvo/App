@@ -29,6 +29,14 @@
                 android:textSize="15dp"
                 android:text="@string/total"/>
             <TextView
+                android:id="@+id/txt_"
+                android:textColor="@color/secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:text=": " />
+            <TextView
                 android:textColor="@color/secondary"
                 android:textStyle="bold"
                 android:textSize="15dp"

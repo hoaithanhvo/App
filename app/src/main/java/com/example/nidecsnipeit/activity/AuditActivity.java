@@ -100,7 +100,7 @@ public class AuditActivity extends BaseActivity implements AdapterView.OnItemSel
         lnDatePicker=findViewById(R.id.lnDatePicker);
         bntdatePickerButton.setText(CustomDatePicker.getTodaysDate());
         apiServices = NetworkManager.getInstance(this);
-        setupActionBar("Device details");
+        setupActionBar(R.string.device_details);
         MyApplication myApp = (MyApplication) getApplication();
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
                 this, R.array.asset_status_array,

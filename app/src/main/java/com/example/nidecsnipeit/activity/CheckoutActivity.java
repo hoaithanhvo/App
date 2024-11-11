@@ -63,17 +63,17 @@ public class CheckoutActivity extends BaseActivity {
         Button checkoutBtn = findViewById(R.id.checkout_btn);
         // setup title for checkout mode
         if (mode == CHECK_OUT) {
-            setupActionBar("Checkout");
+            setupActionBar(R.string.checkout);
             checkoutBtn.setText(R.string.check_out);
         } else if (mode == CHECK_IN) {
-            setupActionBar("Check-in");
+            setupActionBar(R.string.check_in);
             checkoutBtn.setText(R.string.check_in);
         }else if (mode == AUDIT) {
-            setupActionBar("Check-in");
+            setupActionBar(R.string.audit);
             checkoutBtn.setText("AUDIT");
         }
         else {
-            setupActionBar("Transfer location");
+            setupActionBar(R.string.transfer);
             checkoutBtn.setText(R.string.transfer);
         }
 

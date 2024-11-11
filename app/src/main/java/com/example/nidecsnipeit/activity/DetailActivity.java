@@ -51,7 +51,7 @@ public class DetailActivity extends BaseActivity {
         rootView = findViewById(android.R.id.content);
 
         // Set up action bar
-        setupActionBar("Device details");
+        setupActionBar(R.string.device_details);
 
         MyApplication myApp = (MyApplication) getApplication();
 //        List<DetailFieldModel> fields = myApp.getDetailScreenFields();

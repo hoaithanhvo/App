@@ -1,5 +1,6 @@
 package com.example.nidecsnipeit.adapter;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.R;
@@ -20,11 +23,13 @@ import java.util.List;
 public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDeliveryAdapter.ProductDelivyViewHolder> {
     private OnItemClickListener onItemClickListener;
     private List<ProductDeliveryModel> listitemProduct;
+    private Context context;
     public interface OnItemClickListener {
         void onItemClick(ProductDeliveryModel product);
     }
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener, Context context) {
         this.onItemClickListener = listener;
+        this.context = context;
     }
     public ProductDeliveryAdapter(List<ProductDeliveryModel> model){
         this.listitemProduct = model;
@@ -49,11 +54,12 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
                 onItemClickListener.onItemClick(productDelivery);
             }
         });
-        holder.txtProductID.setTextColor(Color.BLACK);
-        holder.txtUserID.setTextColor(Color.BLACK);
-        holder.txtCreateAt.setTextColor(Color.BLACK);
-        holder.txtNote.setTextColor(Color.BLACK);
-        holder.ItemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDelivery.getStatusMap().get("color"))));
+        holder.txtProductID.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtUserID.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtCreateAt.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtNote.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txt_Status.setText(productDelivery.getStatusMap().get("name"));
+        holder.crd_status.setCardBackgroundColor(Color.parseColor(productDelivery.getStatusMap().get("color")));
     }
 
     @Override
@@ -62,8 +68,10 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
     }
 
     class ProductDelivyViewHolder extends RecyclerView.ViewHolder{
-        public TextView txtProductID , txtUserID,txtCreateAt,txtNote;
+        public TextView txtProductID , txtUserID,txtCreateAt,txtNote,txt_Status;
         public LinearLayout ItemBox;
+        public CardView crd_status;
+
         public ProductDelivyViewHolder(@NonNull View itemView) {
             super(itemView);
             txtProductID = itemView.findViewById(R.id.txtProductID);
@@ -71,6 +79,9 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
             txtCreateAt=itemView.findViewById(R.id.txtCreateAt);
             txtUserID=itemView.findViewById(R.id.txtUserID);
             ItemBox= itemView.findViewById(R.id.ItemBox);
+            txt_Status=itemView.findViewById(R.id.txt_Status);
+            crd_status = itemView.findViewById(R.id.crd_status);
+
         }
     }
 }

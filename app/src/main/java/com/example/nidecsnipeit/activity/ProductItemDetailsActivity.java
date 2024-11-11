@@ -37,7 +37,7 @@ public class ProductItemDetailsActivity extends BaseActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_product_item_details);
         btnExportGoods = findViewById(R.id.btnExportGoods);
-        setupActionBar("Product Item Details");
+        setupActionBar(R.string.product_item_details);
         rycProdoductItemDetails = findViewById(R.id.rycProdoductItemDetails);
         Intent intent = getIntent();
         List<ProductItemDetailsModel> productItemDetailsModelList = new ArrayList<>();

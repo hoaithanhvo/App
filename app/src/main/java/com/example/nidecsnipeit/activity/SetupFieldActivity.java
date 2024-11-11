@@ -36,7 +36,7 @@ public class SetupFieldActivity extends BaseActivity {
         Intent intent = getIntent();
         String categoryId = intent.getStringExtra("CATEGORY_ID");
         String categoryName = intent.getStringExtra("CATEGORY_NAME");
-        setupActionBar("Custom for " + categoryName);
+        //setupActionBar("Custom for " + categoryName);
 
         NetworkManager apiServices = NetworkManager.getInstance();
         Common.showProgressDialog(this, "Loading...");

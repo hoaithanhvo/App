@@ -1,5 +1,6 @@
 package com.example.nidecsnipeit.adapter;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.R;
@@ -21,15 +23,17 @@ import java.util.List;
 public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsAdapter.ProduectDetailsViewHolder>  {
     private List<ProductDetailsModel> listDetails ;
     private ProductDetailsAdapter.OnItemClickListener onItemClickListener;
-
+    private Context context;
     public interface OnItemClickListener {
         void onItemClick(ProductDetailsModel product);
     }
     public void setOnItemClickListener(ProductDetailsAdapter.OnItemClickListener listener) {
         this.onItemClickListener = listener;
+
     }
-    public ProductDetailsAdapter(List<ProductDetailsModel> productDetailsModels){
+    public ProductDetailsAdapter(List<ProductDetailsModel> productDetailsModels, Context context){
         this.listDetails = productDetailsModels;
+        this.context = context;
     }
 
     @NonNull
@@ -55,13 +59,13 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
                 onItemClickListener.onItemClick(productDetails);
             }
         });
-        holder.txtCategory.setTextColor(Color.WHITE);
-        holder.txtManufacture.setTextColor(Color.WHITE);
-        holder.txtCatalog.setTextColor(Color.WHITE);
-        holder.txtVarrial.setTextColor(Color.WHITE);
-        holder.txtCreated.setTextColor(Color.WHITE);
-        holder.txtStatus.setTextColor(Color.WHITE);
-        holder.txtTotal.setTextColor(Color.WHITE);
+        holder.txtCategory.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtManufacture.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtCatalog.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtVarrial.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtCreated.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtStatus.setTextColor(ContextCompat.getColor(context,R.color.primary));
+        holder.txtTotal.setTextColor(ContextCompat.getColor(context,R.color.primary));
     }
     @Override
     public int getItemCount() {

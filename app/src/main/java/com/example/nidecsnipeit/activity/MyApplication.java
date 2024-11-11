@@ -35,7 +35,6 @@ public class MyApplication extends Application {
     private final String USER_FULL_NAME = "USER_FULL_NAME";
     private final String IS_ADMIN = "IS_ADMIN";
     private final String DISPLAYED_FIELDS = "DISPLAYED_FIELDS";
-    private static final String LANGUAGE_KEY = "selected_language";
 
     public String getSTART_AUDIT() {
         return START_AUDIT;
@@ -47,6 +46,7 @@ public class MyApplication extends Application {
 
     private String START_AUDIT = "START_AUDIT";
     private  String END_AUDIT = "END_AUDIT";
+    private  String ASSETVIEW = "ASSETVIEW";
 
     @Override
     public void onCreate() {
@@ -116,7 +116,7 @@ public class MyApplication extends Application {
     }
 
     // setting server info
-    public void setLoginInfo(String newIdApiKey, String newApiKey, String userFullName, boolean isAdmin) {
+    public void setLoginInfo(String newIdApiKey, String newApiKey, String userFullName, boolean isAdmin,int assetView) {
         // save server info to SharedPreferences
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -127,6 +127,7 @@ public class MyApplication extends Application {
         editor.putBoolean(IS_ADMIN, isAdmin);
         editor.putString(START_AUDIT,"2024-08-10 23:59:59");
         editor.putString(END_AUDIT,"2024-12-10 23:59:59");
+        editor.putInt(ASSETVIEW,assetView);
         editor.apply();
         this.currentIdApiKeyServer = newIdApiKey;
         this.currentApiKeyServer = newApiKey;

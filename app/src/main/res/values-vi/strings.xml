@@ -82,7 +82,7 @@
     <string name="export_goods">Xuất hàng</string>
     <string name="confirm_goods">Xác nhận hàng</string>
     <string name="total">Tổng</string>
-    <string name="ID">ID</string>
+    <string name="ID">Mã đơn hàng</string>
     <string name="UserID">ID tài khoản</string>
     <string name="create_date">Ngày tạo</string>
     <string name="note">Ghi chú</string>
@@ -97,4 +97,10 @@
     </string-array>
     <string name="custom_dateAudit">Chỉnh sửa kì kiểm kê</string>
     <string name="language">Ngôn ngữ</string>
+    <string name="toast_permissionUser">Bạn không có quyền truy cập</string>
+    <string name="production_delivery">Tất cả đơn hàng</string>
+    <string name="device_details">Chi tiết đơn hàng</string>
+    <string name="maintenance_list">Danh sách bảo trì</string>
+    <string name="product_details">Chi tiết đơn hàng</string>
+    <string name="product_item_details">Chi tiết thiết bị</string>
 </resources>

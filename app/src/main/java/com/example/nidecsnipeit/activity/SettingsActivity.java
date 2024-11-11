@@ -39,7 +39,7 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         LocaleHelper localeHelper = LocaleHelper.getInstance(this);
-        setupActionBar("Settings");
+        setupActionBar(R.string.setting);
         MyApplication MyApp = (MyApplication) getApplication();
         NetworkManager apiServices = NetworkManager.getInstance(this);
         if (!MyApp.isAdmin()) {
@@ -91,7 +91,6 @@ public class SettingsActivity extends BaseActivity {
 
                     @Override
                     public void onNegativeButtonClick() {
-
                     }
                 });
 

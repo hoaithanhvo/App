@@ -22,7 +22,7 @@ public class CustomDateAuditActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_date_audit);
-        setupActionBar("Custom Date Audit");
+        setupActionBar(R.string.custom_dateAudit);
         apiService = NetworkManager.getInstance();
         bntdatePickerStart = findViewById(R.id.bntdatePickerStart);
         bntdatePickerEnd = findViewById(R.id.bntdatePickerEnd);

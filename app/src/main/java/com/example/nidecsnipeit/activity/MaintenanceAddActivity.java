@@ -69,7 +69,7 @@ public class MaintenanceAddActivity extends BaseActivity {
 
         if (maintenanceInfo != null) {
             // Set up action bar
-            setupActionBar("Update maintenance");
+            setupActionBar(R.string.maintenance);
             maintenanceButton.setText("UPDATE MAINTENANCE");
             isNewMaintenance = false;
 
@@ -80,7 +80,7 @@ public class MaintenanceAddActivity extends BaseActivity {
             int day = Integer.parseInt(parts[2]);
             datePicker.init(year, month, day, null);
         } else {
-            setupActionBar("Add maintenance");
+            setupActionBar(R.string.add_new_maintenance);
             maintenanceButton.setText("SAVE MAINTENANCE");
             isNewMaintenance = true;
         }

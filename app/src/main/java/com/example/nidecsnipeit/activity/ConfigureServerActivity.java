@@ -17,7 +17,7 @@ public class ConfigureServerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure_server);
         view = findViewById(android.R.id.content);
-        setupActionBar("Configure server");
+        setupActionBar(R.string.configure_server);
 
         MyApplication MyApp = (MyApplication) getApplication();
 

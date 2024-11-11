@@ -1,6 +1,7 @@
 package com.example.nidecsnipeit.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,7 +45,7 @@ public class ProductDeliveryActivity extends BaseActivity {
         rcyProductDelivery = findViewById(R.id.rcyProductDelivery);
         txtSearch = findViewById(R.id.txtSearch);
         txtTotal = findViewById(R.id.txtTotal);
-        setupActionBar("Product Delivery");
+        setupActionBar(R.string.production_delivery);
         GetDataProductDelivery();
         txtSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -98,12 +99,18 @@ public class ProductDeliveryActivity extends BaseActivity {
                     rcyProductDelivery.setAdapter(adapter);
                     rcyProductDelivery.setLayoutManager(new LinearLayoutManager(ProductDeliveryActivity.this));
                     adapter.setOnItemClickListener(product -> {
+                        SharedPreferences sharedPreferences = getSharedPreferences("NIDEC_SNIPEIT",MODE_PRIVATE);
+                        int checkAssetView = sharedPreferences.getInt("ASSETVIEW",MODE_PRIVATE);
+                        if(checkAssetView == 0){
+                            Toast.makeText(ProductDeliveryActivity.this,R.string.toast_permissionUser,Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         Intent intent = new Intent(ProductDeliveryActivity.this, ProductDetailActivity.class);
                         JSONArray itemsRequest = product.getItems_request();
                         String jsonString = itemsRequest.toString();
                         intent.putExtra("ITEM_DATA", jsonString);  // ProductDeliveryModel cần Serializable hoặc Parcelable
                         startActivity(intent);
-                    });
+                    },ProductDeliveryActivity.this);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -129,4 +136,5 @@ public class ProductDeliveryActivity extends BaseActivity {
         }
         adapter.notifyDataSetChanged();
     }
+
 }
