@@ -2,6 +2,7 @@ package com.example.nidecsnipeit.network;
 
 import android.content.Context;
 
+import com.airbnb.lottie.L;
 import com.android.volley.*;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -318,6 +319,11 @@ public class NetworkManager {
 
         this.postAPIObject(url,Request.Method.PATCH,item,auditModelListType,listener,errorListener);
     }
+    public void patchuSccessItemRequest(List<checkoutItemRequestModel>item, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+        String url = URL + "/requestAsset/successItemRequest";
+        Type auditModelListType = new TypeToken<List<checkoutItemRequestModel>>() {}.getType();
+        this.postAPIObject(url,Request.Method.PATCH,item,auditModelListType,listener,errorListener);
+    }
     // =============================================
     // ======= Generic method ======================
     // =============================================
@@ -360,47 +366,42 @@ public class NetworkManager {
     }
 
     public <T> void postAPIObject(String Url, int httpMethod, List<T> myObjectList, Type type, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        JSONObject jsonArray = null;
-        JSONObject jsonObject = new JSONObject();
         if (myObjectList != null) {
             Gson gson = new Gson();
             String jsonString = gson.toJson(myObjectList, type);
             try {
-                jsonObject = new JSONObject(jsonString);
-                jsonObject.put("data", jsonArray);
+                JSONArray jsonArray = new JSONArray(jsonString);
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        listener.onResult(response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        errorListener.onErrorResult(error);
+                    }
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> headerMap = new HashMap<>();
+                        headerMap.put("Content-Type", "application/json");
+                        headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
+                        return headerMap;
+                    }
+                };
+                jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        30000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                requestQueue.add(jsonArrayRequest);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(httpMethod, Url, jsonObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                listener.onResult(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.onErrorResult(error);
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headerMap = new HashMap<>();
-                headerMap.put("Content-Type", "application/json");
-                headerMap.put("Authorization", "Bearer " + ACCESS_TOKEN);
-                return headerMap;
-            }
-        };
-
-        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
-                30000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        requestQueue.add(jsonArrayRequest);
     }
-
     public <T> void getAPI(String Url, int httpMethod, T myObject, String apiToken, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         if (myObject != null) {
             Url += this.getQueryParams(myObject);

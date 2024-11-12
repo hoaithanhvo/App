@@ -33,6 +33,7 @@ public class ProductDetailActivity extends BaseActivity {
     private EditText txtSearch;
     private List<ProductDetailsModel> listProductDetails = new ArrayList<>();
     private List<ProductDetailsModel> filteredList;
+    private int id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,7 @@ public class ProductDetailActivity extends BaseActivity {
                 ProductDetailsModel itemProduct = new ProductDetailsModel();
                 JSONObject item = items_request.getJSONObject(i);
                 ProductDetailsModel.item_request_id = item.getInt("id");
+                id = item.getInt("id");
                 JSONObject Created_at = item.getJSONObject("created_at");
                 String formatted = Created_at.getString("formatted");
                 String nameCategory = "";
@@ -146,6 +148,7 @@ public class ProductDetailActivity extends BaseActivity {
                 Intent intentItem = new Intent(ProductDetailActivity.this, ProductItemDetailsActivity.class);
                 JSONArray itemsRequest = product.getItem_request_details();
                 String itemsRequestString = itemsRequest.toString();
+                intentItem.putExtra("id",id);
                 intentItem.putExtra("productDetails", product);
                 intentItem.putExtra("ITEM_DETAIL_DATA", itemsRequestString);
                 startActivity(intentItem);

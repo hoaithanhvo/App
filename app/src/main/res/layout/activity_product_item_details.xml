@@ -75,7 +75,7 @@
             android:layout_margin="8dp"
             android:textColor="@color/white"
             android:layout_gravity="center"
-            android:id="@+id/btnHangorver"
+            android:id="@+id/btnConfirm"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"

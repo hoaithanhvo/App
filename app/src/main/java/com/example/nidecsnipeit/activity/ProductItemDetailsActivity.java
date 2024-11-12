@@ -42,7 +42,7 @@ public class ProductItemDetailsActivity extends BaseActivity {
     private RecyclerView rycProdoductItemDetails ,recycleListDataScan;
     private ProductDetailsAdapter adapter;
     private AuditRFIDAdapter listScanAdapter;
-    private Button btnExportGoods;
+    private Button btnExportGoods,btnConfirm;
     private ImageView scan_img_btn;
     private EditText input_scan;
     private List<String> listScanData = new ArrayList<>();
@@ -58,12 +58,15 @@ public class ProductItemDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_product_item_details);
         setupActionBar(R.string.scan_assign_asset);
         btnExportGoods = findViewById(R.id.btnExportGoods);
+        btnExportGoods = findViewById(R.id.btnExportGoods);
+        btnConfirm=findViewById(R.id.btnConfirm);
         scan_img_btn = findViewById(R.id.scan_img_btn);
         rycProdoductItemDetails = findViewById(R.id.rycProdoductItemDetails);
         input_scan = findViewById(R.id.input_scan);
         recycleListDataScan = findViewById(R.id.recycleListDataScan);
         Intent intent = getIntent();
         productDetails = intent.getParcelableExtra("productDetails");
+        int id = intent.getIntExtra("id",0);
         List<ProductDetailsModel> listProductItemDetails = new ArrayList<>();
         listProductItemDetails.add(productDetails);
         adapter = new ProductDetailsAdapter(listProductItemDetails, ProductItemDetailsActivity.this);
@@ -73,18 +76,53 @@ public class ProductItemDetailsActivity extends BaseActivity {
         recycleListDataScan.setAdapter(listScanAdapter);
         apiServices = NetworkManager.getInstance(this);
         recycleListDataScan.setLayoutManager(new LinearLayoutManager(ProductItemDetailsActivity.this));
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addObject();
+                checkoutcheckoutItemRequestModel.setItem_request_id(id);
+                checkoutcheckoutItemRequestModel.setAssets(listAsset);
+                ListcheckoutItemRequestModels.clear();
+                ListcheckoutItemRequestModels.add(checkoutcheckoutItemRequestModel);
+                apiServices.patchuSccessItemRequest(ListcheckoutItemRequestModels, new NetworkResponseListener<JSONObject>() {
+                    @Override
+                    public void onResult(JSONObject object) {
+                        String mess = null;
+                        try {
+                            mess = object.getString("messages");
+                            Toast.makeText(ProductItemDetailsActivity.this,mess,Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new NetworkResponseErrorListener() {
+                    @Override
+                    public void onErrorResult(Exception error) {
 
+                    }
+                });
+            }
+        });
         btnExportGoods.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addObject();
-                checkoutcheckoutItemRequestModel.setItem_request_id(6);
+
+                checkoutcheckoutItemRequestModel.setItem_request_id(id);
                 checkoutcheckoutItemRequestModel.setAssets(listAsset);
+                ListcheckoutItemRequestModels.clear();
                 ListcheckoutItemRequestModels.add(checkoutcheckoutItemRequestModel);
 
                 apiServices.patchCheckoutItemRequest(ListcheckoutItemRequestModels, new NetworkResponseListener<JSONObject>() {
                     @Override
                     public void onResult(JSONObject object) {
+                        try {
+                            String mess = object.getString("messages");
+                            Toast.makeText(ProductItemDetailsActivity.this,mess,Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
                 }, new NetworkResponseErrorListener() {
                     @Override
@@ -103,6 +141,7 @@ public class ProductItemDetailsActivity extends BaseActivity {
 
     }
     private  void addObject(){
+        listAsset.clear();
         for(int i = 0;i<listScanData.size();i++){
             Asset asset = new Asset();
             asset.setSearch(listScanData.get(i));
