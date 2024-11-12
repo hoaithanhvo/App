@@ -77,35 +77,35 @@ public class ExportGoodsActivity extends BaseActivity {
         listScanAdapter = new AuditRFIDAdapter(listScan,AuditRFIDAdapter.RFIDview);
         recycleListDataScan.setAdapter(listScanAdapter);
         recycleListDataScan.setLayoutManager(new LinearLayoutManager(ExportGoodsActivity.this));
-        btnExportGoods.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!compareListData(listScanAdapter.listitemRFID,serialList)){
-                    Toast.makeText(ExportGoodsActivity.this,"Đã quét không trùng khớp vui lòng quét lại",Toast.LENGTH_LONG).show();
-                    listScanAdapter.listitemRFID.clear();
-                    return;
-                }
-                apiServices.patchCheckoutItemRequest(ProductDetailsModel.item_request_id, new NetworkResponseListener<JSONObject>() {
-                    @Override
-                    public void onResult(JSONObject object) {
-                        try {
-                            String status = object.getString("status");
-                            Toast.makeText(ExportGoodsActivity.this,status,Toast.LENGTH_LONG).show();
-                            Intent intent1 = new Intent(ExportGoodsActivity.this,ProductDeliveryActivity.class);
-                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent1);
-                        } catch (JSONException e) {
-                            Toast.makeText(ExportGoodsActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new NetworkResponseErrorListener() {
-                    @Override
-                    public void onErrorResult(Exception error) {
-                        Toast.makeText(ExportGoodsActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
+//        btnExportGoods.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(!compareListData(listScanAdapter.listitemRFID,serialList)){
+//                    Toast.makeText(ExportGoodsActivity.this,"Đã quét không trùng khớp vui lòng quét lại",Toast.LENGTH_LONG).show();
+//                    listScanAdapter.listitemRFID.clear();
+//                    return;
+//                }
+//                apiServices.patchCheckoutItemRequest(ProductDetailsModel.item_request_id, new NetworkResponseListener<JSONObject>() {
+//                    @Override
+//                    public void onResult(JSONObject object) {
+//                        try {
+//                            String status = object.getString("status");
+//                            Toast.makeText(ExportGoodsActivity.this,status,Toast.LENGTH_LONG).show();
+//                            Intent intent1 = new Intent(ExportGoodsActivity.this,ProductDeliveryActivity.class);
+//                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(intent1);
+//                        } catch (JSONException e) {
+//                            Toast.makeText(ExportGoodsActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                }, new NetworkResponseErrorListener() {
+//                    @Override
+//                    public void onErrorResult(Exception error) {
+//                        Toast.makeText(ExportGoodsActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//        });
     }
     private void addItemtoRecyclerView(){
         String ScanData = input_scan.getText().toString();

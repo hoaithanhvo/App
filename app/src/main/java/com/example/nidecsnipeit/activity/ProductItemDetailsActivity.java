@@ -21,6 +21,12 @@ import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.AuditRFIDAdapter;
 import com.example.nidecsnipeit.adapter.ProductDetailsAdapter;
 import com.example.nidecsnipeit.adapter.ProductItemDetailsAdapter;
+import com.example.nidecsnipeit.model.Asset;
+import com.example.nidecsnipeit.model.checkoutItemRequestModel;
+import com.example.nidecsnipeit.network.NetworkManager;
+import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
+import com.example.nidecsnipeit.network.NetworkResponseListener;
+import com.example.nidecsnipeit.network.model.ImportAssetModel;
 import com.example.nidecsnipeit.network.model.ProductDetailsModel;
 import com.example.nidecsnipeit.network.model.ProductItemDetailsModel;
 
@@ -41,7 +47,10 @@ public class ProductItemDetailsActivity extends BaseActivity {
     private EditText input_scan;
     private List<String> listScanData = new ArrayList<>();
     private ProductDetailsModel productDetails;
-
+    private NetworkManager apiServices;
+    private checkoutItemRequestModel checkoutcheckoutItemRequestModel = new checkoutItemRequestModel();
+    private List<checkoutItemRequestModel> ListcheckoutItemRequestModels = new ArrayList<>();
+    private List<Asset> listAsset = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,10 +71,27 @@ public class ProductItemDetailsActivity extends BaseActivity {
         rycProdoductItemDetails.setLayoutManager(new LinearLayoutManager(ProductItemDetailsActivity.this));
         listScanAdapter = new AuditRFIDAdapter(listScanData,AuditRFIDAdapter.ProductItemDetailsView);
         recycleListDataScan.setAdapter(listScanAdapter);
+        apiServices = NetworkManager.getInstance(this);
         recycleListDataScan.setLayoutManager(new LinearLayoutManager(ProductItemDetailsActivity.this));
+
         btnExportGoods.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addObject();
+                checkoutcheckoutItemRequestModel.setItem_request_id(6);
+                checkoutcheckoutItemRequestModel.setAssets(listAsset);
+                ListcheckoutItemRequestModels.add(checkoutcheckoutItemRequestModel);
+
+                apiServices.patchCheckoutItemRequest(ListcheckoutItemRequestModels, new NetworkResponseListener<JSONObject>() {
+                    @Override
+                    public void onResult(JSONObject object) {
+                    }
+                }, new NetworkResponseErrorListener() {
+                    @Override
+                    public void onErrorResult(Exception error) {
+
+                    }
+                });
             }
         });
         scan_img_btn.setOnClickListener(new View.OnClickListener() {
@@ -74,18 +100,25 @@ public class ProductItemDetailsActivity extends BaseActivity {
                 AddItemScan();
             }
         });
-    }
 
+    }
+    private  void addObject(){
+        for(int i = 0;i<listScanData.size();i++){
+            Asset asset = new Asset();
+            asset.setSearch(listScanData.get(i));
+            listAsset.add(asset);
+        }
+    }
     private void AddItemScan(){
         String itemScan = input_scan.getText().toString();
         if(itemScan.equals("")){
             Toast.makeText(this,"Trống",Toast.LENGTH_LONG).show();
             return;
         }
-        if(Integer.parseInt(productDetails.getTotal())<=listScanData.size()){
-            Toast.makeText(this,"Vượt quá số lượng yêu cầu",Toast.LENGTH_LONG).show();
-            return;
-        }
+//        if(Integer.parseInt(productDetails.getTotal())<=listScanData.size()){
+//            Toast.makeText(this,"Vượt quá số lượng yêu cầu",Toast.LENGTH_LONG).show();
+//            return;
+//        }
         listScanAdapter.addItemTop(itemScan, Color.BLACK);
         input_scan.setText("");
         recycleListDataScan.scrollToPosition(listScanData.size()-1);

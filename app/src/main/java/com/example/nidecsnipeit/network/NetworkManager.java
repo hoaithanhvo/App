@@ -8,6 +8,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nidecsnipeit.activity.LoginActivity;
 import com.example.nidecsnipeit.activity.MyApplication;
+import com.example.nidecsnipeit.model.checkoutItemRequestModel;
 import com.example.nidecsnipeit.network.model.AuditModel;
 import com.example.nidecsnipeit.network.model.CheckinItemModel;
 import com.example.nidecsnipeit.network.model.CheckoutItemModel;
@@ -311,9 +312,11 @@ public class NetworkManager {
         String url = URL + "/requestAsset/successItemRequest?items_request_id=" + id;
         this.postAPI(url, Request.Method.PATCH,null,listener,errorListener);
     }
-    public void patchCheckoutItemRequest(int id, final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
-        String url = URL + "/requestAsset/checkedoutItemRequest?items_request_id=" + id;
-        this.postAPI(url,Request.Method.PATCH,null,listener,errorListener);
+    public void patchCheckoutItemRequest(List<checkoutItemRequestModel>item, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+        String url = URL + "/requestAsset/checkedoutItemRequest";
+        Type auditModelListType = new TypeToken<List<checkoutItemRequestModel>>() {}.getType();
+
+        this.postAPIObject(url,Request.Method.PATCH,item,auditModelListType,listener,errorListener);
     }
     // =============================================
     // ======= Generic method ======================
@@ -357,13 +360,13 @@ public class NetworkManager {
     }
 
     public <T> void postAPIObject(String Url, int httpMethod, List<T> myObjectList, Type type, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-        JSONArray jsonArray = null;
+        JSONObject jsonArray = null;
         JSONObject jsonObject = new JSONObject();
         if (myObjectList != null) {
             Gson gson = new Gson();
             String jsonString = gson.toJson(myObjectList, type);
             try {
-                jsonArray = new JSONArray(jsonString);
+                jsonObject = new JSONObject(jsonString);
                 jsonObject.put("data", jsonArray);
             } catch (JSONException e) {
                 e.printStackTrace();
