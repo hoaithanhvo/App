@@ -65,7 +65,6 @@ public class ExportGoodsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 try{
-
                     addItemtoRecyclerView();
                 }
                 catch(Exception ex){
@@ -75,7 +74,7 @@ public class ExportGoodsActivity extends BaseActivity {
             }
         });
 
-        listScanAdapter = new AuditRFIDAdapter(listScan);
+        listScanAdapter = new AuditRFIDAdapter(listScan,AuditRFIDAdapter.RFIDview);
         recycleListDataScan.setAdapter(listScanAdapter);
         recycleListDataScan.setLayoutManager(new LinearLayoutManager(ExportGoodsActivity.this));
         btnExportGoods.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +97,6 @@ public class ExportGoodsActivity extends BaseActivity {
                         } catch (JSONException e) {
                             Toast.makeText(ExportGoodsActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                         }
-
                     }
                 }, new NetworkResponseErrorListener() {
                     @Override
@@ -106,7 +104,6 @@ public class ExportGoodsActivity extends BaseActivity {
                         Toast.makeText(ExportGoodsActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
                     }
                 });
-
             }
         });
     }

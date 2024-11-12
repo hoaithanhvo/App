@@ -16,9 +16,15 @@ import java.util.List;
 
 public class ProductItemDetailsAdapter extends RecyclerView.Adapter<ProductItemDetailsAdapter.ProductItemDetailsViewHolder> {
     List<ProductItemDetailsModel> listItemDetails;
+    ProductItemDetailsModel ItemDetails;
+
     public  ProductItemDetailsAdapter(List<ProductItemDetailsModel> productItemDetailsModels)
     {
         this.listItemDetails = productItemDetailsModels;
+    }
+    public  ProductItemDetailsAdapter(ProductItemDetailsModel productItemDetailsModels)
+    {
+        this.ItemDetails = productItemDetailsModels;
     }
 
     @NonNull

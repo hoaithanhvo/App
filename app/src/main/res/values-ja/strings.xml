@@ -72,7 +72,7 @@
     <string name="back">戻る</string>
     <string name="import_asset">資産のインポート</string>
     <string name="input_scan">入力スキャン</string>
-    <string name="product_delivery">製品配送</string>
+    <string name="equipment_request">製品配送</string>
     <string name="name_region">JP</string>
     <string name="last_used">最終使用日</string>
     <string name="confirm_audit">監査を確認</string>
@@ -101,6 +101,6 @@
     <string name="production_delivery">製品納入</string>
     <string name="device_details">デバイスの詳細</string>
     <string name="maintenance_list">メンテナンスリスト</string>
-    <string name="product_details">製品の詳細</string>
-    <string name="product_item_details">製品項目の詳細</string>
+    <string name="equipment_detail">製品の詳細</string>
+    <string name="scan_assign_asset">製品項目の詳細</string>
 </resources>

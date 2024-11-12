@@ -45,7 +45,7 @@ public class ProductDeliveryActivity extends BaseActivity {
         rcyProductDelivery = findViewById(R.id.rcyProductDelivery);
         txtSearch = findViewById(R.id.txtSearch);
         txtTotal = findViewById(R.id.txtTotal);
-        setupActionBar(R.string.production_delivery);
+        setupActionBar(R.string.equipment_request);
         GetDataProductDelivery();
         txtSearch.addTextChangedListener(new TextWatcher() {
             @Override

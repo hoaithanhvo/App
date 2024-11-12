@@ -72,7 +72,7 @@
     <string name="back">Quay lại</string>
     <string name="import_asset">NHẬP TÀI SẢN</string>
     <string name="input_scan">Nhập quét</string>
-    <string name="product_delivery">BÀN GIAO THẾT BỊ</string>
+    <string name="equipment_request">BÀN GIAO THẾT BỊ</string>
     <string name="name_region">VI</string>
     <string name="last_used">Lần cuối sử dụng</string>
     <string name="confirm_audit">Xác nhận kiểm kê</string>
@@ -101,6 +101,6 @@
     <string name="production_delivery">Tất cả đơn hàng</string>
     <string name="device_details">Chi tiết đơn hàng</string>
     <string name="maintenance_list">Danh sách bảo trì</string>
-    <string name="product_details">Chi tiết đơn hàng</string>
-    <string name="product_item_details">Chi tiết thiết bị</string>
+    <string name="equipment_detail">Chi tiết thiết bị</string>
+    <string name="scan_assign_asset">Chi tiết thiết bị</string>
 </resources>

@@ -54,9 +54,6 @@ public class Import_AssetActivity extends BaseActivity {
     private List<String> listManafactory = new ArrayList<>();
     private List<String> listCatalog = new ArrayList<>();
     private List<String> listVarrials = new ArrayList<>();
-    private List<String> listVarrialsCustom = new ArrayList<>();
-
-    private  List<ImportAssetModel> dataPost = new ArrayList<>();
     private NetworkManager apiServices;
     private Map<String,Integer> categoryMap = new HashMap<>();
     private Map<String,Integer> manufactoryMap = new HashMap<>();
@@ -65,20 +62,18 @@ public class Import_AssetActivity extends BaseActivity {
     private  int selectedCategoryId;
     private  int selectedManufactoryId;
     private AutoCompleteTextView autoCategory,autoManufactures,autoCatalog,autoVarials;
-    //private MultiAutoCompleteTextView autoVarials;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_import_asset);
         apiServices = NetworkManager.getInstance();
-        scan_img_btn= findViewById(R.id.scan_img_btn);
         setupActionBar(R.string.import_asset);
         initial();
         loadCategories();
         setupFocusChangeListeners();
         setupOnClickListener();
-        listScanAdapter = new AuditRFIDAdapter(listScan);
+        listScanAdapter = new AuditRFIDAdapter(listScan,AuditRFIDAdapter.ImporAssetView);
         recycleListDataScan.setAdapter(listScanAdapter);
         recycleListDataScan.setLayoutManager(new LinearLayoutManager(Import_AssetActivity.this));
     }
@@ -88,9 +83,10 @@ public class Import_AssetActivity extends BaseActivity {
             Toast.makeText(Import_AssetActivity.this, "Chưa quét", Toast.LENGTH_SHORT).show();
             return;
         }
-        listScanAdapter.addItemTop(ScanData, Color.GREEN);
+        listScanAdapter.addItemTop(ScanData, Color.BLACK);
         input_scan.setText("");
         Toast.makeText(Import_AssetActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+        recycleListDataScan.scrollToPosition(0);
     }
     private void setupOnClickListener(){
         scan_img_btn.setOnClickListener(new View.OnClickListener() {

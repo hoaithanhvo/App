@@ -41,7 +41,7 @@ public class ProductDetailActivity extends BaseActivity {
         rcyProductDetails = findViewById(R.id.rcyProductDetails);
         txtTotal = findViewById(R.id.txtTotal);
         txtSearch=findViewById(R.id.txtSearch);
-        setupActionBar(R.string.product_details);
+        setupActionBar(R.string.equipment_detail);
         try{
             Intent intent = getIntent();
             String jsonString = intent.getStringExtra("ITEM_DATA");
@@ -82,7 +82,7 @@ public class ProductDetailActivity extends BaseActivity {
                 String nameCategory = "";
                 String nameManufacturer = "";
                 String nameVarrial = "";
-                String nameCatalog = "";
+                String nameModel = "";
                 String nameStatus = "";
                 String colorStatus = "";
                 String total = item.getString("total");
@@ -112,12 +112,12 @@ public class ProductDetailActivity extends BaseActivity {
                     }
                 }
 
-                JSONObject catalog = item.optJSONObject("catalog");
-                if (catalog == null) {
-                    nameCatalog = "null";
+                JSONObject model = item.optJSONObject("model");
+                if (model == null) {
+                    nameModel = "null";
                 } else {
-                    for(int j = 0 ; j< catalog.length();j++){
-                        nameCatalog = catalog.getString("name");
+                    for(int j = 0 ; j< model.length();j++){
+                        nameModel = model.getString("name");
                     }
                 }
 
@@ -131,7 +131,7 @@ public class ProductDetailActivity extends BaseActivity {
                 itemProduct.setCategory(nameCategory);
                 itemProduct.setManufactory(nameManufacturer);
                 itemProduct.setVarrial(nameVarrial);
-                itemProduct.setCatalog(nameCatalog);
+                itemProduct.setModel(nameModel);
                 itemProduct.setStatusMap(nameStatus,colorStatus);
                 itemProduct.setTotal(total);
                 itemProduct.setItem_request_details(item_request_details);
@@ -146,6 +146,7 @@ public class ProductDetailActivity extends BaseActivity {
                 Intent intentItem = new Intent(ProductDetailActivity.this, ProductItemDetailsActivity.class);
                 JSONArray itemsRequest = product.getItem_request_details();
                 String itemsRequestString = itemsRequest.toString();
+                intentItem.putExtra("productDetails", product);
                 intentItem.putExtra("ITEM_DETAIL_DATA", itemsRequestString);
                 startActivity(intentItem);
             });

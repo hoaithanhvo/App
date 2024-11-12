@@ -23,6 +23,7 @@ import java.util.List;
 
 public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsAdapter.ProduectDetailsViewHolder>  {
     private List<ProductDetailsModel> listDetails ;
+
     private ProductDetailsAdapter.OnItemClickListener onItemClickListener;
     private Context context;
     public interface OnItemClickListener {
@@ -36,6 +37,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         this.listDetails = productDetailsModels;
         this.context = context;
     }
+
 
     @NonNull
     @Override
@@ -52,9 +54,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         holder.txtCatalog.setText(productDetails.getCatalog());
         holder.txtVarrial.setText(productDetails.getVarrial());
         holder.txtCreated.setText(productDetails.getCreated());
-        holder.txtStatus.setText(productDetails.getStatusMap().get("name"));
         holder.txtTotal.setText(productDetails.getTotal());
-//        holder.itemBox.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(productDetails.getStatusMap().get("color"))));
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(productDetails);
@@ -65,7 +65,6 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
         holder.txtCatalog.setTextColor(ContextCompat.getColor(context,R.color.primary));
         holder.txtVarrial.setTextColor(ContextCompat.getColor(context,R.color.primary));
         holder.txtCreated.setTextColor(ContextCompat.getColor(context,R.color.primary));
-        holder.txtStatus.setTextColor(ContextCompat.getColor(context,R.color.primary));
         holder.txtTotal.setTextColor(ContextCompat.getColor(context,R.color.primary));
         holder.crd_status.setCardBackgroundColor(Color.parseColor(productDetails.getStatusMap().get("color")));
         holder.txt_Status.setText(productDetails.getStatusMap().get("name"));
@@ -76,7 +75,7 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
     }
 
     class ProduectDetailsViewHolder extends RecyclerView.ViewHolder{
-        private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtStatus,txtTotal,txt_Status;
+        private TextView txtCategory,txtManufacture,txtCatalog,txtVarrial,txtCreated,txtTotal,txt_Status;
         private LinearLayout itemBox;
         private CardView crd_status;
         public ProduectDetailsViewHolder(@NonNull View itemView) {
@@ -86,7 +85,6 @@ public class ProductDetailsAdapter extends  RecyclerView.Adapter<ProductDetailsA
             txtCatalog = itemView.findViewById(R.id.txtCatalog);
             txtVarrial = itemView.findViewById(R.id.txtVarrial);
             txtCreated = itemView.findViewById(R.id.txtCreated);
-            txtStatus = itemView.findViewById(R.id.txtStatus);
             txtTotal = itemView.findViewById(R.id.txtTotal);
             itemBox = itemView.findViewById(R.id.ItemBox);
             txt_Status =itemView.findViewById(R.id.txt_Status);

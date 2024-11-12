@@ -78,16 +78,12 @@ public class RFID_Activity extends BaseActivity implements ScannerAcceptStatusLi
         txtUnauditAll = findViewById(R.id.UnauditAll);
         bntClear = findViewById(R.id.bntClear);
         bntStop = findViewById(R.id.bntStop);
-//        lottieLoadingView = findViewById(R.id.lottieLoadingView);
-
-        //ImageView blurOverlay = new ImageView(this);
-
         CommManager.addAcceptStatusListener(this);
         CommManager.startAccept();
 
-        listAuditAdapter = new AuditRFIDAdapter(listTagUnAudit);
-        listScanAdapter = new AuditRFIDAdapter(listTags);
-        listRFIDdataAdapter = new AuditRFIDAdapter(listTagData);
+        listAuditAdapter = new AuditRFIDAdapter(listTagUnAudit,AuditRFIDAdapter.RFIDview);
+        listScanAdapter = new AuditRFIDAdapter(listTags,AuditRFIDAdapter.RFIDview);
+        listRFIDdataAdapter = new AuditRFIDAdapter(listTagData,AuditRFIDAdapter.RFIDview);
 
         recycleScan.setAdapter(listScanAdapter);
         recycleScan.setLayoutManager(new LinearLayoutManager(RFID_Activity.this));
@@ -258,7 +254,7 @@ public class RFID_Activity extends BaseActivity implements ScannerAcceptStatusLi
                             @Override
                             public void run() {
                                 listScanAdapter.addItemTop(tagUiiString,Color.BLUE);
-                                recycleScan.scrollToPosition(0);
+                                recycleScan.scrollToPosition(listTags.size());
                                 txtCountScaner.setText(Integer.toString(listTags.size()));
                                 compareAndHighlightAsync(listTags, listTagUnAudit);
                             }
@@ -303,7 +299,7 @@ public class RFID_Activity extends BaseActivity implements ScannerAcceptStatusLi
                     runOnUiThread(() -> txtAuditCompare.setText(String.valueOf(finalCountCompare)));
                     if(!ListResult.contains(unAuditTag)){
                         listRFIDdataAdapter.addItemTop(unAuditTag,Color.GREEN);
-                        recycleRFIDaudit.scrollToPosition(0);
+                        recycleRFIDaudit.scrollToPosition(listTagData.size()+1);
                     }
                     ListResult.add(unAuditTag);
 
