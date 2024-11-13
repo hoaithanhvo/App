@@ -19,7 +19,7 @@
         <LinearLayout
             android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -34,27 +34,26 @@
                 android:textColor="@color/secondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textStyle="bold"
                 android:text=": " />
 
             <TextView
+                android:gravity="center_vertical"
                 android:textColor="@color/secondary"
                 android:textStyle="bold"
                 android:textSize="15dp"
                 android:id="@+id/txtTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="35dp"
                 android:text=""/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:orientation="vertical">
+            android:layout_height="35dp"
+            android:orientation="horizontal">
             <EditText
                 android:paddingLeft="8dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
                 android:background="@drawable/boder_button"
                 android:textColor="@color/black"
                 android:textStyle="bold"
@@ -68,5 +67,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcyProductDelivery"
         android:layout_width="match_parent"
+        android:fadeScrollbars="true"
         android:layout_height="match_parent" />
 </LinearLayout>

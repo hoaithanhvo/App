@@ -302,8 +302,8 @@ public class NetworkManager {
     }
 
 
-    public void getProductDelivery(final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
-        String url = URL + "/requestAsset/getAll?requestable=true";
+    public void getProductDelivery(int limit , int offset ,final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
+        String url = URL + "/requestAsset/getAll?limit="+limit +"&offset=" +offset ;
         this.getAPI(url,Request.Method.GET,null ,ACCESS_TOKEN,listener,errorListener);
     }
 

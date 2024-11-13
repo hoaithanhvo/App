@@ -18,11 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.network.model.ProductDeliveryModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDeliveryAdapter.ProductDelivyViewHolder> {
     private OnItemClickListener onItemClickListener;
-    private List<ProductDeliveryModel> listitemProduct;
+    private List<ProductDeliveryModel> listitemProduct = new ArrayList<>();
     private Context context;
     public interface OnItemClickListener {
         void onItemClick(ProductDeliveryModel product);
@@ -31,8 +32,8 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
         this.onItemClickListener = listener;
         this.context = context;
     }
-    public ProductDeliveryAdapter(List<ProductDeliveryModel> model){
-        this.listitemProduct = model;
+    public ProductDeliveryAdapter(){
+        this.listitemProduct   = new ArrayList<>();
     }
 
     @NonNull
@@ -81,7 +82,20 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
             ItemBox= itemView.findViewById(R.id.ItemBox);
             txt_Status=itemView.findViewById(R.id.txt_Status);
             crd_status = itemView.findViewById(R.id.crd_status);
-
         }
+    }
+
+    public void addData(List<ProductDeliveryModel> newListItem) {
+        int startPosition = listitemProduct.size();
+        listitemProduct.addAll(newListItem);
+        notifyItemRangeInserted(startPosition, newListItem.size());
+    }
+    public List<ProductDeliveryModel> getListItems() {
+        return listitemProduct;
+    }
+    public void searchData(List<ProductDeliveryModel> newListItem) {
+        listitemProduct.clear();
+        listitemProduct.addAll(newListItem);
+        notifyDataSetChanged();
     }
 }

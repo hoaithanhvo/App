@@ -58,7 +58,6 @@ public class ProductItemDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_product_item_details);
         setupActionBar(R.string.scan_assign_asset);
         btnExportGoods = findViewById(R.id.btnExportGoods);
-        btnExportGoods = findViewById(R.id.btnExportGoods);
         btnConfirm=findViewById(R.id.btnConfirm);
         scan_img_btn = findViewById(R.id.scan_img_btn);
         rycProdoductItemDetails = findViewById(R.id.rycProdoductItemDetails);
@@ -84,6 +83,7 @@ public class ProductItemDetailsActivity extends BaseActivity {
                 checkoutcheckoutItemRequestModel.setAssets(listAsset);
                 ListcheckoutItemRequestModels.clear();
                 ListcheckoutItemRequestModels.add(checkoutcheckoutItemRequestModel);
+                listScanData.clear();
                 apiServices.patchuSccessItemRequest(ListcheckoutItemRequestModels, new NetworkResponseListener<JSONObject>() {
                     @Override
                     public void onResult(JSONObject object) {
@@ -112,13 +112,14 @@ public class ProductItemDetailsActivity extends BaseActivity {
                 checkoutcheckoutItemRequestModel.setAssets(listAsset);
                 ListcheckoutItemRequestModels.clear();
                 ListcheckoutItemRequestModels.add(checkoutcheckoutItemRequestModel);
-
+                listScanData.clear();
                 apiServices.patchCheckoutItemRequest(ListcheckoutItemRequestModels, new NetworkResponseListener<JSONObject>() {
                     @Override
                     public void onResult(JSONObject object) {
                         try {
                             String mess = object.getString("messages");
                             Toast.makeText(ProductItemDetailsActivity.this,mess,Toast.LENGTH_LONG).show();
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
