@@ -36,14 +36,11 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
 
         if (isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold) && !isSearching) {
             isLoading = false;
-            loadMoreItems(totalItemCount, 10);  // Gọi phương thức tải thêm
+            loadMoreItems(totalItemCount, 10);
         }
     }
-
     public void setLoading(boolean loading) {
         this.isLoading = loading;
     }
-
-    // Phương thức trừu tượng
     public abstract void loadMoreItems(int offset, int limit);
 }

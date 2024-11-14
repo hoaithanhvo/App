@@ -137,6 +137,7 @@ public class ProductDetailActivity extends BaseActivity {
                 itemProduct.setStatusMap(nameStatus,colorStatus);
                 itemProduct.setTotal(total);
                 itemProduct.setItem_request_details(item_request_details);
+                itemProduct.setHandOver(String.valueOf(item_request_details.length()));
                 listProductDetails.add(itemProduct);
             }
             txtTotal.setText(String.valueOf(listProductDetails.size()));
@@ -152,6 +153,7 @@ public class ProductDetailActivity extends BaseActivity {
                 intentItem.putExtra("productDetails", product);
                 intentItem.putExtra("ITEM_DETAIL_DATA", itemsRequestString);
                 startActivity(intentItem);
+
             });
         } catch (JSONException e) {
             e.printStackTrace();

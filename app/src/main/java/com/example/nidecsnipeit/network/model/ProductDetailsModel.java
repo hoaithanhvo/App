@@ -22,6 +22,16 @@ public class ProductDetailsModel implements Parcelable {
     private Map<String, String> statusMap = new HashMap<>();
     private JSONArray item_request_details;
 
+    public String getHandOver() {
+        return handOver;
+    }
+
+    public void setHandOver(String handOver) {
+        this.handOver = handOver;
+    }
+
+    private String handOver;
+
     public ProductDetailsModel() {
     }
 

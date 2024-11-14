@@ -75,6 +75,13 @@ public class ProductItemDetailsActivity extends BaseActivity {
         recycleListDataScan.setAdapter(listScanAdapter);
         apiServices = NetworkManager.getInstance(this);
         recycleListDataScan.setLayoutManager(new LinearLayoutManager(ProductItemDetailsActivity.this));
+
+        String item_request_details = intent.getStringExtra("ITEM_DETAIL_DATA");
+        try {
+            productDetails.setHandOver(String.valueOf(new JSONArray(item_request_details).length()));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,14 +119,12 @@ public class ProductItemDetailsActivity extends BaseActivity {
                 checkoutcheckoutItemRequestModel.setAssets(listAsset);
                 ListcheckoutItemRequestModels.clear();
                 ListcheckoutItemRequestModels.add(checkoutcheckoutItemRequestModel);
-                listScanData.clear();
                 apiServices.patchCheckoutItemRequest(ListcheckoutItemRequestModels, new NetworkResponseListener<JSONObject>() {
                     @Override
                     public void onResult(JSONObject object) {
                         try {
                             String mess = object.getString("messages");
                             Toast.makeText(ProductItemDetailsActivity.this,mess,Toast.LENGTH_LONG).show();
-
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
