@@ -144,7 +144,12 @@ public class ProductItemDetailsActivity extends BaseActivity {
                 AddItemScan();
             }
         });
-
+        listScanAdapter.setOnItemClickListener((position, item) -> {
+            // Thực hiện hành động với item hoặc position, ví dụ:
+            listScanData.remove(position);
+            listScanAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "Clicked item: " + item + " at position " + position, Toast.LENGTH_SHORT).show();
+        });
     }
     private  void addObject(){
         listAsset.clear();

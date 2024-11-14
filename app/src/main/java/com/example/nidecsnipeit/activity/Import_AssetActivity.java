@@ -159,7 +159,7 @@ public class Import_AssetActivity extends BaseActivity {
         recycleListDataScan = findViewById(R.id.recycleListDataScan);
         autoCategory = findViewById(R.id.autoCategory);
         autoManufactures = findViewById(R.id.autoManufactures);
-        autoCatalog = findViewById(R.id.autoCatalog);
+        autoCatalog = findViewById(R.id.autoModel);
         autoVarials = findViewById(R.id.autoVarials);
         importAsset = findViewById(R.id.Import_Asset);
     }

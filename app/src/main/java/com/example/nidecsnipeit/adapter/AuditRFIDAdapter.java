@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nidecsnipeit.R;
+import com.example.nidecsnipeit.network.model.ProductDeliveryModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +21,18 @@ public class AuditRFIDAdapter extends RecyclerView.Adapter<AuditRFIDAdapter.Audi
     public static int RFIDview = 1;
     public static int ImporAssetView = 2;
     public static int ProductItemDetailsView = 3;
-
+    private OnItemClickListener onItemClickListener;
     public List<String> listitemRFID;
     private List<Integer> itemTextColors;
     private int activityType;
-
+    private Context context;
+    public interface OnItemClickListener {
+        void onItemClick( int position , String item);
+    }
+    public void setOnItemClickListener(AuditRFIDAdapter.OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+        this.context = context;
+    }
     public AuditRFIDAdapter(List<String> listitemRFID , int activityType) {
         this.listitemRFID = listitemRFID;
         itemTextColors =new ArrayList<>();
@@ -52,6 +60,14 @@ public class AuditRFIDAdapter extends RecyclerView.Adapter<AuditRFIDAdapter.Audi
         } else {
             holder.txtItemRFID.setTextColor(Color.BLACK);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                String item = listitemRFID.get(position);
+                onItemClickListener.onItemClick(position, item);
+            }
+        });
+
     }
 
     @Override

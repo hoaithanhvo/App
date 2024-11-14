@@ -292,7 +292,7 @@ public class NetworkManager {
     }
 
     public void getVarrials(int id , final NetworkResponseListener<JSONObject> listener, final  NetworkResponseErrorListener errorListener){
-        String url = URL + "/varrials/getAll?catalog_id=" + id;
+        String url = URL + "/varrials/getAll?model_id=" + id;
         this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
     }
 

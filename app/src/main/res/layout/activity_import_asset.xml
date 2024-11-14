@@ -63,16 +63,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/txtCatalog"
+                android:id="@+id/txtModel"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="Catalog"
+                android:text="Model"
                 android:textColor="@color/primary"
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <AutoCompleteTextView
                 android:hint="Search for items"
-                android:id="@+id/autoCatalog"
+                android:id="@+id/autoModel"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 />
