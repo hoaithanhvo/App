@@ -103,4 +103,6 @@
     <string name="maintenance_list">メンテナンスリスト</string>
     <string name="equipment_detail">製品の詳細</string>
     <string name="scan_assign_asset">製品項目の詳細</string>
+    <string name="empty">Content is empty</string>
+
 </resources>

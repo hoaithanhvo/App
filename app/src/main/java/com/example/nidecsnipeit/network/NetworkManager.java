@@ -324,6 +324,11 @@ public class NetworkManager {
         Type auditModelListType = new TypeToken<List<checkoutItemRequestModel>>() {}.getType();
         this.postAPIObject(url,Request.Method.PATCH,item,auditModelListType,listener,errorListener);
     }
+
+    public void getRequestAssetById(String id,final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+        String url = URL + "/requestAsset/getById?id="+ id;
+        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+    }
     // =============================================
     // ======= Generic method ======================
     // =============================================

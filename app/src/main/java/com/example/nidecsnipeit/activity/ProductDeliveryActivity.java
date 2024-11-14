@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.network.model.ProductDeliveryModel;
 import com.example.nidecsnipeit.utility.Common;
 import com.example.nidecsnipeit.utility.EndlessScrollListener;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,25 +37,28 @@ public class ProductDeliveryActivity extends BaseActivity {
     private NetworkManager apiServices;
     private RecyclerView rcyProductDelivery;
     private ProductDeliveryAdapter adapter;
-    private List<ProductDeliveryModel> productList;
-    private List<ProductDeliveryModel> filteredList = new ArrayList<>();
+    private List<ProductDeliveryModel> productList = new ArrayList<>();
     private TextView txtTotal;
     private EditText txtSearch;
     private Boolean hasMoreData = true;
     private EndlessScrollListener endlessScrollListener;
     private List<ProductDeliveryModel> originalList = new ArrayList<>();
     private boolean isSearching = false;
+    private ImageButton imgClose;
+    private Button bntSearch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setupActionBar(R.string.equipment_request);
         setContentView(R.layout.activity_product_delivery);
-
         apiServices = NetworkManager.getInstance(this);
         rcyProductDelivery = findViewById(R.id.rcyProductDelivery);
         txtSearch = findViewById(R.id.txtSearch);
+        bntSearch = findViewById(R.id.bntSearch);
         txtTotal = findViewById(R.id.txtTotal);
+        imgClose= findViewById(R.id.imgClose);
         adapter = new ProductDeliveryAdapter();
         GetDataProductDelivery(10, 0);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -63,13 +70,13 @@ public class ProductDeliveryActivity extends BaseActivity {
             @Override
             public void loadMoreItems(int offset, int limit) {
                 txtTotal.setText(String.valueOf(adapter.getListItems().size()));
-                if (!isSearching && hasMoreData) { // Chỉ tải thêm nếu không phải đang tìm kiếm và còn dữ liệu
+                if (!isSearching && hasMoreData) {
                     GetDataProductDelivery(limit, offset);
                 }
             }
         };
 
-        rcyProductDelivery.addOnScrollListener(endlessScrollListener);  // Add the scroll listener
+        rcyProductDelivery.addOnScrollListener(endlessScrollListener);
 
         adapter.setOnItemClickListener(product -> {
             SharedPreferences sharedPreferences = getSharedPreferences("NIDEC_SNIPEIT", MODE_PRIVATE);
@@ -97,7 +104,18 @@ public class ProductDeliveryActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    txtSearch.setText("");
+            }
+        });
+        bntSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searItemById();
+            }
+        });
     }
 
     private void GetDataProductDelivery(int limit, int offset) {
@@ -105,46 +123,11 @@ public class ProductDeliveryActivity extends BaseActivity {
         apiServices.getProductDelivery(limit, offset, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
-                try {
-                    Common.hideProgressDialog();
-                    JSONArray rows = object.getJSONArray("rows");
-                    if (rows.length() <10) {
-                        hasMoreData = false; // No more data to load
-                    }
-                    productList = new ArrayList<>();
-                    String nameStatus = "";
-                    String colorStatus = "";
-                    for (int i = 0; i < rows.length(); i++) {
-                        ProductDeliveryModel productItem = new ProductDeliveryModel();
-                        JSONObject item = rows.getJSONObject(i);
-                        String id = item.getString("id");
-                        JSONObject user_request = item.getJSONObject("user_request");
-                        JSONObject created_at = item.getJSONObject("created_at");
-                        String formatted = created_at.getString("formatted");
-                        productItem.setUserID(user_request.getString("name"));
-                        productItem.setCreateAt(formatted);
-                        productItem.setProductID(id);
-                        JSONObject status = item.getJSONObject("status");
-                        nameStatus = status.getString("name");
-                        colorStatus = status.getString("color");
-                        productItem.setStatusMap(nameStatus, colorStatus);
-                        JSONArray items_request = item.getJSONArray("items_request");
-                        productItem.setItems_request(items_request);
-                        productList.add(productItem);
-                    }
-
-                    filteredList.clear();
-                    filteredList.addAll(productList);
-                    adapter.addData(filteredList);
-                    txtTotal.setText(String.valueOf(adapter.getListItems().size()));
-                    originalList.clear();
-                    originalList.addAll(adapter.getListItems());
-                    // Reset isLoading to false for EndlessScrollListener after data load
-                    endlessScrollListener.setLoading(false);
-
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                parsObject(object);
+                adapter.addData(productList);
+                txtTotal.setText(String.valueOf(adapter.getListItems().size()));
+                originalList.addAll(productList);
+                endlessScrollListener.setLoading(true);
             }
         }, error -> {
             Toast.makeText(ProductDeliveryActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_LONG).show();
@@ -152,19 +135,78 @@ public class ProductDeliveryActivity extends BaseActivity {
     }
 
     private void filter(String text) {
-        isSearching = true; // Bắt đầu chế độ tìm kiếm
-        filteredList.clear();
+        endlessScrollListener.setSearching(true);
+        isSearching = true;
+        productList.clear();
         if (text.isEmpty()) {
             isSearching = false;
-            filteredList.addAll(originalList);
+            productList.addAll(originalList);
+            endlessScrollListener.setSearching(false);
         } else {
             for (ProductDeliveryModel item : originalList) {
                 if (item.getProductID() != null && item.getProductID().toLowerCase().contains(text.toLowerCase())) {
-                    filteredList.add(item);
+                    productList.add(item);
                 }
             }
         }
-        adapter.searchData(filteredList);
-        txtTotal.setText(String.valueOf(filteredList.size()));
+        adapter.searchData(productList);
+        txtTotal.setText(String.valueOf(productList.size()));
+    }
+
+    private void parsObject(JSONObject object){
+        try {
+            Common.hideProgressDialog();
+            JSONArray rows = object.getJSONArray("rows");
+            productList.clear();
+            if (rows.length() <10) {
+                hasMoreData = false;
+            }
+            if (rows.length() == 0){
+                Toast.makeText(ProductDeliveryActivity.this,R.string.empty,Toast.LENGTH_LONG).show();
+                return;
+            }
+            for (int i = 0; i < rows.length(); i++) {
+                ProductDeliveryModel productItem = new ProductDeliveryModel();
+                JSONObject item = rows.getJSONObject(i);
+                String id = item.getString("id");
+                JSONObject user_request = item.getJSONObject("user_request");
+                JSONObject created_at = item.getJSONObject("created_at");
+                String formatted = created_at.getString("formatted");
+                productItem.setUserID(user_request.getString("name"));
+                productItem.setCreateAt(formatted);
+                productItem.setProductID(id);
+                JSONObject status = item.getJSONObject("status");
+                productItem.setStatusMap(status.getString("name"), status.getString("color"));
+                JSONArray items_request = item.getJSONArray("items_request");
+                productItem.setItems_request(items_request);
+                productList.add(productItem);
+            }
+            endlessScrollListener.setLoading(false);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void searItemById(){
+
+        String textSearch = txtSearch.getText().toString();
+        if(textSearch.equals("")){
+            Toast.makeText(this,R.string.empty,Toast.LENGTH_LONG).show();
+            return;
+        }
+        apiServices.getRequestAssetById(textSearch, new NetworkResponseListener<JSONObject>() {
+            @Override
+            public void onResult(JSONObject object) {
+                parsObject(object);
+                adapter.searchData(productList);
+                txtTotal.setText(String.valueOf(adapter.getListItems().size()));
+            }
+        }, new NetworkResponseErrorListener() {
+            @Override
+            public void onErrorResult(Exception error) {
+                Toast.makeText(ProductDeliveryActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
+                return;
+            }
+        });
     }
 }

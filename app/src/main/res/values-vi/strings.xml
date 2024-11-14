@@ -103,4 +103,6 @@
     <string name="maintenance_list">Danh sách bảo trì</string>
     <string name="equipment_detail">Chi tiết thiết bị</string>
     <string name="scan_assign_asset">Chi tiết thiết bị</string>
+    <string name="empty">Content is empty</string>
+
 </resources>

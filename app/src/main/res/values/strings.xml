@@ -102,4 +102,5 @@
     <string name="maintenance_list">Maintenance list</string>
     <string name="equipment_detail">Equipment Details</string>
     <string name="scan_assign_asset">Scan Asset</string>
+    <string name="empty">Content is empty</string>
 </resources>

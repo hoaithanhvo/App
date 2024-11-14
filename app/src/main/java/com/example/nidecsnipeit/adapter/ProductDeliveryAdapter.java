@@ -86,9 +86,8 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
     }
 
     public void addData(List<ProductDeliveryModel> newListItem) {
-        int startPosition = listitemProduct.size();
         listitemProduct.addAll(newListItem);
-        notifyItemRangeInserted(startPosition, newListItem.size());
+        notifyDataSetChanged();
     }
     public List<ProductDeliveryModel> getListItems() {
         return listitemProduct;
