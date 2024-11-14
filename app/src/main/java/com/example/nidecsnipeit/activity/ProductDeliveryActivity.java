@@ -43,7 +43,6 @@ public class ProductDeliveryActivity extends BaseActivity {
     private Boolean hasMoreData = true;
     private EndlessScrollListener endlessScrollListener;
     private List<ProductDeliveryModel> originalList = new ArrayList<>();
-    private boolean isSearching = false;
     private ImageButton imgClose;
     private Button bntSearch;
 
@@ -70,7 +69,7 @@ public class ProductDeliveryActivity extends BaseActivity {
             @Override
             public void loadMoreItems(int offset, int limit) {
                 txtTotal.setText(String.valueOf(adapter.getListItems().size()));
-                if (!isSearching && hasMoreData) {
+                if (hasMoreData) {
                     GetDataProductDelivery(limit, offset);
                 }
             }
@@ -107,13 +106,14 @@ public class ProductDeliveryActivity extends BaseActivity {
         imgClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                    endlessScrollListener.setLoading(true);
                     txtSearch.setText("");
             }
         });
         bntSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searItemById();
+                searchItemById();
             }
         });
     }
@@ -136,10 +136,8 @@ public class ProductDeliveryActivity extends BaseActivity {
 
     private void filter(String text) {
         endlessScrollListener.setSearching(true);
-        isSearching = true;
         productList.clear();
         if (text.isEmpty()) {
-            isSearching = false;
             productList.addAll(originalList);
             endlessScrollListener.setSearching(false);
         } else {
@@ -158,7 +156,7 @@ public class ProductDeliveryActivity extends BaseActivity {
             Common.hideProgressDialog();
             JSONArray rows = object.getJSONArray("rows");
             productList.clear();
-            if (rows.length() <10) {
+            if (rows.length() <10 && !endlessScrollListener.isSearching()) {
                 hasMoreData = false;
             }
             if (rows.length() == 0){
@@ -181,16 +179,16 @@ public class ProductDeliveryActivity extends BaseActivity {
                 productItem.setItems_request(items_request);
                 productList.add(productItem);
             }
-            endlessScrollListener.setLoading(false);
-
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
-    private void searItemById(){
+    private void searchItemById(){
 
+        endlessScrollListener.setSearching(true);
         String textSearch = txtSearch.getText().toString();
         if(textSearch.equals("")){
+            endlessScrollListener.setSearching(false);
             Toast.makeText(this,R.string.empty,Toast.LENGTH_LONG).show();
             return;
         }

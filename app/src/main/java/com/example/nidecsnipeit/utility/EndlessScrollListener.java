@@ -20,6 +20,14 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
         this.layoutManager = layoutManager;
     }
 
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public boolean isSearching() {
+        return isSearching;
+    }
+
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
