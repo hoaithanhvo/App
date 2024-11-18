@@ -85,10 +85,10 @@ public class ProductDeliveryAdapter extends RecyclerView.Adapter<ProductDelivery
         }
     }
 
-    public void addData(List<ProductDeliveryModel> newListItem) {
-        listitemProduct.addAll(newListItem);
-        notifyDataSetChanged();
-    }
+//    public void addData(List<ProductDeliveryModel> newListItem) {
+//        listitemProduct.addAll(newListItem);
+//        notifyDataSetChanged();
+//    }
     public List<ProductDeliveryModel> getListItems() {
         return listitemProduct;
     }

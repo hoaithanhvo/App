@@ -34,6 +34,8 @@ public class ProductDetailActivity extends BaseActivity {
     private List<ProductDetailsModel> listProductDetails = new ArrayList<>();
     private List<ProductDetailsModel> filteredList;
     private int id;
+    private boolean isDataChanged = false;
+    private static final int REQUEST_CODE = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,7 @@ public class ProductDetailActivity extends BaseActivity {
 
     private void loadDataAdapter(String jsonString){
         try {
+            listProductDetails.clear();
             JSONArray items_request = new JSONArray(jsonString);
             for(int i = 0;i<items_request.length();i++){
                 ProductDetailsModel itemProduct = new ProductDetailsModel();
@@ -152,7 +155,7 @@ public class ProductDetailActivity extends BaseActivity {
                 intentItem.putExtra("id",id);
                 intentItem.putExtra("productDetails", product);
                 intentItem.putExtra("ITEM_DETAIL_DATA", itemsRequestString);
-                startActivity(intentItem);
+                startActivityForResult(intentItem,REQUEST_CODE);
 
             });
         } catch (JSONException e) {
@@ -171,5 +174,23 @@ public class ProductDetailActivity extends BaseActivity {
             }
         }
         adapter.notifyDataSetChanged();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            isDataChanged = true;
+            String result = data.getStringExtra("result_key");
+            loadDataAdapter(result);
+
+        }
+    }
+    @Override
+    public void finish() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("isDataChanged", isDataChanged); // Trả lại cờ thay đổi dữ liệu
+        setResult(RESULT_OK, resultIntent);
+        super.finish(); // Quay lại Screen A
     }
 }

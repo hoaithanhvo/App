@@ -405,7 +405,6 @@ public class NetworkManager {
                 e.printStackTrace();
             }
         }
-
     }
     public <T> void getAPI(String Url, int httpMethod, T myObject, String apiToken, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
         if (myObject != null) {

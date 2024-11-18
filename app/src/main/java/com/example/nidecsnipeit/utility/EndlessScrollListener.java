@@ -7,7 +7,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
     private LinearLayoutManager layoutManager;
     private boolean isLoading = false;
     private boolean isSearching = false;
-    private int visibleThreshold = 5;
+    private int visibleThreshold = 2;
     private int totalItemCount, lastVisibleItem;
 
 

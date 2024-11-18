@@ -81,10 +81,14 @@
             android:layout_height="35dp"
             android:text=""/>
     </LinearLayout>
-
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcyProductDelivery"
         android:layout_width="match_parent"
-        android:fadeScrollbars="true"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:fadeScrollbars="true" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

@@ -29,6 +29,7 @@ import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.network.model.ImportAssetModel;
 import com.example.nidecsnipeit.network.model.ProductDetailsModel;
 import com.example.nidecsnipeit.network.model.ProductItemDetailsModel;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,14 +91,24 @@ public class ProductItemDetailsActivity extends BaseActivity {
                 checkoutcheckoutItemRequestModel.setAssets(listAsset);
                 ListcheckoutItemRequestModels.clear();
                 ListcheckoutItemRequestModels.add(checkoutcheckoutItemRequestModel);
-                listScanData.clear();
                 apiServices.patchuSccessItemRequest(ListcheckoutItemRequestModels, new NetworkResponseListener<JSONObject>() {
                     @Override
                     public void onResult(JSONObject object) {
-                        String mess = null;
                         try {
-                            mess = object.getString("messages");
+                            String mess = object.getString("messages");
+                            String status = object.getString("status");
                             Toast.makeText(ProductItemDetailsActivity.this,mess,Toast.LENGTH_LONG).show();
+                            JSONArray payloadArray = new JSONArray();
+                            if(status.equals("success")){
+                                if(object.has("payload")){
+                                    JSONObject payloadObject = object.getJSONObject("payload");
+                                    payloadArray.put(payloadObject);
+                                }
+                                Intent returnIntent = new Intent();
+                                returnIntent.putExtra("result_key", payloadArray.toString());  // Thêm dữ liệu vào intent nếu cần
+                                setResult(RESULT_OK, returnIntent);  // Hoặc dùng RESULT_CANCELED nếu không có dữ liệu
+                                finish();
+                            }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -114,7 +125,10 @@ public class ProductItemDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 addObject();
-
+                if(listAsset.size()==0){
+                    Toast.makeText(ProductItemDetailsActivity.this,"Không có item", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 checkoutcheckoutItemRequestModel.setItem_request_id(id);
                 checkoutcheckoutItemRequestModel.setAssets(listAsset);
                 ListcheckoutItemRequestModels.clear();
@@ -124,11 +138,22 @@ public class ProductItemDetailsActivity extends BaseActivity {
                     public void onResult(JSONObject object) {
                         try {
                             String mess = object.getString("messages");
+                            String status = object.getString("status");
                             Toast.makeText(ProductItemDetailsActivity.this,mess,Toast.LENGTH_LONG).show();
+                            JSONArray payloadArray = new JSONArray();
+                            if(status.equals("success")){
+                                if(object.has("payload")){
+                                    JSONObject payloadObject = object.getJSONObject("payload");
+                                    payloadArray.put(payloadObject);
+                                }
+                                Intent returnIntent = new Intent();
+                                returnIntent.putExtra("result_key", payloadArray.toString());  // Thêm dữ liệu vào intent nếu cần
+                                setResult(RESULT_OK, returnIntent);  // Hoặc dùng RESULT_CANCELED nếu không có dữ liệu
+                                finish();
+                            }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-
                     }
                 }, new NetworkResponseErrorListener() {
                     @Override
@@ -145,10 +170,8 @@ public class ProductItemDetailsActivity extends BaseActivity {
             }
         });
         listScanAdapter.setOnItemClickListener((position, item) -> {
-            // Thực hiện hành động với item hoặc position, ví dụ:
             listScanData.remove(position);
             listScanAdapter.notifyDataSetChanged();
-            Toast.makeText(this, "Clicked item: " + item + " at position " + position, Toast.LENGTH_SHORT).show();
         });
     }
     private  void addObject(){

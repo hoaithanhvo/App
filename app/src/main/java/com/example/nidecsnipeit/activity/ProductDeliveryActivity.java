@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.ProductDeliveryAdapter;
@@ -36,7 +37,7 @@ import java.util.List;
 public class ProductDeliveryActivity extends BaseActivity {
     private NetworkManager apiServices;
     private RecyclerView rcyProductDelivery;
-    private ProductDeliveryAdapter adapter;
+    private ProductDeliveryAdapter productDeliveryAdapter;
     private List<ProductDeliveryModel> productList = new ArrayList<>();
     private TextView txtTotal;
     private EditText txtSearch;
@@ -45,6 +46,9 @@ public class ProductDeliveryActivity extends BaseActivity {
     private List<ProductDeliveryModel> originalList = new ArrayList<>();
     private ImageButton imgClose;
     private Button bntSearch;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private static final int SCREEN_B_REQUEST_CODE = 1;
+    private boolean isswipeRefreshLayout = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,31 +57,24 @@ public class ProductDeliveryActivity extends BaseActivity {
         setupActionBar(R.string.equipment_request);
         setContentView(R.layout.activity_product_delivery);
         apiServices = NetworkManager.getInstance(this);
-        rcyProductDelivery = findViewById(R.id.rcyProductDelivery);
-        txtSearch = findViewById(R.id.txtSearch);
-        bntSearch = findViewById(R.id.bntSearch);
-        txtTotal = findViewById(R.id.txtTotal);
-        imgClose= findViewById(R.id.imgClose);
-        adapter = new ProductDeliveryAdapter();
+        Initialize();
+        productDeliveryAdapter = new ProductDeliveryAdapter();
         GetDataProductDelivery(10, 0);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rcyProductDelivery.setAdapter(adapter);
+        rcyProductDelivery.setAdapter(productDeliveryAdapter);
         rcyProductDelivery.setLayoutManager(layoutManager);
-
         // Initialize and set EndlessScrollListener
         endlessScrollListener = new EndlessScrollListener(layoutManager) {
             @Override
             public void loadMoreItems(int offset, int limit) {
-                txtTotal.setText(String.valueOf(adapter.getListItems().size()));
+                txtTotal.setText(String.valueOf(productDeliveryAdapter.getListItems().size()));
                 if (hasMoreData) {
                     GetDataProductDelivery(limit, offset);
                 }
             }
         };
-
         rcyProductDelivery.addOnScrollListener(endlessScrollListener);
-
-        adapter.setOnItemClickListener(product -> {
+        productDeliveryAdapter.setOnItemClickListener(product -> {
             SharedPreferences sharedPreferences = getSharedPreferences("NIDEC_SNIPEIT", MODE_PRIVATE);
             int checkAssetView = sharedPreferences.getInt("ASSETVIEW", MODE_PRIVATE);
             if (checkAssetView == 0) {
@@ -88,12 +85,13 @@ public class ProductDeliveryActivity extends BaseActivity {
             JSONArray itemsRequest = product.getItems_request();
             String jsonString = itemsRequest.toString();
             intent.putExtra("ITEM_DATA", jsonString);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         }, ProductDeliveryActivity.this);
 
         txtSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -101,13 +99,13 @@ public class ProductDeliveryActivity extends BaseActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
         imgClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    endlessScrollListener.setLoading(true);
-                    txtSearch.setText("");
+                txtSearch.setText("");
             }
         });
         bntSearch.setOnClickListener(new View.OnClickListener() {
@@ -116,29 +114,41 @@ public class ProductDeliveryActivity extends BaseActivity {
                 searchItemById();
             }
         });
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            isswipeRefreshLayout = true;
+            productList.clear();
+            GetDataProductDelivery(10, 0);
+            swipeRefreshLayout.setRefreshing(false);
+
+        });
     }
 
+    private void Initialize() {
+        rcyProductDelivery = findViewById(R.id.rcyProductDelivery);
+        txtSearch = findViewById(R.id.txtSearch);
+        bntSearch = findViewById(R.id.bntSearch);
+        txtTotal = findViewById(R.id.txtTotal);
+        imgClose = findViewById(R.id.imgClose);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+    }
     private void GetDataProductDelivery(int limit, int offset) {
         Common.showProgressDialog(this, "Đang tải vui lòng đợi...");
         apiServices.getProductDelivery(limit, offset, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 parsObject(object);
-                adapter.addData(productList);
-                txtTotal.setText(String.valueOf(adapter.getListItems().size()));
-                originalList.addAll(productList);
-                endlessScrollListener.setLoading(true);
             }
         }, error -> {
             Toast.makeText(ProductDeliveryActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_LONG).show();
         });
     }
-
     private void filter(String text) {
-        endlessScrollListener.setSearching(true);
         productList.clear();
+        endlessScrollListener.setLoading(false);
+        endlessScrollListener.setSearching(true);
         if (text.isEmpty()) {
             productList.addAll(originalList);
+            endlessScrollListener.setLoading(true);
             endlessScrollListener.setSearching(false);
         } else {
             for (ProductDeliveryModel item : originalList) {
@@ -147,22 +157,62 @@ public class ProductDeliveryActivity extends BaseActivity {
                 }
             }
         }
-        adapter.searchData(productList);
+        productDeliveryAdapter.searchData(productList);
         txtTotal.setText(String.valueOf(productList.size()));
     }
-
-    private void parsObject(JSONObject object){
+    private void searchItemById() {
+        productList.clear();
+        endlessScrollListener.setSearching(true);
+        endlessScrollListener.setLoading(false);
+        String textSearch = txtSearch.getText().toString();
+        if (textSearch.equals("")) {
+            endlessScrollListener.setSearching(false);
+            endlessScrollListener.setLoading(true);
+            productList.addAll(originalList);
+            productDeliveryAdapter.searchData(productList);
+        }
+        apiServices.getRequestAssetById(textSearch, new NetworkResponseListener<JSONObject>() {
+            @Override
+            public void onResult(JSONObject object) {
+                parsObject(object);
+                productDeliveryAdapter.searchData(productList);
+                txtTotal.setText(String.valueOf(productDeliveryAdapter.getListItems().size()));
+            }
+        }, new NetworkResponseErrorListener() {
+            @Override
+            public void onErrorResult(Exception error) {
+                Toast.makeText(ProductDeliveryActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SCREEN_B_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Kiểm tra cờ dữ liệu có thay đổi từ Screen B
+                boolean isDataChanged = data.getBooleanExtra("isDataChanged", false);
+                if (isDataChanged) {
+                    productList.clear();
+                    originalList.clear();
+                    GetDataProductDelivery(10, 0);
+                }
+            }
+        }
+    }
+    private void parsObject(JSONObject object) {
         try {
             Common.hideProgressDialog();
             JSONArray rows = object.getJSONArray("rows");
-            productList.clear();
-            if (rows.length() <10 && !endlessScrollListener.isSearching()) {
+            // Kiêm tra data get dưới item va khong tim kiem bang id
+            if (rows.length() < 10 && !endlessScrollListener.isSearching() && !isswipeRefreshLayout) {
                 hasMoreData = false;
             }
-            if (rows.length() == 0){
-                Toast.makeText(ProductDeliveryActivity.this,R.string.empty,Toast.LENGTH_LONG).show();
-                return;
+            if (isswipeRefreshLayout) {
+                hasMoreData = true;
             }
+
             for (int i = 0; i < rows.length(); i++) {
                 ProductDeliveryModel productItem = new ProductDeliveryModel();
                 JSONObject item = rows.getJSONObject(i);
@@ -178,33 +228,15 @@ public class ProductDeliveryActivity extends BaseActivity {
                 JSONArray items_request = item.getJSONArray("items_request");
                 productItem.setItems_request(items_request);
                 productList.add(productItem);
+                if(!endlessScrollListener.isSearching() && !isswipeRefreshLayout){
+                    originalList.add(productItem);
+                }
             }
+            productDeliveryAdapter.searchData(productList);
+            txtTotal.setText(String.valueOf(productDeliveryAdapter.getListItems().size()));
+            endlessScrollListener.setLoading(true);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-    }
-    private void searchItemById(){
-
-        endlessScrollListener.setSearching(true);
-        String textSearch = txtSearch.getText().toString();
-        if(textSearch.equals("")){
-            endlessScrollListener.setSearching(false);
-            Toast.makeText(this,R.string.empty,Toast.LENGTH_LONG).show();
-            return;
-        }
-        apiServices.getRequestAssetById(textSearch, new NetworkResponseListener<JSONObject>() {
-            @Override
-            public void onResult(JSONObject object) {
-                parsObject(object);
-                adapter.searchData(productList);
-                txtTotal.setText(String.valueOf(adapter.getListItems().size()));
-            }
-        }, new NetworkResponseErrorListener() {
-            @Override
-            public void onErrorResult(Exception error) {
-                Toast.makeText(ProductDeliveryActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
-                return;
-            }
-        });
     }
 }
