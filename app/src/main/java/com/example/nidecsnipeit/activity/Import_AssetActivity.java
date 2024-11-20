@@ -23,6 +23,7 @@ import com.android.volley.AuthFailureError;
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.AuditRFIDAdapter;
 import com.example.nidecsnipeit.adapter.CaterogyAdapter;
+import com.example.nidecsnipeit.network.ApiManager;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
@@ -61,13 +62,16 @@ public class Import_AssetActivity extends BaseActivity {
     private Map<String,Integer> varrialsMap = new HashMap<>();
     private  int selectedCategoryId;
     private  int selectedManufactoryId;
-    private AutoCompleteTextView autoCategory,autoManufactures,autoCatalog,autoVarials;
+    private ApiManager apiManager;
+    private Map<String, String> params = new HashMap<>();
+    private AutoCompleteTextView autoCategory,autoManufactures,autoModels,autoVarials;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_import_asset);
-        apiServices = NetworkManager.getInstance();
+        apiServices = NetworkManager.getInstance(this);
+        apiManager = ApiManager.getInstance(this);
         setupActionBar(R.string.import_asset);
         initial();
         loadCategories();
@@ -108,10 +112,16 @@ public class Import_AssetActivity extends BaseActivity {
                     ImportAssetModel importAssetModel = new ImportAssetModel();
                     importAssetModel.category_id = String.valueOf(categoryMap.get(autoCategory.getText().toString()));
                     importAssetModel.varrial_id = String.valueOf(varrialsMap.get(autoVarials.getText().toString()));
-                    importAssetModel.name = autoCategory.getText().toString()+autoManufactures.getText()+autoCatalog.getText();
+                    importAssetModel.name = autoCategory.getText().toString()+autoManufactures.getText()+autoModels.getText();
                     for (String itemScan : listScan) {
                         importAssetModel.addAsset(itemScan);
                     }
+//                    Map<String, Object> data = new HashMap<>();
+//                    data.put("varrial_id", String.valueOf(varrialsMap.get(autoVarials.getText().toString())));
+//                    data.put("model_id", String.valueOf(varrialsMap.get(autoModels.getText().toString())));
+//                    data.put("name", String.valueOf(varrialsMap.get(.getText().toString())));
+//                    data.put("varrial_id", String.valueOf(varrialsMap.get(autoVarials.getText().toString())));
+
                     if(!importAssetModel.category_id.isEmpty()){
                         try{
                             apiServices.postAssetObject(importAssetModel, new NetworkResponseListener<JSONObject>() {
@@ -124,7 +134,7 @@ public class Import_AssetActivity extends BaseActivity {
                                             listScan.clear();
                                             autoCategory.setText("");
                                             autoManufactures.setText("");
-                                            autoCatalog.setText("");
+                                            autoModels.setText("");
                                             autoVarials.setText("");
                                             listScanAdapter.notifyDataSetChanged();
                                             Toast.makeText(Import_AssetActivity.this,messages,Toast.LENGTH_LONG).show();
@@ -159,7 +169,7 @@ public class Import_AssetActivity extends BaseActivity {
         recycleListDataScan = findViewById(R.id.recycleListDataScan);
         autoCategory = findViewById(R.id.autoCategory);
         autoManufactures = findViewById(R.id.autoManufactures);
-        autoCatalog = findViewById(R.id.autoModel);
+        autoModels = findViewById(R.id.autoModel);
         autoVarials = findViewById(R.id.autoVarials);
         importAsset = findViewById(R.id.Import_Asset);
     }
@@ -169,7 +179,7 @@ public class Import_AssetActivity extends BaseActivity {
             public void onResult(JSONObject object) {
                 handleCategoryResponse(object);
             }
-        }, this::handleApiError);  // Sử dụng method reference để xử lý lỗi
+        }, this::handleApiError);
     }
     private void handleCategoryResponse(JSONObject object) {
         try {
@@ -192,12 +202,12 @@ public class Import_AssetActivity extends BaseActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, data);
         view.setAdapter(adapter);
     }
-    private void setupMuilteCompleteAdapter(MultiAutoCompleteTextView view, List<String> data) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
-        view.setAdapter(adapter);
-        view.setThreshold(1);
-        view.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-    }
+//    private void setupMuilteCompleteAdapter(MultiAutoCompleteTextView view, List<String> data) {
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
+//        view.setAdapter(adapter);
+//        view.setThreshold(1);
+//        view.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+//    }
     private void setupFocusChangeListeners() {
         autoCategory.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
@@ -211,7 +221,7 @@ public class Import_AssetActivity extends BaseActivity {
             }
         });
 
-        autoCatalog.setOnFocusChangeListener((v, hasFocus) -> {
+        autoModels.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 handleCatalogSelection();
             }
@@ -233,7 +243,9 @@ public class Import_AssetActivity extends BaseActivity {
     private void loadManufactures() {
         listManafactory.clear();
         manufactoryMap.clear();
-        apiServices.getManafactoryAll(selectedCategoryId,new NetworkResponseListener<JSONObject>() {
+        params.clear();
+        params.put("id", String.valueOf(selectedCategoryId));
+        apiManager.getManafactoryAll(params,new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 handleManufactureResponse(object);
@@ -247,14 +259,16 @@ public class Import_AssetActivity extends BaseActivity {
         if (listManafactory.contains(getManufactory)) {
             selectedManufactoryId = manufactoryMap.get(getManufactory);
             Common.showProgressDialog(this, "Loading...");
-            loadCatalogs();
+            loadModels();
         }
     }
     // Gọi API để tải Catalog
-    private void loadCatalogs() {
+    private void loadModels() {
         listCatalog.clear();
         catalogMap.clear();
-        apiServices.getModelById(selectedManufactoryId, new NetworkResponseListener<JSONObject>() {
+        params.clear();
+        params.put("category_id", String.valueOf(selectedManufactoryId));
+        apiManager.getModelById(params, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 handleCatalogResponse(object);
@@ -264,7 +278,7 @@ public class Import_AssetActivity extends BaseActivity {
     }
     // Xử lý khi chọn Catalog
     private void handleCatalogSelection() {
-        String getCatalog = autoCatalog.getText().toString();
+        String getCatalog = autoModels.getText().toString();
         if (listCatalog.contains(getCatalog)) {
             int catalogID = catalogMap.get(getCatalog);
             Common.showProgressDialog(this, "Loading...");
@@ -274,7 +288,9 @@ public class Import_AssetActivity extends BaseActivity {
     // Gọi API để tải Varrials
     private void loadVarrials(int catalogID) {
         listVarrials.clear();
-        apiServices.getVarrials(catalogID, new NetworkResponseListener<JSONObject>() {
+        params.clear();
+        params.put("model_id", String.valueOf(catalogID));
+        apiManager.getVarrials(params, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 handleVarrialsResponse(object);
@@ -337,7 +353,7 @@ public class Import_AssetActivity extends BaseActivity {
                     catalogMap.put(catalogName, catalogId);
                 }
             }
-            setupAutoCompleteAdapter(autoCatalog, listCatalog);
+            setupAutoCompleteAdapter(autoModels, listCatalog);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

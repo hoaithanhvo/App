@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkManager {
@@ -170,11 +169,6 @@ public class NetworkManager {
         String url = URL + "/hardware/audit";
         this.postAPI(url, Request.Method.POST, auditmodelItem, listener, errorListener);
     }
-//    public void createAudiOffline(List<AuditModel> auditmodelItem, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener) {
-//        String url = URL + "/hardware/auditListObject";
-//        Type auditModelListType = new TypeToken<List<AuditModel>>() {}.getType();
-//        this.postAPIV1(url, Request.Method.POST, auditmodelItem,auditModelListType, listener, errorListener);
-//    }
 
     // =============================================
     // ======= MAINTENANCES ========================
@@ -277,24 +271,21 @@ public class NetworkManager {
         this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
     }
 
-    public void getManafactoryAll(int id ,final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
-        String url = URL + "/manufacturers/getById?id=" + id;
-        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
-    }
-
-//    public void getCatalogAll(int id, final  NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
-//        String url = URL  + "/catalogs/getByManufacturer?manufacturer_id=" + id;
+//    public void getManafactoryAll(int id ,final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+//        String url = URL + "/manufacturers/getById?id=" + id;
+//        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+//    }
+//
+//
+//    public void getModelById(int id, final  NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
+//        String url = URL  + "/models?category_id=" + id;
 //        this.getAPI(url, Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
 //    }
-    public void getModelById(int id, final  NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
-        String url = URL  + "/models?category_id=" + id;
-        this.getAPI(url, Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
-    }
-
-    public void getVarrials(int id , final NetworkResponseListener<JSONObject> listener, final  NetworkResponseErrorListener errorListener){
-        String url = URL + "/varrials/getAll?model_id=" + id;
-        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
-    }
+//
+//    public void getVarrials(int id , final NetworkResponseListener<JSONObject> listener, final  NetworkResponseErrorListener errorListener){
+//        String url = URL + "/varrials/getAll?model_id=" + id;
+//        this.getAPI(url,Request.Method.GET,null,ACCESS_TOKEN,listener,errorListener);
+//    }
 
     public void getVersion(final NetworkResponseListener<String> listener,final NetworkResponseErrorListener errorListener){
         String url = URL + "/application/getVersionApp";
@@ -302,17 +293,13 @@ public class NetworkManager {
     }
 
 
-    public void getProductDelivery(int limit , int offset ,final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
-        String url = URL + "/requestAsset/getAll?limit="+limit +"&offset=" +offset ;
-        this.getAPI(url,Request.Method.GET,null ,ACCESS_TOKEN,listener,errorListener);
-    }
+//    public void getProductDelivery(int limit , int offset ,final NetworkResponseListener<JSONObject> listener,final NetworkResponseErrorListener errorListener){
+//        String url = URL + "/requestAsset/getAll?limit="+limit +"&offset=" +offset ;
+//        this.getAPI(url,Request.Method.GET,null ,ACCESS_TOKEN,listener,errorListener);
+//    }
 
 
 
-    public void patchProductDevivery(int id , final NetworkResponseListener<JSONObject> listener , final NetworkResponseErrorListener errorListener ){
-        String url = URL + "/requestAsset/successItemRequest?items_request_id=" + id;
-        this.postAPI(url, Request.Method.PATCH,null,listener,errorListener);
-    }
     public void patchCheckoutItemRequest(List<checkoutItemRequestModel>item, final NetworkResponseListener<JSONObject> listener, final NetworkResponseErrorListener errorListener){
         String url = URL + "/requestAsset/checkedoutItemRequest";
         Type auditModelListType = new TypeToken<List<checkoutItemRequestModel>>() {}.getType();

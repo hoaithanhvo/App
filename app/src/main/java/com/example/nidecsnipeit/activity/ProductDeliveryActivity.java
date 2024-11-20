@@ -19,12 +19,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.nidecsnipeit.R;
 import com.example.nidecsnipeit.adapter.ProductDeliveryAdapter;
+import com.example.nidecsnipeit.network.ApiManager;
 import com.example.nidecsnipeit.network.NetworkManager;
 import com.example.nidecsnipeit.network.NetworkResponseErrorListener;
 import com.example.nidecsnipeit.network.NetworkResponseListener;
 import com.example.nidecsnipeit.network.model.ProductDeliveryModel;
 import com.example.nidecsnipeit.utility.Common;
 import com.example.nidecsnipeit.utility.EndlessScrollListener;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -32,7 +34,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductDeliveryActivity extends BaseActivity {
     private NetworkManager apiServices;
@@ -49,17 +53,21 @@ public class ProductDeliveryActivity extends BaseActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private static final int SCREEN_B_REQUEST_CODE = 1;
     private boolean isswipeRefreshLayout = false;
-
+    private ApiManager apiManager;
+    private Map<String, String> params = new HashMap() {
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setupActionBar(R.string.equipment_request);
         setContentView(R.layout.activity_product_delivery);
-        apiServices = NetworkManager.getInstance(this);
         Initialize();
+        apiManager = ApiManager.getInstance(this);
         productDeliveryAdapter = new ProductDeliveryAdapter();
-        GetDataProductDelivery(10, 0);
+        params.put("offset", "0");
+        params.put("limit", "10");
+        GetDataProductDelivery(params);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rcyProductDelivery.setAdapter(productDeliveryAdapter);
         rcyProductDelivery.setLayoutManager(layoutManager);
@@ -67,9 +75,12 @@ public class ProductDeliveryActivity extends BaseActivity {
         endlessScrollListener = new EndlessScrollListener(layoutManager) {
             @Override
             public void loadMoreItems(int offset, int limit) {
+                params.clear();
+                params.put("offset", String.valueOf(offset));
+                params.put("limit", String.valueOf(limit));
                 txtTotal.setText(String.valueOf(productDeliveryAdapter.getListItems().size()));
                 if (hasMoreData) {
-                    GetDataProductDelivery(limit, offset);
+                    GetDataProductDelivery(params);
                 }
             }
         };
@@ -117,7 +128,10 @@ public class ProductDeliveryActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             isswipeRefreshLayout = true;
             productList.clear();
-            GetDataProductDelivery(10, 0);
+            params.clear();
+            params.put("offset", "0");
+            params.put("limit", "10");
+            GetDataProductDelivery(params);
             swipeRefreshLayout.setRefreshing(false);
 
         });
@@ -131,9 +145,9 @@ public class ProductDeliveryActivity extends BaseActivity {
         imgClose = findViewById(R.id.imgClose);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
-    private void GetDataProductDelivery(int limit, int offset) {
+    private void GetDataProductDelivery(Map<String, String> params) {
         Common.showProgressDialog(this, "Đang tải vui lòng đợi...");
-        apiServices.getProductDelivery(limit, offset, new NetworkResponseListener<JSONObject>() {
+        apiManager.getProductDelivery(params, new NetworkResponseListener<JSONObject>() {
             @Override
             public void onResult(JSONObject object) {
                 parsObject(object);
@@ -196,7 +210,11 @@ public class ProductDeliveryActivity extends BaseActivity {
                 if (isDataChanged) {
                     productList.clear();
                     originalList.clear();
-                    GetDataProductDelivery(10, 0);
+                    params.clear();
+                    params.put("offset", "0");
+                    params.put("limit", "10");
+
+                    GetDataProductDelivery(params);
                 }
             }
         }

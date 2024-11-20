@@ -7,6 +7,7 @@ public class ImportAssetModel {
     public String varrial_id;
     public String category_id;
     public String name;
+    private String model_id;
     public List<Asset> assets;
 
     public ImportAssetModel() {
